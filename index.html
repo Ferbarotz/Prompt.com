@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Prompt.com — Guía de Métodos de Prompting</title>
+  <style>
+    :root {
+      --bg: #f0f4ff;
+      --surface: #ffffff;
+      --surface2: #e8eef8;
+      --primary: #6c8ef5;
+      --primary-light: #dce6ff;
+      --accent: #f5a623;
+      --accent-light: #fff4e0;
+      --text: #2d3550;
+      --text-soft: #6b7a9d;
+      --border: #d5deee;
+      --green: #34c78a;
+      --green-light: #d6f5ea;
+      --purple: #a67ef5;
+      --purple-light: #ede6ff;
+      --pink: #f56a9a;
+      --pink-light: #ffe6f1;
+      --teal: #3cc9d4;
+      --teal-light: #d9f7fa;
+      --shadow: 0 4px 24px rgba(108,142,245,0.10);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #6c8ef5 0%, #a67ef5 100%);
+      color: #fff;
+      padding: 52px 24px 40px;
+      text-align: center;
+    }
+    header h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -1px; }
+    header p  { margin-top: 10px; font-size: 1.1rem; opacity: .88; max-width: 640px; margin-inline: auto; }
+
+    /* ── NAV PILLS ── */
+    nav {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+      background: var(--surface); padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    nav a {
+      text-decoration: none; color: var(--text-soft); font-size: .85rem; font-weight: 600;
+      padding: 6px 16px; border-radius: 999px; border: 1.5px solid var(--border);
+      transition: all .2s;
+    }
+    nav a:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+    /* ── MAIN LAYOUT ── */
+    main { max-width: 1100px; margin: 0 auto; padding: 48px 20px; }
+
+    section { margin-bottom: 72px; }
+    section h2 {
+      font-size: 1.65rem; font-weight: 800; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    section > p.intro {
+      color: var(--text-soft); margin-bottom: 28px; font-size: 1.02rem; max-width: 720px;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface); border-radius: var(--radius);
+      border: 1.5px solid var(--border); padding: 24px;
+      box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(108,142,245,.18); }
+
+    .card-badge {
+      display: inline-block; font-size: .72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px; margin-bottom: 12px; text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .card p  { font-size: .9rem; color: var(--text-soft); }
+
+    .card ul {
+      margin-top: 12px; padding-left: 18px;
+      font-size: .88rem; color: var(--text-soft);
+    }
+    .card ul li { margin-bottom: 4px; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .tag {
+      font-size: .75rem; font-weight: 600; padding: 3px 10px;
+      border-radius: 999px; background: var(--surface2); color: var(--text-soft);
+    }
+
+    /* colores por método */
+    .c-blue   { background: var(--primary-light); color: var(--primary); }
+    .c-green  { background: var(--green-light);   color: #1a8f60; }
+    .c-purple { background: var(--purple-light);  color: #7c4fe0; }
+    .c-orange { background: var(--accent-light);  color: #c47a00; }
+    .c-pink   { background: var(--pink-light);    color: #c0366a; }
+    .c-teal   { background: var(--teal-light);    color: #1a9aa0; }
+
+    /* ── COMPARISON TABLE ── */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); }
+    table {
+      width: 100%; border-collapse: collapse;
+      background: var(--surface); font-size: .9rem;
+    }
+    th {
+      background: var(--primary); color: #fff;
+      padding: 14px 16px; text-align: left; font-weight: 700;
+    }
+    th:first-child { border-radius: var(--radius) 0 0 0; }
+    th:last-child  { border-radius: 0 var(--radius) 0 0; }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--bg); }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+
+    /* ── GENERATOR ── */
+    #generator {
+      background: var(--surface);
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 36px;
+    }
+    #generator h2 { font-size: 1.65rem; font-weight: 800; margin-bottom: 6px; }
+    #generator .sub { color: var(--text-soft); margin-bottom: 28px; font-size: 1rem; }
+
+    .gen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media(max-width: 680px){ .gen-grid { grid-template-columns: 1fr; } }
+
+    label { display: block; font-weight: 700; margin-bottom: 6px; font-size: .92rem; }
+
+    textarea, select, input[type=text] {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--bg); color: var(--text);
+      font-family: inherit; font-size: .95rem;
+      transition: border-color .2s;
+      resize: vertical;
+    }
+    textarea:focus, select:focus, input:focus {
+      outline: none; border-color: var(--primary);
+    }
+
+    .method-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px; margin-bottom: 0;
+    }
+    .method-btn {
+      cursor: pointer; padding: 10px 12px;
+      border: 2px solid var(--border); border-radius: 10px;
+      background: var(--surface); text-align: center;
+      font-size: .82rem; font-weight: 700; color: var(--text-soft);
+      transition: all .2s; user-select: none;
+    }
+    .method-btn:hover  { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .method-btn.active { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .method-btn span   { display: block; font-size: 1.3rem; margin-bottom: 4px; }
+
+    .gen-full { grid-column: 1/-1; }
+
+    .btn-generate {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, #6c8ef5, #a67ef5);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 1.05rem; font-weight: 800; cursor: pointer;
+      letter-spacing: .3px; transition: opacity .2s, transform .2s;
+      margin-top: 8px;
+    }
+    .btn-generate:hover { opacity: .92; transform: translateY(-2px); }
+
+    /* output */
+    #output-box {
+      display: none; margin-top: 28px;
+      border-radius: 14px; overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+    .output-header {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--primary-light); padding: 14px 18px;
+    }
+    .output-header span { font-weight: 700; color: var(--primary); font-size: .92rem; }
+    .copy-btn {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 6px 14px; font-size: .82rem; font-weight: 700;
+      cursor: pointer; transition: opacity .2s;
+    }
+    .copy-btn:hover { opacity: .85; }
+
+    #prompt-result {
+      padding: 20px; background: var(--surface);
+      font-size: .95rem; line-height: 1.75;
+      white-space: pre-wrap; word-break: break-word;
+    }
+
+    /* agent recommendation */
+    #agent-box {
+      display: none; margin-top: 16px;
+      background: var(--accent-light);
+      border: 1.5px solid #f5d090;
+      border-radius: 14px; padding: 20px 24px;
+    }
+    #agent-box h4 { font-weight: 800; color: #c47a00; margin-bottom: 8px; font-size: 1rem; }
+    #agent-box p  { font-size: .9rem; color: var(--text); }
+    #agent-name   { font-weight: 800; color: var(--primary); }
+
+    /* ── AGENTS SECTION ── */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .agent-card {
+      background: var(--surface); border-radius: var(--radius);
+      border: 1.5px solid var(--border); padding: 22px;
+      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px;
+    }
+    .agent-card .icon { font-size: 2rem; }
+    .agent-card h3    { font-size: 1rem; font-weight: 800; }
+    .agent-card p     { font-size: .86rem; color: var(--text-soft); flex: 1; }
+    .agent-card .use  {
+      font-size: .78rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 999px;
+      background: var(--primary-light); color: var(--primary);
+      align-self: flex-start;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px 24px;
+      font-size: .85rem; color: var(--text-soft);
+      border-top: 1px solid var(--border);
+    }
+
+    /* util */
+    .emoji { font-size: 1.5rem; }
+    .divider { border: none; border-top: 1.5px solid var(--border); margin: 0 0 28px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <h1>✨ Prompt.com</h1>
+  <p>Tu guía completa de métodos para crear prompts efectivos — con generador interactivo y recomendación de agentes IA</p>
+</header>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav>
+  <a href="#metodos">📚 Métodos</a>
+  <a href="#comparativa">📊 Comparativa</a>
+  <a href="#generador">🤖 Generador</a>
+  <a href="#agentes">🧠 Agentes</a>
+</nav>
+
+<main>
+
+  <!-- ══════════════ SECCIÓN: MÉTODOS ══════════════ -->
+  <section id="metodos">
+    <h2><span class="emoji">📚</span> Métodos de Prompting</h2>
+    <p class="intro">Cada método tiene sus propias características y casos de uso ideales. Conocerlos te permite extraer el máximo potencial de cualquier modelo de IA.</p>
+
+    <div class="cards">
+
+      <!-- ZERO-SHOT -->
+      <div class="card">
+        <span class="card-badge c-blue">Zero-Shot</span>
+        <h3>🎯 Zero-Shot Prompting</h3>
+        <p>Instrucción directa sin ejemplos previos. El modelo usa su conocimiento general para responder.</p>
+        <ul>
+          <li>Rápido y simple de usar</li>
+          <li>Ideal para tareas cotidianas y directas</li>
+          <li>No requiere preparación extra</li>
+          <li>Funciona bien con modelos grandes y entrenados</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Simplicidad</span>
+          <span class="tag">Rapidez</span>
+          <span class="tag">General</span>
+        </div>
+      </div>
+
+      <!-- FEW-SHOT -->
+      <div class="card">
+        <span class="card-badge c-green">Few-Shot</span>
+        <h3>📝 Few-Shot Prompting</h3>
+        <p>Se proporcionan 2-5 ejemplos del formato o comportamiento esperado antes de la solicitud real.</p>
+        <ul>
+          <li>Mayor precisión en el formato de salida</li>
+          <li>Guía al modelo con patrones concretos</li>
+          <li>Ideal para clasificación y extracción</li>
+          <li>Reduce ambigüedad en la respuesta</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Ejemplos</span>
+          <span class="tag">Precisión</span>
+          <span class="tag">Formato</span>
+        </div>
+      </div>
+
+      <!-- CHAIN-OF-THOUGHT -->
+      <div class="card">
+        <span class="card-badge c-purple">CoT</span>
+        <h3>🔗 Chain-of-Thought (CoT)</h3>
+        <p>Pide al modelo que razone paso a paso antes de dar la respuesta final. Mejora el razonamiento lógico.</p>
+        <ul>
+          <li>Excelente para problemas matemáticos y lógicos</li>
+          <li>Hace visible el proceso de razonamiento</li>
+          <li>Reduce errores en tareas complejas</li>
+          <li>Compatible con Zero-Shot ("Piensa paso a paso")</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Razonamiento</span>
+          <span class="tag">Paso a paso</span>
+          <span class="tag">Lógica</span>
+        </div>
+      </div>
+
+      <!-- ROLE PROMPTING -->
+      <div class="card">
+        <span class="card-badge c-orange">Role</span>
+        <h3>🎭 Role Prompting</h3>
+        <p>Asigna un rol o persona específica al modelo ("Eres un experto en...") para orientar el tono y enfoque.</p>
+        <ul>
+          <li>Cambia el tono y la perspectiva de la respuesta</li>
+          <li>Útil para simulaciones, tutoriales y consultoría</li>
+          <li>Genera respuestas más especializadas</li>
+          <li>Adapta el nivel de tecnicidad</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Personaje</span>
+          <span class="tag">Tono</span>
+          <span class="tag">Especialización</span>
+        </div>
+      </div>
+
+      <!-- REACT -->
+      <div class="card">
+        <span class="card-badge c-teal">ReAct</span>
+        <h3>⚡ ReAct Prompting</h3>
+        <p>Combina razonamiento (Reasoning) y acción (Acting). El modelo razona, actúa, observa y repite.</p>
+        <ul>
+          <li>Ideal para agentes con acceso a herramientas</li>
+          <li>Bucle de pensamiento → acción → observación</li>
+          <li>Permite decisiones dinámicas y adaptativas</li>
+          <li>Base de muchos agentes de IA modernos</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Agentes</span>
+          <span class="tag">Herramientas</span>
+          <span class="tag">Dinámico</span>
+        </div>
+      </div>
+
+      <!-- TREE-OF-THOUGHT -->
+      <div class="card">
+        <span class="card-badge c-pink">ToT</span>
+        <h3>🌳 Tree-of-Thought (ToT)</h3>
+        <p>El modelo explora múltiples caminos de razonamiento simultáneamente, como un árbol de decisiones.</p>
+        <ul>
+          <li>Para problemas con múltiples soluciones posibles</li>
+          <li>Evalúa y descarta rutas poco prometedoras</li>
+          <li>Mayor calidad en decisiones creativas y complejas</li>
+          <li>Más costoso en tokens pero más robusto</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Exploración</span>
+          <span class="tag">Creatividad</span>
+          <span class="tag">Decisiones</span>
+        </div>
+      </div>
+
+      <!-- STRUCTURED OUTPUT -->
+      <div class="card">
+        <span class="card-badge c-blue">Structured</span>
+        <h3>📋 Structured Output Prompting</h3>
+        <p>Define explícitamente el formato de salida: JSON, tabla, lista numerada, markdown, etc.</p>
+        <ul>
+          <li>Salidas predecibles y parseables</li>
+          <li>Esencial para integrar IA en sistemas de software</li>
+          <li>Reduce post-procesamiento manual</li>
+          <li>Se puede combinar con cualquier otro método</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">JSON</span>
+          <span class="tag">Formato</span>
+          <span class="tag">Integración</span>
+        </div>
+      </div>
+
+      <!-- CONTEXTUAL -->
+      <div class="card">
+        <span class="card-badge c-green">Contextual</span>
+        <h3>🗂️ Contextual Prompting</h3>
+        <p>Proporciona contexto rico (documentos, datos, historial) para que el modelo razone sobre información específica.</p>
+        <ul>
+          <li>Grounding con datos reales o propietarios</li>
+          <li>Base de sistemas RAG (Retrieval-Augmented Generation)</li>
+          <li>Reduce alucinaciones al anclar las respuestas</li>
+          <li>Ideal para Q&A sobre documentos</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">RAG</span>
+          <span class="tag">Contexto</span>
+          <span class="tag">Precisión</span>
+        </div>
+      </div>
+
+      <!-- SELF-CONSISTENCY -->
+      <div class="card">
+        <span class="card-badge c-purple">Self-Consist.</span>
+        <h3>🔄 Self-Consistency</h3>
+        <p>Genera múltiples respuestas independientes y selecciona la más consistente por votación o análisis.</p>
+        <ul>
+          <li>Aumenta la fiabilidad de las respuestas</li>
+          <li>Ideal cuando la precisión es crítica</li>
+          <li>Reduce variabilidad del modelo</li>
+          <li>Requiere múltiples llamadas al modelo</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Fiabilidad</span>
+          <span class="tag">Votación</span>
+          <span class="tag">Calidad</span>
+        </div>
+      </div>
+
+      <!-- META PROMPTING -->
+      <div class="card">
+        <span class="card-badge c-orange">Meta</span>
+        <h3>🧠 Meta-Prompting</h3>
+        <p>Le pides al modelo que genere o mejore sus propios prompts para una tarea dada. IA que diseña IA.</p>
+        <ul>
+          <li>Optimiza prompts automáticamente</li>
+          <li>Útil cuando no sabes cómo formular bien la tarea</li>
+          <li>Iterativo y auto-mejorable</li>
+          <li>Genera variantes de prompts para A/B testing</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Optimización</span>
+          <span class="tag">Auto-mejora</span>
+          <span class="tag">Iterativo</span>
+        </div>
+      </div>
+
+      <!-- SOCRATIC -->
+      <div class="card">
+        <span class="card-badge c-teal">Socrático</span>
+        <h3>🏛️ Prompting Socrático</h3>
+        <p>Usa preguntas guiadas en secuencia para llevar al modelo a razonar y llegar a conclusiones profundas.</p>
+        <ul>
+          <li>Ideal para exploración de ideas y aprendizaje</li>
+          <li>Fomenta el razonamiento crítico</li>
+          <li>Útil en tutoriales y coaching con IA</li>
+          <li>Descubre supuestos ocultos en el problema</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Preguntas</span>
+          <span class="tag">Exploración</span>
+          <span class="tag">Educación</span>
+        </div>
+      </div>
+
+      <!-- EMOTIONAL -->
+      <div class="card">
+        <span class="card-badge c-pink">Emocional</span>
+        <h3>💬 Emotional Prompting</h3>
+        <p>Añade contexto emocional o de importancia personal para mejorar la calidad y profundidad de las respuestas.</p>
+        <ul>
+          <li>Aumenta el esfuerzo percibido por el modelo</li>
+          <li>Frases como "Esto es muy importante para mi carrera"</li>
+          <li>Mejora la empatía y el tono de la respuesta</li>
+          <li>Útil en comunicación persuasiva y creativa</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag">Empatía</span>
+          <span class="tag">Motivación</span>
+          <span class="tag">Tono</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════ SECCIÓN: COMPARATIVA ══════════════ -->
+  <section id="comparativa">
+    <h2><span class="emoji">📊</span> Comparativa de Métodos</h2>
+    <p class="intro">Elige el método correcto según tu caso de uso, complejidad de la tarea y recursos disponibles.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Complejidad</th>
+            <th>Tokens usados</th>
+            <th>Precisión</th>
+            <th>Mejor para...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Zero-Shot</strong></td>
+            <td><span class="dot" style="background:#34c78a"></span>Baja</td>
+            <td><span class="dot" style="background:#34c78a"></span>Mínimos</td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td>Tareas simples y directas</td>
+          </tr>
+          <tr>
+            <td><strong>Few-Shot</strong></td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td><span class="dot" style="background:#f5a623"></span>Moderados</td>
+            <td><span class="dot" style="background:#34c78a"></span>Alta</td>
+            <td>Clasificación, extracción de datos</td>
+          </tr>
+          <tr>
+            <td><strong>Chain-of-Thought</strong></td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td><span class="dot" style="background:#f5a623"></span>Moderados</td>
+            <td><span class="dot" style="background:#34c78a"></span>Alta</td>
+            <td>Matemáticas, lógica, razonamiento</td>
+          </tr>
+          <tr>
+            <td><strong>Role Prompting</strong></td>
+            <td><span class="dot" style="background:#34c78a"></span>Baja</td>
+            <td><span class="dot" style="background:#34c78a"></span>Mínimos</td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td>Consultoría, escritura especializada</td>
+          </tr>
+          <tr>
+            <td><strong>ReAct</strong></td>
+            <td><span class="dot" style="background:#f56a9a"></span>Alta</td>
+            <td><span class="dot" style="background:#f56a9a"></span>Altos</td>
+            <td><span class="dot" style="background:#34c78a"></span>Muy alta</td>
+            <td>Agentes con herramientas externas</td>
+          </tr>
+          <tr>
+            <td><strong>Tree-of-Thought</strong></td>
+            <td><span class="dot" style="background:#f56a9a"></span>Muy alta</td>
+            <td><span class="dot" style="background:#f56a9a"></span>Muy altos</td>
+            <td><span class="dot" style="background:#34c78a"></span>Muy alta</td>
+            <td>Decisiones estratégicas complejas</td>
+          </tr>
+          <tr>
+            <td><strong>Structured Output</strong></td>
+            <td><span class="dot" style="background:#34c78a"></span>Baja</td>
+            <td><span class="dot" style="background:#34c78a"></span>Mínimos</td>
+            <td><span class="dot" style="background:#34c78a"></span>Alta</td>
+            <td>Integración con software, APIs</td>
+          </tr>
+          <tr>
+            <td><strong>Contextual / RAG</strong></td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td><span class="dot" style="background:#f56a9a"></span>Altos</td>
+            <td><span class="dot" style="background:#34c78a"></span>Muy alta</td>
+            <td>Q&A sobre documentos y datos</td>
+          </tr>
+          <tr>
+            <td><strong>Self-Consistency</strong></td>
+            <td><span class="dot" style="background:#f56a9a"></span>Alta</td>
+            <td><span class="dot" style="background:#f56a9a"></span>Muy altos</td>
+            <td><span class="dot" style="background:#34c78a"></span>Muy alta</td>
+            <td>Tareas críticas de alta precisión</td>
+          </tr>
+          <tr>
+            <td><strong>Meta-Prompting</strong></td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td><span class="dot" style="background:#f5a623"></span>Moderados</td>
+            <td><span class="dot" style="background:#f5a623"></span>Variable</td>
+            <td>Optimizar prompts automáticamente</td>
+          </tr>
+          <tr>
+            <td><strong>Socrático</strong></td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td><span class="dot" style="background:#f5a623"></span>Moderados</td>
+            <td><span class="dot" style="background:#f5a623"></span>Media</td>
+            <td>Aprendizaje, exploración de ideas</td>
+          </tr>
+          <tr>
+            <td><strong>Emotional</strong></td>
+            <td><span class="dot" style="background:#34c78a"></span>Baja</td>
+            <td><span class="dot" style="background:#34c78a"></span>Mínimos</td>
+            <td><span class="dot" style="background:#f5a623"></span>Media-Alta</td>
+            <td>Escritura creativa, comunicación</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══════════════ SECCIÓN: GENERADOR ══════════════ -->
+  <section id="generador">
+    <div id="generator">
+      <h2>🤖 Generador de Prompts</h2>
+      <p class="sub">Describe tu idea, selecciona un método y obtén un prompt listo para usar en cualquier IA.</p>
+      <hr class="divider">
+
+      <div class="gen-grid">
+
+        <!-- IDEA -->
+        <div class="gen-full">
+          <label for="user-idea">💡 Tu idea o tarea</label>
+          <textarea id="user-idea" rows="4" placeholder="Ej: Quiero crear un plan de marketing para una startup de comida saludable dirigida a millennials..."></textarea>
+        </div>
+
+        <!-- CONTEXTO -->
+        <div>
+          <label for="user-context">🗂️ Contexto adicional (opcional)</label>
+          <textarea id="user-context" rows="3" placeholder="Ej: Tengo un presupuesto de $5,000 USD, estoy en México, mi audiencia son mujeres de 25-35 años..."></textarea>
+        </div>
+
+        <!-- TONO -->
+        <div>
+          <label for="user-tone">🎨 Tono deseado</label>
+          <select id="user-tone">
+            <option value="profesional">Profesional</option>
+            <option value="creativo">Creativo</option>
+            <option value="técnico">Técnico / Preciso</option>
+            <option value="amigable">Amigable / Conversacional</option>
+            <option value="persuasivo">Persuasivo</option>
+            <option value="educativo">Educativo / Didáctico</option>
+          </select>
+        </div>
+
+        <!-- MÉTODO -->
+        <div class="gen-full">
+          <label>🧪 Selecciona el método de prompting</label>
+          <div class="method-selector" id="method-selector">
+            <div class="method-btn active" data-method="zero-shot"><span>🎯</span>Zero-Shot</div>
+            <div class="method-btn" data-method="few-shot"><span>📝</span>Few-Shot</div>
+            <div class="method-btn" data-method="cot"><span>🔗</span>Chain-of-Thought</div>
+            <div class="method-btn" data-method="role"><span>🎭</span>Role Prompting</div>
+            <div class="method-btn" data-method="react"><span>⚡</span>ReAct</div>
+            <div class="method-btn" data-method="tot"><span>🌳</span>Tree-of-Thought</div>
+            <div class="method-btn" data-method="structured"><span>📋</span>Structured Output</div>
+            <div class="method-btn" data-method="contextual"><span>🗂️</span>Contextual</div>
+            <div class="method-btn" data-method="meta"><span>🧠</span>Meta-Prompting</div>
+            <div class="method-btn" data-method="emotional"><span>💬</span>Emotional</div>
+          </div>
+        </div>
+
+        <!-- BOTÓN -->
+        <div class="gen-full">
+          <button class="btn-generate" onclick="generatePrompt()">✨ Generar Prompt</button>
+        </div>
+
+      </div>
+
+      <!-- OUTPUT -->
+      <div id="output-box">
+        <div class="output-header">
+          <span id="output-label">📄 Tu Prompt generado</span>
+          <button class="copy-btn" onclick="copyPrompt()">📋 Copiar</button>
+        </div>
+        <pre id="prompt-result"></pre>
+      </div>
+
+      <!-- AGENT RECOMMENDATION -->
+      <div id="agent-box">
+        <h4>🤖 Agente recomendado para tu tarea</h4>
+        <p id="agent-recommendation"></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════ SECCIÓN: AGENTES ══════════════ -->
+  <section id="agentes">
+    <h2><span class="emoji">🧠</span> Agentes de IA Recomendados</h2>
+    <p class="intro">Cada agente está especializado en un tipo de tarea. Elige el correcto para maximizar resultados.</p>
+
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="icon">✍️</div>
+        <h3>Agente de Escritura Creativa</h3>
+        <p>Ideal para crear contenido, historias, guiones, artículos de blog y copy publicitario. Excelentes con Role + Emotional prompting.</p>
+        <span class="use">ChatGPT / Claude</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">💻</div>
+        <h3>Agente de Código</h3>
+        <p>Genera, refactoriza y depura código. Funciona mejor con Chain-of-Thought y Structured Output para obtener código limpio.</p>
+        <span class="use">GitHub Copilot / Claude</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">📊</div>
+        <h3>Agente de Análisis de Datos</h3>
+        <p>Interpreta datasets, genera insights y visualizaciones. Se potencia con Contextual prompting y salidas estructuradas JSON.</p>
+        <span class="use">ChatGPT Advanced Data</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">🔍</div>
+        <h3>Agente de Investigación</h3>
+        <p>Busca, sintetiza y resume información de múltiples fuentes. Ideal con ReAct prompting para búsquedas web en tiempo real.</p>
+        <span class="use">Perplexity / Gemini</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">📣</div>
+        <h3>Agente de Marketing</h3>
+        <p>Crea estrategias, copies y campañas. Combina Role Prompting (experto en marketing) con Emotional para mensajes persuasivos.</p>
+        <span class="use">Claude / ChatGPT</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">🎓</div>
+        <h3>Agente Educativo</h3>
+        <p>Crea lecciones, quizzes y explicaciones adaptadas al nivel del alumno. Prompting Socrático para aprendizaje activo.</p>
+        <span class="use">Khan AI / Claude</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">⚖️</div>
+        <h3>Agente Legal / Técnico</h3>
+        <p>Analiza contratos, documentos y normativas. Usa Contextual prompting con documentos cargados para mayor precisión.</p>
+        <span class="use">Claude / GPT-4o</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">🖼️</div>
+        <h3>Agente de Imágenes</h3>
+        <p>Genera imágenes a partir de descripciones detalladas. Los prompts deben incluir estilo, composición, iluminación y detalle.</p>
+        <span class="use">DALL-E / Midjourney</span>
+      </div>
+      <div class="agent-card">
+        <div class="icon">🔧</div>
+        <h3>Agente Automatizador</h3>
+        <p>Automatiza flujos de trabajo complejos con acceso a herramientas. ReAct es el método base de estos agentes autónomos.</p>
+        <span class="use">AutoGPT / LangChain</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Prompt.com &mdash; Tu guía interactiva de Prompt Engineering &nbsp;|&nbsp; Construido con ❤️ para la comunidad IA</p>
+</footer>
+
+<script>
+  // ── Method selector ──
+  document.querySelectorAll('.method-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ── Generators per method ──
+  const generators = {
+    'zero-shot': (idea, ctx, tone) => `
+Responde con un tono ${tone}.
+
+${idea}${ctx ? `\n\nContexto relevante:\n${ctx}` : ''}
+
+Proporciona una respuesta directa, clara y completa.`.trim(),
+
+    'few-shot': (idea, ctx, tone) => `
+A continuación te muestro ejemplos del formato que necesito:
+
+Ejemplo 1:
+Entrada: "Crea un eslogan para una app de meditación"
+Salida: "Encuentra tu calma en 5 minutos al día — MindEase"
+
+Ejemplo 2:
+Entrada: "Crea un eslogan para una app de fitness"
+Salida: "Cada repetición cuenta. Tu mejor versión te espera — FitPro"
+
+Ahora aplica el mismo formato para la siguiente solicitud (tono ${tone}):
+Entrada: "${idea}"${ctx ? `\n\nContexto adicional: ${ctx}` : ''}
+Salida:`.trim(),
+
+    'cot': (idea, ctx, tone) => `
+Necesito que pienses paso a paso antes de responder. Muestra tu razonamiento completo.
+
+Tarea: ${idea}
+${ctx ? `Contexto: ${ctx}` : ''}
+Tono deseado: ${tone}
+
+Por favor sigue este proceso:
+1. Analiza y descompone la tarea en partes
+2. Considera los factores más importantes
+3. Desarrolla tu razonamiento lógico
+4. Llega a una conclusión fundamentada
+5. Presenta la respuesta final clara y estructurada`.trim(),
+
+    'role': (idea, ctx, tone) => `
+Eres un experto senior especializado en el área más relevante para la siguiente tarea. Tienes más de 15 años de experiencia y has trabajado con los mejores equipos del mundo. Tu estilo de comunicación es ${tone}.
+
+Tarea que debes resolver como experto:
+${idea}
+
+${ctx ? `Información de contexto disponible:\n${ctx}\n` : ''}
+Responde desde tu experiencia y conocimiento especializado, con recomendaciones concretas y accionables.`.trim(),
+
+    'react': (idea, ctx, tone) => `
+Usa el siguiente formato de razonamiento iterativo para resolver la tarea:
+
+Tarea: ${idea}
+${ctx ? `Contexto: ${ctx}` : ''}
+Tono: ${tone}
+
+Proceso:
+Pensamiento 1: [Analiza qué necesitas saber o hacer primero]
+Acción 1: [Define la primera acción concreta]
+Observación 1: [¿Qué resultado obtendrías de esa acción?]
+
+Pensamiento 2: [Con base en lo anterior, ¿qué sigue?]
+Acción 2: [Segunda acción]
+Observación 2: [Resultado esperado]
+
+Pensamiento 3: [Reflexión final]
+Acción 3: [Conclusión o entrega final]
+Respuesta Final: [Respuesta completa y estructurada]`.trim(),
+
+    'tot': (idea, ctx, tone) => `
+Explora TRES enfoques diferentes para resolver esta tarea. Evalúa cada uno y selecciona el mejor.
+
+Tarea: ${idea}
+${ctx ? `Contexto: ${ctx}` : ''}
+Tono: ${tone}
+
+━━ RAMA 1: Enfoque Conservador/Tradicional ━━
+[Desarrolla este enfoque completamente]
+Ventajas: | Desventajas: | Viabilidad (1-10):
+
+━━ RAMA 2: Enfoque Innovador/Creativo ━━
+[Desarrolla este enfoque completamente]
+Ventajas: | Desventajas: | Viabilidad (1-10):
+
+━━ RAMA 3: Enfoque Híbrido/Equilibrado ━━
+[Desarrolla este enfoque completamente]
+Ventajas: | Desventajas: | Viabilidad (1-10):
+
+━━ DECISIÓN FINAL ━━
+Selecciona el mejor enfoque y explica por qué, luego presenta la solución completa.`.trim(),
+
+    'structured': (idea, ctx, tone) => `
+Completa la siguiente tarea y devuelve la respuesta ÚNICAMENTE en el formato JSON especificado. Tono: ${tone}.
+
+Tarea: ${idea}
+${ctx ? `Contexto: ${ctx}` : ''}
+
+Devuelve tu respuesta en este formato JSON exacto:
+{
+  "titulo": "título descriptivo de la respuesta",
+  "resumen": "resumen ejecutivo en 2-3 oraciones",
+  "puntos_clave": ["punto 1", "punto 2", "punto 3"],
+  "pasos_de_accion": [
+    {"paso": 1, "descripcion": "...", "prioridad": "alta/media/baja"},
+    {"paso": 2, "descripcion": "...", "prioridad": "alta/media/baja"}
+  ],
+  "recursos_necesarios": ["recurso 1", "recurso 2"],
+  "metricas_de_exito": ["métrica 1", "métrica 2"],
+  "advertencias": ["advertencia o consideración importante"]
+}`.trim(),
+
+    'contextual': (idea, ctx, tone) => `
+CONTEXTO BASE (usa ÚNICAMENTE esta información para responder):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${ctx || 'No se proporcionó contexto adicional. Usa tu conocimiento general sobre el tema.'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PREGUNTA / TAREA (basándote SOLO en el contexto anterior):
+${idea}
+
+Instrucciones:
+- Responde únicamente con información del contexto proporcionado
+- Si el contexto no tiene suficiente información, indícalo claramente
+- Tono: ${tone}
+- Cita las partes del contexto relevantes en tu respuesta`.trim(),
+
+    'meta': (idea, ctx, tone) => `
+Tu tarea es actuar como un experto en Prompt Engineering. Genera 3 versiones optimizadas del siguiente prompt para obtener los mejores resultados de un modelo de IA.
+
+Tarea original del usuario: ${idea}
+${ctx ? `Contexto: ${ctx}` : ''}
+Tono deseado: ${tone}
+
+Para cada versión de prompt que generes, incluye:
+1. El prompt completo y listo para usar
+2. Por qué este prompt es efectivo
+3. En qué situaciones funciona mejor
+
+Versión 1 — Prompt Directo y Eficiente:
+[...]
+
+Versión 2 — Prompt Detallado con Contexto Rico:
+[...]
+
+Versión 3 — Prompt Creativo con Role y Formato Definido:
+[...]
+
+Al final, indica cuál de los tres recomiendas y por qué.`.trim(),
+
+    'emotional': (idea, ctx, tone) => `
+Esto es muy importante para mí y necesito tu mejor esfuerzo. Me esforcé mucho preparando esta solicitud y confío en que puedes ayudarme de forma excepcional.
+
+Mi solicitud es la siguiente, y necesito una respuesta con tono ${tone} que realmente marque la diferencia:
+
+${idea}
+
+${ctx ? `Contexto que considero importante que sepas:\n${ctx}\n` : ''}
+Por favor, toma el tiempo necesario para dar una respuesta profunda, cuidada y verdaderamente útil. Esto podría cambiar el rumbo de un proyecto importante. Muchas gracias.`.trim(),
+  };
+
+  // ── Agent recommendations ──
+  const agentRecs = {
+    'zero-shot':   { name: '💬 ChatGPT (GPT-4o) o Claude Sonnet', reason: 'para tareas directas y cotidianas con respuestas rápidas y precisas.' },
+    'few-shot':    { name: '🤖 Claude 3.5 o GPT-4o', reason: 'excelentes siguiendo patrones de ejemplos con alta fidelidad al formato.' },
+    'cot':         { name: '🧠 Claude Sonnet o o1 de OpenAI', reason: 'modelos especializados en razonamiento paso a paso y lógica compleja.' },
+    'role':        { name: '🎭 ChatGPT o Claude', reason: 'ambos responden excelentemente a roles y adoptan perspectivas especializadas.' },
+    'react':       { name: '⚡ LangChain Agent o AutoGPT', reason: 'diseñados nativamente para el bucle Razonamiento-Acción-Observación con herramientas.' },
+    'tot':         { name: '🌳 Claude Opus o GPT-4o', reason: 'modelos con gran ventana de contexto para explorar múltiples ramas de razonamiento.' },
+    'structured':  { name: '📋 GPT-4o con Function Calling', reason: 'ofrece salida JSON garantizada vía function calling y structured outputs.' },
+    'contextual':  { name: '🔍 Perplexity AI o Claude con RAG', reason: 'especializados en anclar respuestas a documentos y fuentes de conocimiento.' },
+    'meta':        { name: '🧠 Claude Opus o GPT-4o', reason: 'excelentes optimizando y auto-mejorando prompts por su profundo entendimiento del lenguaje.' },
+    'emotional':   { name: '💬 Claude (Anthropic)', reason: 'diseñado con principios de empatía, responde con alta sensibilidad al contexto emocional.' },
+  };
+
+  function generatePrompt() {
+    const idea = document.getElementById('user-idea').value.trim();
+    if (!idea) {
+      alert('Por favor describe tu idea o tarea primero.');
+      return;
+    }
+    const ctx    = document.getElementById('user-context').value.trim();
+    const tone   = document.getElementById('user-tone').value;
+    const method = document.querySelector('.method-btn.active')?.dataset.method || 'zero-shot';
+
+    const result = generators[method](idea, ctx, tone);
+
+    // Show prompt
+    document.getElementById('prompt-result').textContent = result;
+    const methodName = document.querySelector('.method-btn.active')?.textContent.trim();
+    document.getElementById('output-label').textContent = `📄 Prompt generado — Método: ${methodName}`;
+    document.getElementById('output-box').style.display = 'block';
+
+    // Show agent
+    const rec = agentRecs[method];
+    document.getElementById('agent-recommendation').innerHTML =
+      `Te recomendamos usar <span id="agent-name">${rec.name}</span>, ${rec.reason}`;
+    document.getElementById('agent-box').style.display = 'block';
+
+    // Scroll to output
+    document.getElementById('output-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function copyPrompt() {
+    const text = document.getElementById('prompt-result').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✅ Copiado!';
+      setTimeout(() => btn.textContent = '📋 Copiar', 2000);
+    });
+  }
+</script>
+</body>
+</html>
