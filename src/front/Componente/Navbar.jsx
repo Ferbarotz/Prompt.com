@@ -15,31 +15,37 @@ const Navbar = () => {
       fontWeight: 800,
       letterSpacing: "-0.5px",
     },
-    links: {
-      display: "flex",
-      gap: "24px",
-      listStyle: "none",
-      margin: 0,
-      padding: 0,
-    },
-    link: {
-      color: "#ffffff",
-      textDecoration: "none",
+    button: {
+      background: "#ffffff",
+      color: "#6c8ef5",
+      border: "none",
+      borderRadius: "999px",
+      padding: "10px 24px",
       fontSize: "0.95rem",
-      fontWeight: 600,
-      opacity: 0.9,
+      fontWeight: 700,
+      cursor: "pointer",
+      fontFamily: "inherit",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+      transition: "transform 0.15s ease, opacity 0.15s ease",
     },
   };
 
   return (
     <nav style={styles.nav}>
       <span style={styles.brand}>✨ Prompt.com</span>
-      <ul style={styles.links}>
-        <li><a href="#metodos" style={styles.link}>Métodos</a></li>
-        <li><a href="#comparativa" style={styles.link}>Comparativa</a></li>
-        <li><a href="#generador" style={styles.link}>Generador</a></li>
-        <li><a href="#agentes" style={styles.link}>Agentes</a></li>
-      </ul>
+      <button
+        style={styles.button}
+        onMouseOver={(e) => {
+          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.opacity = "0.92";
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.opacity = "1";
+        }}
+      >
+        Prompt
+      </button>
     </nav>
   );
 };

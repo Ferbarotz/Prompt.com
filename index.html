@@ -4,23 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prompt.com</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-    p {
-      font-size: 2rem;
-    }
-  </style>
 </head>
 <body>
-  <p>prompt.com</p>
+  <!--
+    Punto de entrada (entry point) de la SPA de React.
+    El componente principal <Home /> se monta dentro de este div#root.
+
+    El componente visual principal es: src/front/Home/Home.jsx
+    El montaje de React se realiza en:  src/front/main.jsx
+
+    NOTA: Este proyecto todavía no tiene Vite/React configurado con package.json.
+    Cuando se configure el bundler (Vite), este index.html cargará la app
+    a través del script de módulo de abajo. Mientras tanto, los componentes
+    .jsx ya están estructurados y listos para integrarse.
+  -->
+  <div id="root"></div>
+  <script type="module" src="/src/front/main.jsx"></script>
 </body>
 </html>
