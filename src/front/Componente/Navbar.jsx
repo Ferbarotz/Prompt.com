@@ -1,53 +1,28 @@
 const Navbar = () => {
-  const styles = {
-    nav: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: "16px 32px",
-      background: "linear-gradient(135deg, #6c8ef5 0%, #a67ef5 100%)",
-      color: "#ffffff",
-      fontFamily: "'Segoe UI', system-ui, sans-serif",
-      boxShadow: "0 2px 12px rgba(0, 0, 0, 0.12)",
-    },
-    brand: {
-      fontSize: "1.4rem",
-      fontWeight: 800,
-      letterSpacing: "-0.5px",
-    },
-    button: {
-      background: "#ffffff",
-      color: "#6c8ef5",
-      border: "none",
-      borderRadius: "999px",
-      padding: "10px 24px",
-      fontSize: "0.95rem",
-      fontWeight: 700,
-      cursor: "pointer",
-      fontFamily: "inherit",
-      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-      transition: "transform 0.15s ease, opacity 0.15s ease",
-    },
-  };
-
   return (
-    <nav style={styles.nav}>
-      <span style={styles.brand}>✨ Prompt.com</span>
-      <button
-        style={styles.button}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = "translateY(-2px)";
-          e.currentTarget.style.opacity = "0.92";
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.opacity = "1";
-        }}
-      >
+    <nav style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '1rem 2rem',
+      backgroundColor: '#1a1a1a',
+      borderBottom: '1px solid #333'
+    }}>
+      <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>Prompt.com</span>
+      <button style={{
+        backgroundColor: '#6366f1',
+        color: '#fff',
+        border: 'none',
+        padding: '0.5rem 1.5rem',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontSize: '1rem',
+        fontWeight: 'bold'
+      }}>
         Prompt
       </button>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
