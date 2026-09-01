@@ -1,4 +1,4 @@
-import Navbar from "../Componente/Navbar.jsx";
+import Navbar from "../../Componente/Navbar";
 
 const Home = () => {
   const styles = {
