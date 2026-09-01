@@ -95,12 +95,33 @@
     }
     .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
     .card p  { font-size: .9rem; color: var(--text-soft); }
+    .card p.desc { font-size: .92rem; color: var(--text); margin-bottom: 4px; }
+
+    /* subtítulos internos de cada método */
+    .card-sub {
+      font-size: .78rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .4px; color: var(--primary);
+      margin-top: 16px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
 
     .card ul {
-      margin-top: 12px; padding-left: 18px;
+      margin-top: 4px; padding-left: 18px;
       font-size: .88rem; color: var(--text-soft);
     }
-    .card ul li { margin-bottom: 4px; }
+    .card ul li { margin-bottom: 5px; }
+
+    .card .when {
+      font-size: .88rem; color: var(--text-soft); margin-top: 4px;
+    }
+
+    .card .example {
+      margin-top: 6px; padding: 12px 14px;
+      background: var(--surface2); border-radius: 10px;
+      border-left: 3px solid var(--primary);
+      font-size: .85rem; color: var(--text);
+      font-style: italic; line-height: 1.55;
+    }
 
     .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
     .tag {
@@ -283,7 +304,7 @@
   <!-- ══════════════ SECCIÓN: MÉTODOS ══════════════ -->
   <section id="metodos">
     <h2><span class="emoji">📚</span> Métodos de Prompting</h2>
-    <p class="intro">Cada método tiene sus propias características y casos de uso ideales. Conocerlos te permite extraer el máximo potencial de cualquier modelo de IA.</p>
+    <p class="intro">Cada método tiene sus propias características y casos de uso ideales. Aquí encontrarás la información completa de cada uno —qué es, sus ventajas, cuándo conviene usarlo y un ejemplo práctico— toda visible de un vistazo, sin necesidad de desplegar nada.</p>
 
     <div class="cards">
 
@@ -291,13 +312,18 @@
       <div class="card">
         <span class="card-badge c-blue">Zero-Shot</span>
         <h3>🎯 Zero-Shot Prompting</h3>
-        <p>Instrucción directa sin ejemplos previos. El modelo usa su conocimiento general para responder.</p>
+        <p class="desc">Consiste en pedirle al modelo que realice una tarea directamente, con una simple instrucción y <strong>sin darle ningún ejemplo previo</strong>. El modelo se apoya únicamente en el conocimiento que adquirió durante su entrenamiento para interpretar la petición y responder. Es la forma más natural y habitual de interactuar con una IA.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Rápido y simple de usar</li>
-          <li>Ideal para tareas cotidianas y directas</li>
-          <li>No requiere preparación extra</li>
-          <li>Funciona bien con modelos grandes y entrenados</li>
+          <li>Rápido y sencillo: escribes lo que quieres y listo</li>
+          <li>No requiere preparar ejemplos ni contexto adicional</li>
+          <li>Consume muy pocos tokens, por lo que es económico</li>
+          <li>Funciona muy bien en modelos grandes y bien entrenados</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">En tareas cotidianas, generales y bien definidas donde el modelo ya domina el tema: resumir un texto, traducir, redactar un correo o responder una pregunta común.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Explica qué es la fotosíntesis en un lenguaje sencillo y en tres frases."</div>
         <div class="tag-row">
           <span class="tag">Simplicidad</span>
           <span class="tag">Rapidez</span>
@@ -309,13 +335,18 @@
       <div class="card">
         <span class="card-badge c-green">Few-Shot</span>
         <h3>📝 Few-Shot Prompting</h3>
-        <p>Se proporcionan 2-5 ejemplos del formato o comportamiento esperado antes de la solicitud real.</p>
+        <p class="desc">Antes de hacer tu petición real, le muestras al modelo <strong>2 a 5 ejemplos resueltos</strong> del tipo de entrada y la salida que esperas. Con estos ejemplos el modelo "aprende" el patrón, el estilo y el formato sobre la marcha, y los replica en tu solicitud. Es como enseñar con muestras en lugar de solo describir.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Mayor precisión en el formato de salida</li>
-          <li>Guía al modelo con patrones concretos</li>
-          <li>Ideal para clasificación y extracción</li>
-          <li>Reduce ambigüedad en la respuesta</li>
+          <li>Mucha más precisión y consistencia en el formato de salida</li>
+          <li>Guía al modelo con patrones concretos en vez de descripciones</li>
+          <li>Reduce la ambigüedad y las interpretaciones erróneas</li>
+          <li>Ideal para clasificación, extracción y tareas repetitivas</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">Cuando necesitas que las respuestas sigan siempre un mismo formato o estilo, o cuando el Zero-Shot no acierta con lo que quieres. Perfecto para etiquetar datos o generar salidas homogéneas.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Reseña: 'Me encantó' → Positiva. Reseña: 'Llegó roto' → Negativa. Reseña: 'Cumple lo justo' → ?"</div>
         <div class="tag-row">
           <span class="tag">Ejemplos</span>
           <span class="tag">Precisión</span>
@@ -327,13 +358,18 @@
       <div class="card">
         <span class="card-badge c-purple">CoT</span>
         <h3>🔗 Chain-of-Thought (CoT)</h3>
-        <p>Pide al modelo que razone paso a paso antes de dar la respuesta final. Mejora el razonamiento lógico.</p>
+        <p class="desc">Le pides explícitamente al modelo que <strong>razone paso a paso</strong> y muestre su proceso de pensamiento antes de dar la respuesta final. En lugar de saltar directo a la conclusión, desglosa el problema en pasos intermedios, lo que reduce errores y mejora notablemente el rendimiento en tareas que requieren lógica.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Excelente para problemas matemáticos y lógicos</li>
-          <li>Hace visible el proceso de razonamiento</li>
-          <li>Reduce errores en tareas complejas</li>
-          <li>Compatible con Zero-Shot ("Piensa paso a paso")</li>
+          <li>Excelente para problemas matemáticos, lógicos y de varios pasos</li>
+          <li>Hace visible el razonamiento, por lo que es fácil detectar fallos</li>
+          <li>Reduce los errores por conclusiones apresuradas</li>
+          <li>Se activa fácilmente añadiendo "piensa paso a paso"</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">En cualquier tarea que implique cálculo, deducción o decisiones con varios pasos, donde una respuesta directa suele fallar y ver el proceso ayuda a confiar en el resultado.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Si un tren recorre 300 km en 2,5 horas, ¿cuál es su velocidad media? Razónalo paso a paso antes de responder."</div>
         <div class="tag-row">
           <span class="tag">Razonamiento</span>
           <span class="tag">Paso a paso</span>
@@ -345,13 +381,18 @@
       <div class="card">
         <span class="card-badge c-orange">Role</span>
         <h3>🎭 Role Prompting</h3>
-        <p>Asigna un rol o persona específica al modelo ("Eres un experto en...") para orientar el tono y enfoque.</p>
+        <p class="desc">Le asignas al modelo un <strong>rol o personaje concreto</strong> ("Actúa como un abogado experto en...", "Eres un profesor de física...") para orientar su tono, vocabulario y punto de vista. Al adoptar ese rol, el modelo filtra su conocimiento desde esa perspectiva y ofrece respuestas más enfocadas y especializadas.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Cambia el tono y la perspectiva de la respuesta</li>
-          <li>Útil para simulaciones, tutoriales y consultoría</li>
-          <li>Genera respuestas más especializadas</li>
-          <li>Adapta el nivel de tecnicidad</li>
+          <li>Cambia el tono y la perspectiva según el experto elegido</li>
+          <li>Genera respuestas más especializadas y con mayor autoridad</li>
+          <li>Adapta el nivel técnico al público objetivo</li>
+          <li>Muy útil en simulaciones, tutorías y consultoría</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">Cuando quieres una respuesta desde un punto de vista profesional específico o con un tono determinado: asesoría experta, entrevistas simuladas o explicaciones adaptadas a un nivel concreto.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Actúa como un nutricionista con 20 años de experiencia y diseña un plan de comidas semanal para una persona vegetariana."</div>
         <div class="tag-row">
           <span class="tag">Personaje</span>
           <span class="tag">Tono</span>
@@ -363,13 +404,18 @@
       <div class="card">
         <span class="card-badge c-teal">ReAct</span>
         <h3>⚡ ReAct Prompting</h3>
-        <p>Combina razonamiento (Reasoning) y acción (Acting). El modelo razona, actúa, observa y repite.</p>
+        <p class="desc">ReAct (de <em>Reasoning + Acting</em>) combina <strong>razonamiento y acción en un bucle</strong>: el modelo piensa qué hacer, ejecuta una acción (por ejemplo, buscar en la web o usar una herramienta), observa el resultado y vuelve a razonar con esa nueva información. Repite el ciclo hasta resolver la tarea, tomando decisiones sobre la marcha.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Ideal para agentes con acceso a herramientas</li>
-          <li>Bucle de pensamiento → acción → observación</li>
-          <li>Permite decisiones dinámicas y adaptativas</li>
-          <li>Base de muchos agentes de IA modernos</li>
+          <li>Ideal para agentes con acceso a herramientas externas</li>
+          <li>Sigue el bucle pensamiento → acción → observación</li>
+          <li>Permite decisiones dinámicas y adaptativas en tiempo real</li>
+          <li>Es la base de muchos agentes de IA autónomos modernos</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">En tareas que requieren consultar fuentes externas o actuar sobre el entorno: búsquedas web, cálculos con herramientas, consultas a bases de datos o flujos donde cada paso depende del resultado anterior.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Necesito saber el clima en Madrid mañana. Pensamiento: debo consultar el tiempo → Acción: buscar previsión → Observación: usar el dato para recomendar ropa."</div>
         <div class="tag-row">
           <span class="tag">Agentes</span>
           <span class="tag">Herramientas</span>
@@ -381,13 +427,18 @@
       <div class="card">
         <span class="card-badge c-pink">ToT</span>
         <h3>🌳 Tree-of-Thought (ToT)</h3>
-        <p>El modelo explora múltiples caminos de razonamiento simultáneamente, como un árbol de decisiones.</p>
+        <p class="desc">Es una evolución del Chain-of-Thought: en lugar de seguir una única línea de razonamiento, el modelo <strong>explora varias ramas de pensamiento en paralelo</strong>, como un árbol de decisiones. Evalúa cada rama, descarta las menos prometedoras y profundiza en las mejores, hasta elegir la solución más sólida.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Para problemas con múltiples soluciones posibles</li>
-          <li>Evalúa y descarta rutas poco prometedoras</li>
+          <li>Ideal para problemas con múltiples soluciones posibles</li>
+          <li>Evalúa y descarta rutas poco prometedoras automáticamente</li>
           <li>Mayor calidad en decisiones creativas y complejas</li>
-          <li>Más costoso en tokens pero más robusto</li>
+          <li>Más robusto, aunque consume más tokens y tiempo</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">En decisiones estratégicas, planificación o retos creativos donde conviene comparar varias alternativas antes de decidir, y donde una sola línea de razonamiento se quedaría corta.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Propón tres estrategias distintas para lanzar un producto, evalúa las ventajas y riesgos de cada una y recomienda la mejor."</div>
         <div class="tag-row">
           <span class="tag">Exploración</span>
           <span class="tag">Creatividad</span>
@@ -399,13 +450,18 @@
       <div class="card">
         <span class="card-badge c-blue">Structured</span>
         <h3>📋 Structured Output Prompting</h3>
-        <p>Define explícitamente el formato de salida: JSON, tabla, lista numerada, markdown, etc.</p>
+        <p class="desc">Consiste en <strong>definir de forma explícita el formato exacto de la respuesta</strong>: JSON, tabla, lista numerada, XML, markdown, etc. Al fijar la estructura, obtienes salidas predecibles y fáciles de procesar automáticamente por otro programa, sin texto extra que estorbe.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Salidas predecibles y parseables</li>
-          <li>Esencial para integrar IA en sistemas de software</li>
-          <li>Reduce post-procesamiento manual</li>
+          <li>Salidas predecibles y directamente procesables por software</li>
+          <li>Esencial para integrar la IA en aplicaciones y APIs</li>
+          <li>Reduce (o elimina) el post-procesamiento manual</li>
           <li>Se puede combinar con cualquier otro método</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">Siempre que la respuesta vaya a ser consumida por otro sistema o cuando necesitas datos ordenados: generar configuraciones, extraer campos, poblar bases de datos o alimentar una interfaz.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Extrae el nombre, el email y el teléfono de este texto y devuélvelos únicamente en formato JSON con esas tres claves."</div>
         <div class="tag-row">
           <span class="tag">JSON</span>
           <span class="tag">Formato</span>
@@ -417,13 +473,18 @@
       <div class="card">
         <span class="card-badge c-green">Contextual</span>
         <h3>🗂️ Contextual Prompting</h3>
-        <p>Proporciona contexto rico (documentos, datos, historial) para que el modelo razone sobre información específica.</p>
+        <p class="desc">Le proporcionas al modelo <strong>contexto rico y específico</strong> —documentos, datos, fragmentos o historial— para que base su respuesta en esa información concreta y no solo en su conocimiento general. Al "anclar" la respuesta a fuentes reales, se reducen las invenciones (alucinaciones). Es la base de los sistemas RAG.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Grounding con datos reales o propietarios</li>
-          <li>Base de sistemas RAG (Retrieval-Augmented Generation)</li>
-          <li>Reduce alucinaciones al anclar las respuestas</li>
-          <li>Ideal para Q&A sobre documentos</li>
+          <li>Ancla las respuestas a datos reales o propietarios</li>
+          <li>Es el fundamento de los sistemas RAG (recuperación + generación)</li>
+          <li>Reduce las alucinaciones y aumenta la fiabilidad</li>
+          <li>Ideal para preguntas y respuestas sobre documentos</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">Cuando la respuesta debe basarse en información que el modelo no conoce: manuales internos, informes, contratos o datos actualizados que le proporcionas dentro del propio prompt.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Basándote únicamente en el siguiente informe [texto pegado], responde: ¿cuáles fueron los ingresos del segundo trimestre?"</div>
         <div class="tag-row">
           <span class="tag">RAG</span>
           <span class="tag">Contexto</span>
@@ -435,13 +496,18 @@
       <div class="card">
         <span class="card-badge c-purple">Self-Consist.</span>
         <h3>🔄 Self-Consistency</h3>
-        <p>Genera múltiples respuestas independientes y selecciona la más consistente por votación o análisis.</p>
+        <p class="desc">En lugar de quedarte con una sola respuesta, haces que el modelo <strong>genere varias respuestas independientes</strong> a la misma pregunta (normalmente con razonamiento) y luego eliges la más repetida o coherente entre todas, como una votación. Al promediar varios intentos, se filtra el ruido y se llega a un resultado más fiable.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Aumenta la fiabilidad de las respuestas</li>
+          <li>Aumenta notablemente la fiabilidad de las respuestas</li>
+          <li>Reduce la variabilidad y los errores puntuales del modelo</li>
           <li>Ideal cuando la precisión es crítica</li>
-          <li>Reduce variabilidad del modelo</li>
-          <li>Requiere múltiples llamadas al modelo</li>
+          <li>Se combina muy bien con Chain-of-Thought</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">En problemas de razonamiento o cálculo donde un fallo es costoso y merece la pena gastar más recursos (varias llamadas) a cambio de una respuesta más segura y consistente.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Resuelve este problema de lógica cinco veces por caminos distintos y dime qué respuesta se repite más para tomarla como definitiva."</div>
         <div class="tag-row">
           <span class="tag">Fiabilidad</span>
           <span class="tag">Votación</span>
@@ -453,13 +519,18 @@
       <div class="card">
         <span class="card-badge c-orange">Meta</span>
         <h3>🧠 Meta-Prompting</h3>
-        <p>Le pides al modelo que genere o mejore sus propios prompts para una tarea dada. IA que diseña IA.</p>
+        <p class="desc">Es <strong>usar la IA para crear o mejorar sus propios prompts</strong>: en vez de escribir tú la instrucción perfecta, le pides al modelo que la redacte o la optimice por ti. Dicho de otro modo, es "IA que diseña prompts para IA", muy útil cuando no tienes claro cómo formular bien lo que necesitas.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Optimiza prompts automáticamente</li>
-          <li>Útil cuando no sabes cómo formular bien la tarea</li>
-          <li>Iterativo y auto-mejorable</li>
-          <li>Genera variantes de prompts para A/B testing</li>
+          <li>Optimiza y pule prompts de forma automática</li>
+          <li>Perfecto cuando no sabes cómo plantear bien la tarea</li>
+          <li>Es iterativo: puedes refinar el prompt una y otra vez</li>
+          <li>Genera variantes para comparar (A/B testing)</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">Cuando tus resultados no son buenos y sospechas que el problema es cómo estás preguntando, o cuando quieres una instrucción profesional para una tarea compleja sin escribirla desde cero.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Eres experto en prompt engineering. Mejora este prompt para obtener mejores resultados: 'escríbeme un post sobre marketing'."</div>
         <div class="tag-row">
           <span class="tag">Optimización</span>
           <span class="tag">Auto-mejora</span>
@@ -471,13 +542,18 @@
       <div class="card">
         <span class="card-badge c-teal">Socrático</span>
         <h3>🏛️ Prompting Socrático</h3>
-        <p>Usa preguntas guiadas en secuencia para llevar al modelo a razonar y llegar a conclusiones profundas.</p>
+        <p class="desc">Inspirado en el método de Sócrates, consiste en <strong>guiar al modelo (o que él te guíe a ti) mediante una secuencia de preguntas</strong> en lugar de pedir una respuesta directa. Cada pregunta profundiza en la anterior, sacando a la luz supuestos ocultos y construyendo el razonamiento poco a poco hasta una conclusión meditada.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Ideal para exploración de ideas y aprendizaje</li>
-          <li>Fomenta el razonamiento crítico</li>
-          <li>Útil en tutoriales y coaching con IA</li>
-          <li>Descubre supuestos ocultos en el problema</li>
+          <li>Ideal para explorar ideas y aprender en profundidad</li>
+          <li>Fomenta el pensamiento crítico y cuestiona supuestos</li>
+          <li>Muy útil en tutorías y coaching con IA</li>
+          <li>Ayuda a entender el "porqué", no solo el "qué"</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">Cuando quieres aprender un tema a fondo, cuestionar una idea desde varios ángulos o que la IA te haga pensar en vez de darte la respuesta ya masticada.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Quiero entender qué es la inflación. En vez de explicármelo, hazme preguntas guiadas que me lleven a comprenderlo por mí mismo."</div>
         <div class="tag-row">
           <span class="tag">Preguntas</span>
           <span class="tag">Exploración</span>
@@ -489,13 +565,18 @@
       <div class="card">
         <span class="card-badge c-pink">Emocional</span>
         <h3>💬 Emotional Prompting</h3>
-        <p>Añade contexto emocional o de importancia personal para mejorar la calidad y profundidad de las respuestas.</p>
+        <p class="desc">Consiste en <strong>añadir carga emocional o un motivo de importancia personal</strong> a la petición ("esto es muy importante para mi carrera", "por favor, esfuérzate al máximo"). Diversos estudios muestran que estas señales emocionales pueden empujar al modelo a dedicar más "esfuerzo" y a dar respuestas más cuidadas y empáticas.</p>
+        <h4 class="card-sub">✅ Ventajas</h4>
         <ul>
-          <li>Aumenta el esfuerzo percibido por el modelo</li>
-          <li>Frases como "Esto es muy importante para mi carrera"</li>
-          <li>Mejora la empatía y el tono de la respuesta</li>
+          <li>Puede aumentar el esfuerzo y el detalle de la respuesta</li>
+          <li>Mejora la empatía y el tono cuando se necesita cercanía</li>
+          <li>Fácil de aplicar: solo añades una frase de contexto</li>
           <li>Útil en comunicación persuasiva y creativa</li>
         </ul>
+        <h4 class="card-sub">💡 Cuándo usarlo</h4>
+        <p class="when">En textos que requieren sensibilidad o motivación, o cuando quieres exprimir un poco más de calidad y dedicación del modelo en una tarea que te importa de verdad.</p>
+        <h4 class="card-sub">✍️ Ejemplo</h4>
+        <div class="example">"Este discurso es muy importante para mí, es para la boda de mi hermano. Por favor, dedícale todo tu esfuerzo y escríbelo con emoción."</div>
         <div class="tag-row">
           <span class="tag">Empatía</span>
           <span class="tag">Motivación</span>
