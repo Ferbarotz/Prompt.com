@@ -84,9 +84,9 @@ const Home = () => {
               className="card-body"
               style={{
                 padding: '1.2rem',
-                display: 'grid',
-                gap: '1rem',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))'
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem'
               }}
             >
               {sections.map((section) => (
