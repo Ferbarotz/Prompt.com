@@ -1,4 +1,7 @@
 import Navbar from '../../Componente/Navbar'
+import promptQueEsImg from '../../assets/home/prompt-que-es.png'
+import promptParaQueSirveImg from '../../assets/home/prompt-para-que-sirve.png'
+import promptBuenasPracticasImg from '../../assets/home/prompt-buenas-practicas.png'
 
 const backgroundImageUrl =
   'https://images.unsplash.com/photo-1756908992154-c8a89f5e517f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8'
@@ -15,7 +18,9 @@ const sections = [
     ],
     example:
       'Ejemplo breve: “Actúa como analista de marketing B2B. Contexto: campaña SaaS para pymes en España. Entrada: métricas Q3 (CTR 1,8%, CPC 0,62€). Salida: 5 hipótesis priorizadas en tabla con impacto y esfuerzo”.',
-    accent: '#06b6d4'
+    accent: '#06b6d4',
+    image: promptQueEsImg,
+    imageAlt: 'Interfaz de IA con caja de prompt y conversación de chatbot'
   },
   {
     title: '¿Para qué sirve un prompt?',
@@ -29,7 +34,9 @@ const sections = [
     ],
     example:
       'Ejemplo práctico: con un prompt bien definido puedes pedir “resume este contrato en 8 riesgos legales, cita cláusulas y sugiere mitigación en viñetas”, en lugar de obtener un resumen superficial.',
-    accent: '#10b981'
+    accent: '#10b981',
+    image: promptParaQueSirveImg,
+    imageAlt: 'Aplicaciones de IA para generación de texto, código y análisis'
   },
   {
     title: 'Claves para un buen prompt',
@@ -44,7 +51,9 @@ const sections = [
     ],
     example:
       'Checklist rápido: rol + objetivo + contexto + datos + restricciones + formato + ejemplo + criterio de validación.',
-    accent: '#f59e0b'
+    accent: '#f59e0b',
+    image: promptBuenasPracticasImg,
+    imageAlt: 'Diagrama de buenas prácticas e ingeniería de prompts'
   }
 ]
 
@@ -65,7 +74,7 @@ const Home = () => {
 
       <main
         style={{
-          padding: '1.2rem 1rem 1.8rem',
+          padding: '1.2rem 1rem 2rem',
           maxWidth: '1320px',
           margin: '0 auto',
           display: 'grid',
@@ -75,7 +84,7 @@ const Home = () => {
         <section style={{ textAlign: 'center', marginBottom: '0.25rem' }}>
           <h1
             style={{
-              fontSize: 'clamp(1.8rem, 4.2vw, 2.9rem)',
+              fontSize: 'clamp(1.85rem, 4.2vw, 2.95rem)',
               margin: '0',
               lineHeight: 1.12,
               textWrap: 'balance',
@@ -105,13 +114,13 @@ const Home = () => {
             <div
               className="card-header"
               style={{
-                padding: '0.6rem 1rem',
+                padding: '0.62rem 1rem',
                 borderBottom: '1px solid rgba(111, 137, 255, 0.28)',
                 background: 'linear-gradient(90deg, rgba(59,130,246,0.24), rgba(139,92,246,0.22), rgba(6,182,212,0.2))',
                 color: '#eaf1ff',
                 textTransform: 'uppercase',
                 letterSpacing: '0.11em',
-                fontSize: '0.75rem',
+                fontSize: '0.78rem',
                 fontWeight: 800
               }}
             >
@@ -121,10 +130,10 @@ const Home = () => {
             <div
               className="card-body"
               style={{
-                padding: '0.9rem',
+                padding: '1rem',
                 display: 'grid',
-                gap: '0.8rem',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(265px, 1fr))'
+                gap: '0.95rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))'
               }}
             >
               {sections.map((section) => (
@@ -134,19 +143,33 @@ const Home = () => {
                     border: `1px solid ${section.accent}66`,
                     borderRadius: '12px',
                     background: 'linear-gradient(150deg, rgba(11,17,34,0.94) 0%, rgba(24,31,52,0.88) 100%)',
-                    padding: '0.9rem',
+                    padding: '1rem',
                     boxShadow: `0 8px 22px ${section.accent}1f`,
                     display: 'grid',
-                    gap: '0.55rem',
+                    gap: '0.8rem',
                     alignContent: 'start'
                   }}
                 >
+                  <img
+                    src={section.image}
+                    alt={section.imageAlt}
+                    loading="lazy"
+                    style={{
+                      width: '100%',
+                      height: '180px',
+                      objectFit: 'cover',
+                      borderRadius: '10px',
+                      border: `1px solid ${section.accent}77`,
+                      boxShadow: `0 8px 18px ${section.accent}28`
+                    }}
+                  />
+
                   <h3
                     className="card-title"
                     style={{
                       margin: 0,
-                      fontSize: '1.06rem',
-                      lineHeight: 1.3,
+                      fontSize: '1.28rem',
+                      lineHeight: 1.35,
                       background: `linear-gradient(90deg, ${section.accent} 0%, #b690ff 100%)`,
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
@@ -160,17 +183,17 @@ const Home = () => {
                     className="card-text"
                     style={{
                       margin: 0,
-                      color: '#d7e2ff',
-                      lineHeight: 1.5,
-                      fontSize: '0.92rem'
+                      color: '#edf3ff',
+                      lineHeight: 1.72,
+                      fontSize: '1.08rem'
                     }}
                   >
                     {section.summary}
                   </p>
 
-                  <ul style={{ margin: 0, paddingLeft: '1rem', color: '#d0dcff', lineHeight: 1.48, fontSize: '0.9rem' }}>
+                  <ul style={{ margin: 0, paddingLeft: '1.2rem', color: '#e2eaff', lineHeight: 1.68, fontSize: '1.03rem' }}>
                     {section.details.map((detail) => (
-                      <li key={detail} style={{ marginBottom: '0.38rem' }}>
+                      <li key={detail} style={{ marginBottom: '0.48rem' }}>
                         {detail}
                       </li>
                     ))}
@@ -180,9 +203,9 @@ const Home = () => {
                     className="card-text"
                     style={{
                       margin: 0,
-                      color: '#c7d8ff',
-                      lineHeight: 1.52,
-                      fontSize: '0.89rem',
+                      color: '#d6e3ff',
+                      lineHeight: 1.68,
+                      fontSize: '1.01rem',
                       fontStyle: 'italic'
                     }}
                   >
