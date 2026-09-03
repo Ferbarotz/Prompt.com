@@ -1,6 +1,7 @@
 import Navbar from '../../Componente/Navbar'
 import promptNeonImg from '../../assets/home/prompt-neon.png'
 import promptBrainImg from '../../assets/home/prompt-brain.png'
+import promptRobotImg from '../../assets/home/prompt-robot.png'
 
 const backgroundImageUrl =
   'https://images.unsplash.com/photo-1756908992154-c8a89f5e517f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8'
@@ -34,8 +35,8 @@ const sections = [
     example:
       'Ejemplo práctico: con un prompt bien definido puedes pedir “resume este contrato en 8 riesgos legales, cita cláusulas y sugiere mitigación en viñetas”, en lugar de obtener un resumen superficial.',
     accent: '#10b981',
-    image: promptBrainImg,
-    imageAlt: 'Mano tocando un cerebro de circuitos con la palabra PROMPT en un fondo azul y púrpura'
+    image: promptRobotImg,
+    imageAlt: 'Robot pensativo en tonos azules con la palabra prompt flotando en un entorno digital púrpura'
   },
   {
     title: 'Claves para un buen prompt',
@@ -73,8 +74,8 @@ const Home = () => {
 
       <main
         style={{
-          padding: '1.2rem 1rem 2rem',
-          maxWidth: '1320px',
+          padding: '1.2rem 0.6rem 2rem',
+          maxWidth: '1600px',
           margin: '0 auto',
           display: 'grid',
           gap: '1rem'
@@ -129,10 +130,10 @@ const Home = () => {
             <div
               className="card-body"
               style={{
-                padding: '1rem',
+                padding: '1.1rem',
                 display: 'grid',
-                gap: '0.95rem',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))'
+                gap: '1rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))'
               }}
             >
               {sections.map((section) => (
