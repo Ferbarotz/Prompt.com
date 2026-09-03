@@ -1,5 +1,8 @@
 import Navbar from '../../Componente/Navbar'
 
+const backgroundImageUrl =
+  'https://images.unsplash.com/photo-1756908992154-c8a89f5e517f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8'
+
 const sections = [
   {
     title: '¿Qué es un prompt?',
@@ -52,52 +55,63 @@ const Home = () => {
         minHeight: '100vh',
         color: '#eef2ff',
         fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-        background:
-          'radial-gradient(circle at 10% 10%, rgba(59,130,246,0.18), transparent 35%), radial-gradient(circle at 90% 0%, rgba(139,92,246,0.2), transparent 30%), radial-gradient(circle at 80% 80%, rgba(6,182,212,0.16), transparent 35%), #0a0a0f'
+        backgroundImage: `linear-gradient(140deg, rgba(5, 8, 20, 0.84), rgba(6, 10, 24, 0.86)), radial-gradient(circle at 18% 14%, rgba(59,130,246,0.32), transparent 36%), radial-gradient(circle at 82% 0%, rgba(139,92,246,0.26), transparent 32%), url(${backgroundImageUrl})`,
+        backgroundSize: 'cover, cover, cover, cover',
+        backgroundPosition: 'center, center, center, center',
+        backgroundAttachment: 'fixed'
       }}
     >
       <Navbar />
 
-      <main style={{ padding: '4rem 1.5rem 5rem', maxWidth: '1280px', margin: '0 auto' }}>
-        <section style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+      <main
+        style={{
+          padding: '1.2rem 1rem 1.8rem',
+          maxWidth: '1320px',
+          margin: '0 auto',
+          display: 'grid',
+          gap: '1rem'
+        }}
+      >
+        <section style={{ textAlign: 'center', marginBottom: '0.25rem' }}>
           <h1
             style={{
-              fontSize: 'clamp(2rem, 5vw, 3.2rem)',
-              marginBottom: '1rem',
-              background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 45%, #ec4899 100%)',
+              fontSize: 'clamp(1.8rem, 4.2vw, 2.9rem)',
+              margin: '0',
+              lineHeight: 1.12,
+              textWrap: 'balance',
+              background: 'linear-gradient(90deg, #9fd2ff 0%, #d4b7ff 50%, #ffa0de 100%)',
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
-              color: 'transparent'
+              color: 'transparent',
+              textShadow: '0 10px 32px rgba(59, 130, 246, 0.22)'
             }}
           >
             Bienvenido a Prompt.com
           </h1>
-          <p style={{ fontSize: '1.1rem', color: '#c4ccf9', maxWidth: '680px', margin: '0 auto' }}>
-            Tu guía para crear mejores prompts con inteligencia artificial.
-          </p>
         </section>
 
         <section>
           <article
             className="card"
             style={{
-              background: 'linear-gradient(180deg, rgba(17,24,39,0.88) 0%, rgba(15,23,42,0.94) 100%)',
-              border: '1px solid rgba(99,102,241,0.42)',
+              background: 'linear-gradient(180deg, rgba(13,18,35,0.86) 0%, rgba(10,14,28,0.92) 100%)',
+              border: '1px solid rgba(157, 177, 255, 0.34)',
               borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 14px 42px rgba(59,130,246,0.16), 0 6px 20px rgba(139,92,246,0.2)'
+              boxShadow: '0 16px 44px rgba(8, 12, 28, 0.55), 0 6px 22px rgba(99,102,241,0.2)',
+              backdropFilter: 'blur(6px)'
             }}
           >
             <div
               className="card-header"
               style={{
-                padding: '0.75rem 1rem',
-                borderBottom: '1px solid rgba(6,182,212,0.35)',
-                background: 'linear-gradient(90deg, rgba(59,130,246,0.22), rgba(139,92,246,0.22), rgba(6,182,212,0.22))',
-                color: '#e9e7ff',
+                padding: '0.6rem 1rem',
+                borderBottom: '1px solid rgba(111, 137, 255, 0.28)',
+                background: 'linear-gradient(90deg, rgba(59,130,246,0.24), rgba(139,92,246,0.22), rgba(6,182,212,0.2))',
+                color: '#eaf1ff',
                 textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                fontSize: '0.78rem',
+                letterSpacing: '0.11em',
+                fontSize: '0.75rem',
                 fontWeight: 800
               }}
             >
@@ -107,10 +121,10 @@ const Home = () => {
             <div
               className="card-body"
               style={{
-                padding: '1.2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem'
+                padding: '0.9rem',
+                display: 'grid',
+                gap: '0.8rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(265px, 1fr))'
               }}
             >
               {sections.map((section) => (
@@ -119,20 +133,21 @@ const Home = () => {
                   style={{
                     border: `1px solid ${section.accent}66`,
                     borderRadius: '12px',
-                    background:
-                      'linear-gradient(145deg, rgba(15,23,42,0.96) 0%, rgba(30,41,59,0.9) 100%)',
-                    padding: '1rem',
-                    minHeight: '100%',
-                    boxShadow: `0 8px 24px ${section.accent}22`
+                    background: 'linear-gradient(150deg, rgba(11,17,34,0.94) 0%, rgba(24,31,52,0.88) 100%)',
+                    padding: '0.9rem',
+                    boxShadow: `0 8px 22px ${section.accent}1f`,
+                    display: 'grid',
+                    gap: '0.55rem',
+                    alignContent: 'start'
                   }}
                 >
                   <h3
                     className="card-title"
                     style={{
-                      margin: '0 0 0.65rem',
-                      fontSize: '1.15rem',
-                      lineHeight: 1.35,
-                      background: `linear-gradient(90deg, ${section.accent} 0%, #8b5cf6 100%)`,
+                      margin: 0,
+                      fontSize: '1.06rem',
+                      lineHeight: 1.3,
+                      background: `linear-gradient(90deg, ${section.accent} 0%, #b690ff 100%)`,
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       color: 'transparent'
@@ -144,18 +159,18 @@ const Home = () => {
                   <p
                     className="card-text"
                     style={{
-                      margin: '0 0 0.7rem',
-                      color: '#d5dbff',
-                      lineHeight: 1.65,
-                      fontSize: '0.98rem'
+                      margin: 0,
+                      color: '#d7e2ff',
+                      lineHeight: 1.5,
+                      fontSize: '0.92rem'
                     }}
                   >
                     {section.summary}
                   </p>
 
-                  <ul style={{ margin: '0 0 0.8rem', paddingLeft: '1.1rem', color: '#d5dbff', lineHeight: 1.6, fontSize: '0.97rem' }}>
+                  <ul style={{ margin: 0, paddingLeft: '1rem', color: '#d0dcff', lineHeight: 1.48, fontSize: '0.9rem' }}>
                     {section.details.map((detail) => (
-                      <li key={detail} style={{ marginBottom: '0.45rem' }}>
+                      <li key={detail} style={{ marginBottom: '0.38rem' }}>
                         {detail}
                       </li>
                     ))}
@@ -165,9 +180,9 @@ const Home = () => {
                     className="card-text"
                     style={{
                       margin: 0,
-                      color: '#c9d6ff',
-                      lineHeight: 1.65,
-                      fontSize: '0.96rem',
+                      color: '#c7d8ff',
+                      lineHeight: 1.52,
+                      fontSize: '0.89rem',
                       fontStyle: 'italic'
                     }}
                   >
