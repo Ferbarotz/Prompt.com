@@ -1,7 +1,6 @@
 import Navbar from '../../Componente/Navbar'
 import promptNeonImg from '../../assets/home/prompt-neon.png'
-import promptParaQueSirveImg from '../../assets/home/prompt-para-que-sirve.png'
-import promptBuenasPracticasImg from '../../assets/home/prompt-buenas-practicas.png'
+import promptBrainImg from '../../assets/home/prompt-brain.png'
 
 const backgroundImageUrl =
   'https://images.unsplash.com/photo-1756908992154-c8a89f5e517f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8'
@@ -35,8 +34,8 @@ const sections = [
     example:
       'Ejemplo práctico: con un prompt bien definido puedes pedir “resume este contrato en 8 riesgos legales, cita cláusulas y sugiere mitigación en viñetas”, en lugar de obtener un resumen superficial.',
     accent: '#10b981',
-    image: promptParaQueSirveImg,
-    imageAlt: 'Aplicaciones de IA para generación de texto, código y análisis'
+    image: promptBrainImg,
+    imageAlt: 'Mano tocando un cerebro de circuitos con la palabra PROMPT en un fondo azul y púrpura'
   },
   {
     title: 'Claves para un buen prompt',
@@ -52,8 +51,8 @@ const sections = [
     example:
       'Checklist rápido: rol + objetivo + contexto + datos + restricciones + formato + ejemplo + criterio de validación.',
     accent: '#f59e0b',
-    image: promptBuenasPracticasImg,
-    imageAlt: 'Diagrama de buenas prácticas e ingeniería de prompts'
+    image: promptBrainImg,
+    imageAlt: 'Mano tocando un cerebro de circuitos con la palabra PROMPT en un fondo azul y púrpura'
   }
 ]
 
