@@ -1,5 +1,5 @@
 import Navbar from '../../Componente/Navbar'
-import promptQueEsImg from '../../assets/home/prompt-que-es.png'
+import promptNeonImg from '../../assets/home/prompt-neon.png'
 import promptParaQueSirveImg from '../../assets/home/prompt-para-que-sirve.png'
 import promptBuenasPracticasImg from '../../assets/home/prompt-buenas-practicas.png'
 
@@ -19,8 +19,8 @@ const sections = [
     example:
       'Ejemplo breve: “Actúa como analista de marketing B2B. Contexto: campaña SaaS para pymes en España. Entrada: métricas Q3 (CTR 1,8%, CPC 0,62€). Salida: 5 hipótesis priorizadas en tabla con impacto y esfuerzo”.',
     accent: '#06b6d4',
-    image: promptQueEsImg,
-    imageAlt: 'Interfaz de IA con caja de prompt y conversación de chatbot'
+    image: promptNeonImg,
+    imageAlt: 'Texto prompt en azul neón sobre circuito tecnológico con nodos y conexiones'
   },
   {
     title: '¿Para qué sirve un prompt?',
