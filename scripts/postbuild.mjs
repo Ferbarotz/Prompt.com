@@ -90,7 +90,7 @@ Allow: /
 Sitemap: ${origin}/sitemap.xml
 `
   await fs.writeFile(path.join(distDir, 'robots.txt'), txt, 'utf8')
-  console.log(`· dist/robots.txt — ${origin}/sitemap.txt`)
+  console.log(`· dist/robots.txt — ${origin}/sitemap.xml`)
 }
 
 const main = async () => {

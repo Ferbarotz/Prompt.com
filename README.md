@@ -96,6 +96,31 @@ imagen, vídeo, email, SEO, resumen y traducción.
 Para añadir un tipo nuevo basta con añadir un objeto al array: el selector, los
 campos del paso 2 y la generación se adaptan solos.
 
+### Herramientas de IA recomendadas
+
+El generador **no llama a ningún modelo**: solo escribe un prompt con una
+plantilla. Para cerrar el ciclo, el paso 3 muestra un bloque **"Dónde pegar
+este prompt"** con las herramientas de IA que mejor encajan con el tipo de
+tarea elegido, enlaces directos y una nota de por qué cada una sirve.
+
+El catálogo vive en `src/front/data/aiTools.ts`:
+
+| Propiedad    | Descripción                                                     |
+| ------------ | --------------------------------------------------------------- |
+| `name`       | Nombre visible de la herramienta                                |
+| `url`        | Enlace oficial                                                  |
+| `note`       | Motivo en una línea: por qué encaja con la tarea                |
+| `recommended`| Marca la primera de la lista, que es la opción destacada        |
+
+`getAiTools(taskId)` devuelve la lista del tipo de tarea y cae en una lista
+generalista (ChatGPT, Claude, Gemini) si el tipo no tiene una propia.
+
+### Alias de rutas
+
+Las URLs escritas a mano o en inglés (`/generator-prompt`, `/linter`…) no
+acaban en la 404: `ALIAS_ROUTES` en `src/front/router.tsx` las redirige a su
+ruta canónica. Son redirecciones, así que no se publican en el sitemap.
+
 ## Analizador de prompts
 
 `src/front/data/promptLinter.ts` puntúa un prompt de 0 a 100 sobre la misma

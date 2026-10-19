@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TASK_TYPES, TASK_TYPES_BY_ID } from '../data/taskTypes'
+import { getAiTools } from '../data/aiTools'
 import styles from './PromptGenerator.module.css'
 import { PATHS } from '../data/paths'
 
@@ -43,6 +44,10 @@ const PromptGenerator = () => {
   }
 
   const task = TASK_TYPES_BY_ID[taskId] ?? TASK_TYPES[0]
+
+  // Herramientas de IA recomendadas para este tipo de tarea: el generador no
+  // llama a ningún modelo, así que le decimos al usuario dónde pegar el prompt.
+  const aiSuggestion = useMemo(() => getAiTools(task.id), [task.id])
 
   const generatedPrompt = useMemo(() => {
     if (!idea.trim()) return ''
@@ -312,6 +317,43 @@ const PromptGenerator = () => {
                   </div>
                 </div>
                 <pre className={styles.pre}>{generatedPrompt}</pre>
+
+                <section
+                  className={styles.aiBlock}
+                  aria-labelledby={`ai-tools-${uid}`}
+                >
+                  <h3 className={styles.aiTitle} id={`ai-tools-${uid}`}>
+                    Dónde pegar este prompt
+                  </h3>
+                  <p className={styles.aiIntro}>{aiSuggestion.intro}</p>
+                  <ul className={styles.aiList}>
+                    {aiSuggestion.tools.map((tool) => (
+                      <li className={styles.aiItem} key={tool.name}>
+                        <a
+                          className={styles.aiLink}
+                          href={tool.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {tool.name}
+                          <span className={styles.aiExternal} aria-hidden="true">
+                            ↗
+                          </span>
+                          <span className="sr-only"> (se abre en una pestaña nueva)</span>
+                        </a>
+                        {tool.recommended ? (
+                          <span className={styles.aiBadge}>Recomendada</span>
+                        ) : null}
+                        <p className={styles.aiNote}>{tool.note}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className={styles.aiDisclaimer}>
+                    Enlaces externos: las condiciones y el acceso a cada herramienta
+                    pueden cambiar. Prompt.com no está afiliado a ellas.
+                  </p>
+                </section>
+
                 <p className={styles.crossLink}>
                   ¿Ya tienes un prompt escrito?{' '}
                   <Link to={PATHS.linter}>Púntualo y descubre qué le falta</Link>.

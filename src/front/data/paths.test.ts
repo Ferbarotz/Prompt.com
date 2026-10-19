@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { PATHS, PUBLIC_PATHS } from './paths'
-import { routes } from '../router'
+import { ALIAS_ROUTES, routes } from '../router'
 import { LEGAL_PAGES } from './legalContent'
 
 describe('rutas públicas', () => {
@@ -15,6 +15,9 @@ describe('rutas públicas', () => {
   })
 
   it('cada ruta del router tiene su carpeta en el sitemap', () => {
+    const aliasPaths = new Set(
+      ALIAS_ROUTES.map((route) => `/${String(route.path).replace(/^\//, '')}/`)
+    )
     const routePaths = routes
       .map((route) => `/${String(route.path).replace(/^\//, '')}/`)
       .filter((path) => path !== '//')
@@ -22,6 +25,8 @@ describe('rutas públicas', () => {
     for (const path of routePaths) {
       // La ruta comodín (*) no se publica.
       if (path === '/*/') continue
+      // Los alias son redirecciones: solo se indexa la ruta canónica.
+      if (aliasPaths.has(path)) continue
       expect(PUBLIC_PATHS).toContain(path)
     }
   })

@@ -184,8 +184,48 @@ describe('PromptGenerator', () => {
     expect(getRadios()[0]).toBeChecked()
   })
 
-  it('todos los controles tienen etiqueta accesible', () => {
+  it('recomienda herramientas de IA con enlace según el tipo de tarea', async () => {
+    const user = userEvent.setup()
     renderGenerator()
+
+    await selectTask(user, 'video')
+    await user.type(screen.getByLabelText(/describe tu idea/i), 'Un guion de F1')
+    await goToStep2(user)
+    await goToStep3(user)
+
+    expect(screen.getByRole('heading', { name: /dónde pegar este prompt/i })).toBeInTheDocument()
+
+    const links = screen.getAllByRole('link', { name: /sora|runway|claude|chatgpt/i })
+    expect(links.length).toBeGreaterThan(0)
+    for (const link of links) {
+      expect(link).toHaveAttribute('href', expect.stringMatching(/^https:\/\//))
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    }
+  })
+
+  it('cambia las herramientas recomendadas al cambiar de tipo de tarea', async () => {
+    const user = userEvent.setup()
+    renderGenerator()
+
+    await selectTask(user, 'imagen')
+    await user.type(screen.getByLabelText(/describe tu idea/i), 'Una portada')
+    await goToStep2(user)
+    await goToStep3(user)
+
+    expect(screen.getByRole('link', { name: /midjourney/i })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Anterior' }))
+    await user.click(screen.getByRole('button', { name: 'Anterior' }))
+    await selectTask(user, 'seo')
+    await goToStep2(user)
+    await goToStep3(user)
+
+    expect(screen.getByRole('link', { name: /perplexity/i })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /midjourney/i })).not.toBeInTheDocument()
+  })
+
+  it('todos los controles tienen etiqueta accesible', () => {    renderGenerator()
 
     const group = screen.getByRole('group')
     expect(within(group).getAllByRole('radio')).toHaveLength(10)

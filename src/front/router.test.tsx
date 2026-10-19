@@ -44,8 +44,31 @@ describe('enrutado', () => {
     expect(await screen.findByText('404')).toBeInTheDocument()
   })
 
-  it('todas las rutas tienen un título de documento', async () => {
-    for (const path of ['/', '/generar-prompt', '/analizar-prompt', '/privacidad']) {
+  it.each([
+    ['/generator-prompt', /generador de prompts/i],
+    ['/prompt-generator', /generador de prompts/i],
+    ['/generador-prompt', /generador de prompts/i],
+    ['/linter', /analizador de prompts/i],
+    ['/linter-prompt', /analizador de prompts/i]
+  ])('el alias %s lleva a su página canónica', async (alias, heading) => {
+    renderAt(alias)
+    expect(await screen.findByRole('heading', { level: 1, name: heading })).toBeInTheDocument()
+  })
+
+  it('el alias conserva el base path de GitHub Pages', async () => {
+    const router = createMemoryRouter(routes, {
+      basename: '/Prompt.com/',
+      initialEntries: ['/Prompt.com/generator-prompt']
+    })
+    render(<RouterProvider router={router} />)
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /generador de prompts/i })
+    ).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/Prompt.com/generar-prompt/')
+  })
+
+  it('todas las rutas tienen un título de documento', async () => {    for (const path of ['/', '/generar-prompt', '/analizar-prompt', '/privacidad']) {
       const router = createMemoryRouter(routes, { initialEntries: [path] })
       const { container, unmount } = render(<RouterProvider router={router} />)
 
