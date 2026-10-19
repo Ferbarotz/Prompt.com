@@ -1,0 +1,38 @@
+---
+title: Guard de publicación
+permalink: /__guard-de-publicacion__
+---
+
+{% error_este_sitio_se_publica_con_github_actions_no_con_jekyll %}
+
+<!--
+  POR QUÉ EXISTE ESTE FICHERO
+  ============================
+
+  La configuración de Pages de este repositorio está en modo "legacy"
+  (Source: "Deploy from a branch" → main / root). Con esa configuración,
+  GitHub ejecuta en cada push su propio workflow de Jekyll
+  ("pages build and deployment") ADEMÁS del workflow de este repositorio
+  (.github/workflows/deploy.yml).
+
+  Ambos despliegan al mismo sitio, así que gana el último que termina, y el
+  resultado depende de una carrera. El de Jekyll publica el repositorio tal
+  cual, sin compilar: el index.html del origen (con el marcador __SITE_URL__
+  sin sustituir y el punto de entrada /src/front/main.tsx). Cuando gana esa
+  carrera, el sitio queda en blanco.
+
+  Este fichero hace fallar la construcción de Jekyll de forma intencionada
+  (una etiqueta Liquid inexistente), de modo que ese workflow NUNCA publica
+  y el único que despliega es el de GitHub Actions, que sí compila.
+
+  CÓMO ARREGLARLO DE RAÍZ
+  =======================
+
+  1. Ve a Settings → Pages → Build and deployment → Source.
+  2. Elige "GitHub Actions" en lugar de "Deploy from a branch".
+  3. Guarda. GitHub deja de ejecutar el workflow de Jekyll.
+  4. Este fichero se puede borrar sin riesgo (o dejarlo: tampoco hace nada).
+
+  Con ese ajuste, el README ya está en lo correcto: la fuente de publicación
+  debe ser "GitHub Actions".
+-->
