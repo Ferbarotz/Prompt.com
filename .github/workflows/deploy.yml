@@ -50,6 +50,20 @@ jobs:
           grep -q 'og:image' dist/index.html
           grep -q 'https://' dist/sitemap.xml
 
+      # Si Pages está configurado como "Deploy from a branch", GitHub lanza en
+      # paralelo su propio workflow de Jekyll, que compila el repositorio y
+      # publica el HTML sin compilar, pisando este despliegue. Se cambia a
+      # "GitHub Actions" para que solo exista una fuente de publicación.
+      - name: Use GitHub Actions as the Pages source
+        continue-on-error: true
+        run: |
+          curl -s -X PUT "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pages" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            -d '{"build_type":"workflow","source":{"branch":"main","path":"/"}}' \
+            -w '\nHTTP %{http_code}\n'
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
