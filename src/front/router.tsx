@@ -1,4 +1,4 @@
-import { createBrowserRouter, createMemoryRouter, redirect } from 'react-router-dom'
+import { createBrowserRouter, createMemoryRouter, Navigate } from 'react-router-dom'
 import type { ComponentType } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import Home from './page/Home/Home'
@@ -33,14 +33,18 @@ const legalRoutes = Object.entries(LEGAL_PAGES).map(([slug, page]) => ({
  *
  * Son redirecciones, así que no se publican en el sitemap: solo la ruta
  * canónica debe indexarse.
+ *
+ * Se usa `<Navigate>` en lugar de un `loader` con `redirect()`: el loader
+ * deja la ruta sin elemento durante un instante (y avisa por consola), y
+ * `<Navigate>` redirige en el primer render.
  */
 export const ALIAS_ROUTES: RouteObject[] = [
-  { path: '/generator-prompt', loader: () => redirect(PATHS.generator) },
-  { path: '/prompt-generator', loader: () => redirect(PATHS.generator) },
-  { path: '/generador-prompt', loader: () => redirect(PATHS.generator) },
-  { path: '/linter', loader: () => redirect(PATHS.linter) },
-  { path: '/linter-prompt', loader: () => redirect(PATHS.linter) },
-  { path: '/analizador-prompt', loader: () => redirect(PATHS.linter) }
+  { path: '/generator-prompt', element: <Navigate to={PATHS.generator} replace /> },
+  { path: '/prompt-generator', element: <Navigate to={PATHS.generator} replace /> },
+  { path: '/generador-prompt', element: <Navigate to={PATHS.generator} replace /> },
+  { path: '/linter', element: <Navigate to={PATHS.linter} replace /> },
+  { path: '/linter-prompt', element: <Navigate to={PATHS.linter} replace /> },
+  { path: '/analizador-prompt', element: <Navigate to={PATHS.linter} replace /> }
 ]
 
 export const routes = [
