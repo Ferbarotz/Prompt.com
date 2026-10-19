@@ -45,7 +45,7 @@ const Navbar = () => {
           display: 'inline-block'
         }}
       >
-        Generar Prompt
+        Crear
       </Link>
     </nav>
   )
