@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { getRepoName, getSiteOrigin } from './scripts/site-url.mjs'
+import { getBase, getSiteOrigin } from './scripts/site-url.mjs'
 
 // GitHub Pages sirve el proyecto en /<nombre-del-repo>/. En CI la variable
 // GITHUB_REPOSITORY viene definida ("usuario/repo"), así que el sitio sigue
 // funcionando si el repositorio se bifurca. En local se usa el remoto de git.
-const base = `/${getRepoName()}/`
+// Con dominio propio (CUSTOM_DOMAIN) el sitio va en la raíz del dominio.
+const base = getBase()
 
 /**
  * Sustituye el marcador `__SITE_URL__` de index.html por el origen real del
@@ -30,7 +31,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.js'],
-    include: ['src/**/*.test.{js,jsx,ts,tsx}'],
+    include: ['src/**/*.test.{js,jsx,ts,tsx}', 'scripts/**/*.test.mjs'],
     // Permite desplegar aunque todavía no haya tests escritos.
     passWithNoTests: true,
     // Los runners de CI son más lentos que el portátil: 5 s por test es

@@ -38,6 +38,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Dominio propio (p. ej. "prompt.com"). Vacío = se publica en la
+          # URL de GitHub Pages. Se define en Settings → Secrets and variables
+          # → Actions → Variables, sin tocar el código.
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
 
       - name: Verify build output
         run: |
@@ -55,6 +60,11 @@ jobs:
           grep -q 'https://' dist/sitemap.xml
           # Los alias existen como carpeta (200) pero no se indexan.
           ! grep -q 'generator-prompt' dist/sitemap.xml
+          # Con dominio propio, el CNAME debe estar en el artefacto.
+          if [ -n "${{ vars.CUSTOM_DOMAIN }}" ]; then
+            test -f dist/CNAME
+            grep -q "${{ vars.CUSTOM_DOMAIN }}" dist/CNAME
+          fi
 
       # Si Pages está configurado como "Deploy from a branch", GitHub lanza en
       # paralelo su propio workflow de Jekyll, que compila el repositorio y

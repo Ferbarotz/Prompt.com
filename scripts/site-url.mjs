@@ -4,10 +4,13 @@
  * La web se publica en GitHub Pages, así que la URL canónica depende de quién
  * publique el repo. Se resuelve en este orden:
  *
- *   1. `SITE_URL` (variables de entorno, para dominios propios).
- *   2. `GITHUB_REPOSITORY` (definido por GitHub Actions en CI).
- *   3. El remoto `origin` de git (funciona en local y en un runner con checkout).
- *   4. Un origen de desarrollo por defecto.
+ *   1. `CUSTOM_DOMAIN` (dominio propio: "prompt.com"). El sitio se publica
+ *      en la raíz de ese dominio, así que el `base` de Vite pasa a ser "/"
+ *      y se añade un fichero `CNAME` al artefacto.
+ *   2. `SITE_URL` (variables de entorno, para canonical/OG sin cambiar el base).
+ *   3. `GITHUB_REPOSITORY` (definido por GitHub Actions en CI).
+ *   4. El remoto `origin` de git (funciona en local y en un runner con checkout).
+ *   5. Un origen de desarrollo por defecto.
  *
  * Lo usan tanto el plugin de Vite (para inyectar las etiquetas de Open Graph
  * estáticas) como el script que genera el sitemap tras el build.
@@ -37,11 +40,33 @@ export const getRepoInfo = () => {
   return null
 }
 
-/** Nombre del repositorio, usado para el `base` de Vite. */
+/** Nombre del repositorio, usado como base de la URL en GitHub Pages. */
 export const getRepoName = () => getRepoInfo()?.name ?? 'Prompt.com'
+
+/**
+ * Dominio propio configurado, sin protocolo ni barra final.
+ * Vacío si el sitio se publica en la URL `*.github.io`.
+ */
+export const getCustomDomain = () => {
+  const raw = process.env.CUSTOM_DOMAIN?.trim()
+  if (!raw) return ''
+  return raw.replace(/^https?:\/\//, '').replace(/\/+$/, '')
+}
+
+/**
+ * Base de las rutas del sitio.
+ *
+ * Con dominio propio el sitio vive en la raíz ("/"), así que no hay prefijo.
+ * En un repositorio de proyecto de GitHub Pages, en cambio, se sirve bajo
+ * "/<nombre-del-repo>/".
+ */
+export const getBase = () => (getCustomDomain() ? '/' : `/${getRepoName()}/`)
 
 /** Origen del sitio sin barra final, p. ej. `https://prompt.com`. */
 export const getSiteOrigin = () => {
+  const custom = getCustomDomain()
+  if (custom) return `https://${custom}`
+
   if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/+$/, '')
 
   const info = getRepoInfo()

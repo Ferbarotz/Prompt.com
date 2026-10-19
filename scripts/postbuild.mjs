@@ -14,7 +14,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
-import { getSiteOrigin } from './site-url.mjs'
+import { getCustomDomain, getSiteOrigin } from './site-url.mjs'
 
 const distDir = path.resolve('dist')
 
@@ -116,11 +116,33 @@ Sitemap: ${origin}/sitemap.xml
   console.log(`· dist/robots.txt — ${origin}/sitemap.xml`)
 }
 
+/**
+ * `CNAME` con el dominio propio.
+ *
+ * GitHub Pages lo lee del artefacto publicado: es lo que hace que el sitio
+ * se sirva en ese dominio (y que la URL `*.github.io` redireccione a él).
+ *
+ * Solo se escribe si hay dominio propio configurado: publicar un CNAME de un
+ * dominio que no apunta a GitHub Pages hace que la verificación falle y el
+ * sitio se quede sin servir.
+ */
+const buildCname = async () => {
+  const domain = getCustomDomain()
+  if (!domain) {
+    console.log('· sin CNAME (sitio en la URL de GitHub Pages)')
+    return
+  }
+
+  await fs.writeFile(path.join(distDir, 'CNAME'), `${domain}\n`, 'utf8')
+  console.log(`· dist/CNAME — ${domain}`)
+}
+
 const main = async () => {
   await buildSpaFallback()
   const origin = getSiteOrigin()
   await buildSitemap(origin)
   await buildRobots(origin)
+  await buildCname()
 }
 
 main().catch((error) => {

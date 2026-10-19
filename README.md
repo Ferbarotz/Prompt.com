@@ -201,3 +201,37 @@ GitHub Pages no tiene rewrite de rutas, así que las URLs internas (por ejemplo
 `/Prompt.com/generar-prompt`) se sirven con `404.html`. Tras el build, ese
 fichero es una **copia de `index.html`**: la SPA arranca directamente en la URL
 solicitada y el router resuelve la ruta, sin redirecciones ni recargas.
+
+## Dominio propio (opcional)
+
+Por defecto el sitio se publica en `https://<usuario>.github.io/<repositorio>/`.
+Con la variable de entorno `CUSTOM_DOMAIN` se publica en la raíz de un dominio
+propio (`https://prompt.com/`):
+
+| Variable        | Efecto                                                               |
+| --------------- | -------------------------------------------------------------------- |
+| `CUSTOM_DOMAIN` | Dominio propio. Cambia el `base` de Vite a `/` y añade `dist/CNAME` |
+
+Con el dominio propio el sitio se sirve en la **raíz** del dominio (no en
+`/Prompt.com/`), y el `base` de Vite pasa a ser `/`: los assets, el sitemap, el
+`robots.txt` y las etiquetas `canonical` y Open Graph apuntan al dominio.
+
+**No actives la variable hasta que el dominio apunte a GitHub Pages.** Publicar
+un `CNAME` de un dominio sin verificar hace que Pages no sirva el sitio.
+
+### Puesta en marcha (en este orden)
+
+1. **Compra el dominio** y configura sus DNS en el registrador:
+   - `CNAME` de `www` → `ferbarotz.github.io`
+   - `A` de `@` (apex) → las IP de GitHub Pages: `185.199.108.153`,
+     `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+2. **Define la variable** en el repositorio: *Settings → Secrets and variables
+   → Actions → Variables → New variable* → nombre `CUSTOM_DOMAIN`, valor
+   `prompt.com`.
+3. **Sube un cambio** (cualquier commit). El build genera el `CNAME` y el
+   sitio se publica en la raíz del dominio.
+4. En **Settings → Pages**, confirma el dominio personalizado y activa
+   **Enforce HTTPS** (GitHub emite el certificado automáticamente).
+
+Mientras `CUSTOM_DOMAIN` no esté definida todo sigue igual: se publica en la
+URL de GitHub Pages y no se genera ningún `CNAME`.
