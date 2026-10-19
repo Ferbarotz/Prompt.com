@@ -41,6 +41,22 @@ const ROUTES = [
 ]
 
 /**
+ * Alias de URL: carpetas con `index.html` pero sin publicar en el sitemap.
+ *
+ * Son redirecciones en el router (ver `ALIAS_ROUTES` en `src/front/router.tsx`).
+ * La carpeta hace que Pages las sirva con un 200 en lugar del 404 del fallback
+ * SPA, aunque el visitante acabe en la ruta canónica.
+ */
+const ALIAS_PATHS = [
+  '/generator-prompt/',
+  '/prompt-generator/',
+  '/generador-prompt/',
+  '/linter/',
+  '/linter-prompt/',
+  '/analizador-prompt/'
+]
+
+/**
  * `index.html` → `404.html` y a una carpeta por ruta.
  *
  * GitHub Pages no tiene rewrite de rutas: una URL interna que no exista como
@@ -61,6 +77,13 @@ const buildSpaFallback = async () => {
     await fs.writeFile(path.join(directory, 'index.html'), html, 'utf8')
     console.log(`· dist${route.path}index.html — ruta con respuesta 200`)
   }
+
+  for (const alias of ALIAS_PATHS) {
+    const directory = path.join(distDir, alias.replace(/^\/|\/$/g, ''))
+    await fs.mkdir(directory, { recursive: true })
+    await fs.writeFile(path.join(directory, 'index.html'), html, 'utf8')
+  }
+  console.log(`· ${ALIAS_PATHS.length} alias con respuesta 200 (no se publican)`)
 }
 
 const buildSitemap = async (origin) => {

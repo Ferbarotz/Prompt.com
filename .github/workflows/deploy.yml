@@ -46,9 +46,15 @@ jobs:
           test -f dist/404.html
           test -f dist/og-image.png
           test -f dist/manifest.webmanifest
+          test -f dist/generar-prompt/index.html
+          test -f dist/analizar-prompt/index.html
+          test -f dist/generator-prompt/index.html
+          test -f dist/linter/index.html
           grep -q 'rel="canonical"' dist/index.html
           grep -q 'og:image' dist/index.html
           grep -q 'https://' dist/sitemap.xml
+          # Los alias existen como carpeta (200) pero no se indexan.
+          ! grep -q 'generator-prompt' dist/sitemap.xml
 
       # Si Pages está configurado como "Deploy from a branch", GitHub lanza en
       # paralelo su propio workflow de Jekyll, que compila el repositorio y
