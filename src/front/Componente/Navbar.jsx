@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const Navbar = () => {
   return (
     <nav
@@ -11,7 +13,8 @@ const Navbar = () => {
         boxShadow: '0 6px 18px rgba(59,130,246,0.14)'
       }}
     >
-      <span
+      <Link
+        to="/"
         style={{
           fontSize: '1.5rem',
           fontWeight: 800,
@@ -19,32 +22,31 @@ const Navbar = () => {
           background: 'linear-gradient(90deg, #3b82f6 0%, #06b6d4 38%, #8b5cf6 72%, #ec4899 100%)',
           WebkitBackgroundClip: 'text',
           backgroundClip: 'text',
-          color: 'transparent'
+          color: 'transparent',
+          textDecoration: 'none'
         }}
       >
         Prompt.com
-      </span>
+      </Link>
 
-      <button
-        onClick={() => {
-          const el = document.getElementById('prompt-generator')
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }}
+      <Link
+        to="/generar-prompt"
         style={{
           background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 55%, #ec4899 100%)',
           color: '#ffffff',
           border: '1px solid rgba(255,255,255,0.25)',
           padding: '0.55rem 1.55rem',
           borderRadius: '10px',
-          cursor: 'pointer',
           fontSize: '1rem',
           fontWeight: 700,
+          textDecoration: 'none',
           boxShadow: '0 8px 22px rgba(139,92,246,0.3)',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          display: 'inline-block'
         }}
       >
         Generar Prompt
-      </button>
+      </Link>
     </nav>
   )
 }
