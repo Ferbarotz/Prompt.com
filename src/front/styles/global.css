@@ -1,0 +1,197 @@
+/**
+ * Estilos globales.
+ *
+ * Reset, tipografía base, foco visible y los controles de formulario
+ * compartidos. Los estilos específicos de cada componente viven en su
+ * respective `*.module.css`.
+ */
+
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-violet);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   Utilidades de accesibilidad
+   --------------------------------------------------------------------------- */
+
+/* Texto solo para lectores de pantalla: invisible visualmente pero disponible
+   para tecnología asistiva (anuncios de cambio de paso, confirmaciones). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Controles de formulario
+   ---------------------------------------------------------------------------
+   El foco se define aquí (y no con estilos en línea) para poder usar
+   :focus / :focus-visible. Un `outline: none` en línea anulaba el anillo de
+   foco global y dejaba los campos sin indicador visible (WCAG 2.4.7). */
+
+.field-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: var(--text-bright);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+}
+
+.field-input::placeholder {
+  color: var(--text-subtle);
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.95);
+  box-shadow: var(--focus-ring);
+}
+
+/* Con teclado el indicador debe ser claramente distinguible del de ratón. */
+.field-input:focus-visible {
+  border-color: #c4b5fd;
+  box-shadow: var(--focus-ring-strong);
+}
+
+select.field-input {
+  cursor: pointer;
+}
+
+/* Los <option> heredan el fondo del sistema en algunos navegadores: forzamos
+   los colores del tema para que la lista desplegable sea legible en dark mode. */
+select.field-input option {
+  background: #0b1122;
+  color: var(--text-bright);
+}
+
+/* ---------------------------------------------------------------------------
+   Fondo de la aplicación
+   ---------------------------------------------------------------------------
+   Se compone solo con gradientes: sin peticiones de imagen de terceros, sin
+   problema de LCP y sin coste de repintado por `background-attachment: fixed`.
+   El efecto de paralaje solo se activa en pantallas grandes, donde el
+   repintado no penaliza. */
+
+.site-bg {
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 82% 0%, rgba(139, 92, 246, 0.28), transparent 34%),
+    radial-gradient(circle at 18% 14%, rgba(59, 130, 246, 0.34), transparent 38%),
+    radial-gradient(circle at 62% 100%, rgba(6, 182, 212, 0.16), transparent 42%),
+    linear-gradient(140deg, var(--bg) 0%, var(--bg-alt) 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media (min-width: 768px) {
+  .site-bg {
+    background-attachment: fixed;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Botones
+   ---------------------------------------------------------------------------
+   Clases compartidas por toda la aplicación. Cada componente puede añadir sus
+   variantes con CSS Modules. */
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--gradient-brand);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-cta);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  color: var(--text-link);
+}
+
+.btn-sm {
+  padding: 0.4rem 1rem;
+  font-size: var(--text-sm);
+}
+
+.btn-xs {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+}

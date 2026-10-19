@@ -1,0 +1,32 @@
+.main {
+  padding: 2rem 1.2rem 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero {
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  text-wrap: balance;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.lazySpacer {
+  min-height: 320px;
+}

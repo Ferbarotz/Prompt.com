@@ -1,0 +1,339 @@
+.main {
+  padding: 2rem 1.2rem 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero {
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  text-wrap: balance;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0;
+  max-width: 62ch;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------------------
+   Panel principal
+   --------------------------------------------------------------------------- */
+
+.panel {
+  background: var(--surface-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.panelHeader {
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.22), rgba(139, 92, 246, 0.2));
+  color: var(--text-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.panelBody {
+  padding: 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.label {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.textarea {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+}
+
+.toolbar {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Puntuación
+   --------------------------------------------------------------------------- */
+
+.scoreBox {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.gauge {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.gaugeInner {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--surface-raised);
+  display: grid;
+  place-items: center;
+  flex-direction: column;
+}
+
+.gaugeValue {
+  color: var(--text);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.gaugeMax {
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.scoreText {
+  flex: 1;
+  min-width: 220px;
+}
+
+.scoreLevel {
+  margin: 0;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.scoreMeta {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Criterios
+   --------------------------------------------------------------------------- */
+
+.criteria {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.criterionFound {
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.07);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 0.9rem;
+}
+
+.criterionMissing {
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  background: rgba(239, 68, 68, 0.06);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 0.9rem;
+}
+
+.criterionHead {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.criterionIcon {
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.criterionIconFound {
+  color: #6ee7b7;
+}
+
+.criterionIconMissing {
+  color: #fca5a5;
+}
+
+.criterionLabel {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.criterionState {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.evidence {
+  margin: 0.35rem 0 0;
+  color: #cbd5f5;
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.criterionHint {
+  margin: 0.35rem 0 0;
+  color: var(--text-body);
+  font-size: 0.88rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Observaciones
+   --------------------------------------------------------------------------- */
+
+.sectionTitle {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.issues {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.issues li {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------------------
+   Versión mejorada
+   --------------------------------------------------------------------------- */
+
+.improved {
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.improvedHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.improvedTitle {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.improvedActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.improvedNote {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.pre {
+  margin: 0;
+  color: var(--text-bright);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-mono);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Rúbrica
+   --------------------------------------------------------------------------- */
+
+.rubric {
+  background: rgba(13, 18, 35, 0.75);
+  border: 1px solid rgba(157, 177, 255, 0.24);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.rubricTitle {
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+
+.rubricText {
+  margin: 0 0 0.8rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.rubricList {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.rubricList strong {
+  color: var(--text);
+}
+
+.rubricFooter {
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.rubricFooter a {
+  color: var(--text-link);
+}

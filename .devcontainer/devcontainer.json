@@ -4,18 +4,14 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  "forwardPorts": [5173, 3000],
+  "forwardPorts": [5173],
   "portsAttributes": {
     "5173": {
       "label": "Vite Dev Server",
       "onAutoForward": "openPreview"
-    },
-    "3000": {
-      "label": "App",
-      "onAutoForward": "notify"
     }
   },
-  "postCreateCommand": "if [ -f package.json ]; then npm install; fi",
+  "postCreateCommand": "if [ -f package-lock.json ]; then npm ci; else npm install; fi",
   "customizations": {
     "vscode": {
       "extensions": [
