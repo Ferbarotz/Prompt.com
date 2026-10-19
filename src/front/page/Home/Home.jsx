@@ -1,7 +1,9 @@
 import Navbar from '../../Componente/Navbar'
+import PromptGenerator from '../../Componente/PromptGenerator'
 import promptNeonImg from '../../assets/home/prompt-neon.png'
 import promptBrainImg from '../../assets/home/prompt-brain.png'
 import promptRobotImg from '../../assets/home/prompt-robot.png'
+
 
 const backgroundImageUrl =
   'https://images.unsplash.com/photo-1756908992154-c8a89f5e517f?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8'
@@ -216,6 +218,8 @@ const Home = () => {
             </div>
           </article>
         </section>
+
+        <PromptGenerator />
       </main>
     </div>
   )
