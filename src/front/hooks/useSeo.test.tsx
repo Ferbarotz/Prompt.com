@@ -33,7 +33,7 @@ describe('useSeo', () => {
     render(<Probe title="Guía" description="Una descripción" path="/guia" />)
 
     expect(meta('description')).toBe('Una descripción')
-    expect(canonical()).toMatch(/\/guia$/)
+    expect(canonical()).toMatch(/\/guia\/$/)
     expect(meta('robots')).toBe('index, follow')
   })
 

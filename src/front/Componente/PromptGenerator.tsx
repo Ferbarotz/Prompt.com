@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TASK_TYPES, TASK_TYPES_BY_ID } from '../data/taskTypes'
 import styles from './PromptGenerator.module.css'
+import { PATHS } from '../data/paths'
 
 const STEPS = [
   { id: 1, name: 'Tarea' },
@@ -313,7 +314,7 @@ const PromptGenerator = () => {
                 <pre className={styles.pre}>{generatedPrompt}</pre>
                 <p className={styles.crossLink}>
                   ¿Ya tienes un prompt escrito?{' '}
-                  <Link to="/analizar-prompt">Púntualo y descubre qué le falta</Link>.
+                  <Link to={PATHS.linter}>Púntualo y descubre qué le falta</Link>.
                 </p>
               </div>
             ) : (

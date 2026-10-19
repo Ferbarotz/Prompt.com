@@ -6,13 +6,23 @@ const DEFAULT_DESCRIPTION =
   'Aprende qué es un prompt, para qué sirve y cómo escribir los mejores. Generador de prompts profesionales para código, contenido, imágenes, SEO y más.'
 const BASE_URL = import.meta.env.BASE_URL.replace(/\/+$/, '')
 
-/** URL absoluta de una ruta interna de la SPA. */
+/** Origen del sitio, p. ej. `https://prompt.com`. */
+const origin = (): string => (typeof window === 'undefined' ? '' : window.location.origin)
+
+/**
+ * URL absoluta de una ruta interna de la SPA, siempre con barra final.
+ *
+ * GitHub Pages sirve cada ruta desde su propia carpeta (`dist/ruta/index.html`)
+ * para responder con un 200; sin la barra final responde 404.
+ */
 export const absoluteUrl = (path = '/'): string => {
-  const origin = typeof window === 'undefined' ? '' : window.location.origin
+  const clean = path.replace(/^\/+/, '').replace(/\/+$/, '')
   const base = `${BASE_URL}/`
-  const clean = path === '/' ? '' : path.replace(/^\/+/, '')
-  return `${origin}${base}${clean}`
+  return clean ? `${origin()}${base}${clean}/` : `${origin()}${base}`
 }
+
+/** URL absoluta de un fichero estático (imágenes, manifest…). */
+export const assetUrl = (path: string): string => `${origin()}${BASE_URL}/${path.replace(/^\/+/, '')}`
 
 /** Crea o actualiza una etiqueta `<meta>`. */
 const upsertMeta = (attribute: string, key: string, content?: string): void => {
@@ -74,7 +84,7 @@ const useSeo = ({
 }: SeoOptions = {}): void => {
   useEffect(() => {
     const url = absoluteUrl(path)
-    const imageUrl = image ?? absoluteUrl('/og-image.png')
+    const imageUrl = image ?? assetUrl('og-image.png')
     const fullTitle = title ? `${title} — ${SITE_NAME}` : DEFAULT_TITLE
 
     document.title = fullTitle

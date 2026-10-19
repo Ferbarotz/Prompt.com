@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import styles from './Navbar.module.css'
+import { PATHS } from '../data/paths'
 
 const Navbar = () => {
   return (
@@ -10,13 +11,13 @@ const Navbar = () => {
 
       <div className={styles.links}>
         <NavLink
-          to="/analizar-prompt"
+          to={PATHS.linter}
           className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
         >
           Analizar prompt
         </NavLink>
 
-        <Link to="/generar-prompt" className={styles.cta}>
+        <Link to={PATHS.generator} className={styles.cta}>
           Crear
         </Link>
       </div>

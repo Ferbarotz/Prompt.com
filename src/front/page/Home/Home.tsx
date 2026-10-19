@@ -5,6 +5,7 @@ import useSeo from '../../hooks/useSeo'
 import { GUIDE_SECTIONS } from '../../data/guideSections'
 import { HOME_JSON_LD } from '../../data/seoData'
 import styles from './Home.module.css'
+import { PATHS } from '../../data/paths'
 
 // El generador pesa ~25 KB: se carga después del contenido principal para no
 // retrasar el LCP de la home.
@@ -23,7 +24,7 @@ const Home = () => {
     title: 'Guía de prompts: qué son y cómo escribirlos',
     description:
       'Qué es un prompt, para qué sirve y cómo escribir los mejores. Guía práctica con ejemplos y un generador de prompts profesionales para 10 tipos de tarea.',
-    path: '/',
+    path: PATHS.home,
     jsonLd: HOME_JSON_LD
   })
 

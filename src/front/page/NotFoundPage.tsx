@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import styles from './NotFoundPage.module.css'
+import { PATHS } from '../data/paths'
 
 const NotFoundPage = () => {
   useSeo({
     title: 'Página no encontrada',
     description: 'La página que buscas no existe o ha cambiado de dirección.',
-    path: '/404',
+    path: '/404/',
     noindex: true
   })
 
@@ -25,11 +26,11 @@ const NotFoundPage = () => {
           </p>
 
           <div className={styles.actions}>
-            <Link to="/" className="btn btn-primary">
+            <Link to={PATHS.home} className="btn btn-primary">
               Volver al inicio
             </Link>
 
-            <Link to="/generar-prompt" className={styles.secondary}>
+            <Link to={PATHS.generator} className={styles.secondary}>
               Crear un prompt
             </Link>
           </div>

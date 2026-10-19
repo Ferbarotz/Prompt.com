@@ -17,7 +17,7 @@ const legalRoutes = Object.entries(LEGAL_PAGES).map(([slug, page]) => ({
   path: `/${slug}`,
   lazy: lazyRoute(async () => {
     const { default: LegalPage } = await import('./page/LegalPage')
-    const Wrapped = () => <LegalPage page={page} path={`/${slug}`} />
+    const Wrapped = () => <LegalPage page={page} path={`/${slug}/`} />
     return { default: Wrapped }
   })
 }))

@@ -2,15 +2,16 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { Link } from 'react-router-dom'
 import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
-import useSeo from '../hooks/useSeo'
+import useSeo, { absoluteUrl } from '../hooks/useSeo'
 import { CRITERIA, EXAMPLE_PROMPT, analyzePrompt, improvePrompt } from '../data/promptLinter'
 import styles from './LinterPage.module.css'
+import { PATHS } from '../data/paths'
 
 const LINTER_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Analizador de prompts de Prompt.com',
-  url: 'https://prompt.com/analizar-prompt',
+  url: absoluteUrl(PATHS.linter),
   description:
     'Pega tu prompt y obtén una puntuación con el desglose de lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y validación.',
   applicationCategory: 'DeveloperApplication',
@@ -26,7 +27,7 @@ const LinterPage = () => {
     title: 'Analizador de prompts: puntúa y mejora el tuyo',
     description:
       'Pega tu prompt y obtén una puntuación de 0 a 100 con el desglose de lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y criterio de validación.',
-    path: '/analizar-prompt',
+    path: PATHS.linter,
     jsonLd: LINTER_JSON_LD
   })
 
@@ -237,8 +238,8 @@ const LinterPage = () => {
           </ol>
           <p className={styles.rubricFooter}>
             ¿Prefieres empezar de cero?{' '}
-            <Link to="/generar-prompt">Genera un prompt profesional</Link> o vuelve a{' '}
-            <Link to="/">la guía</Link>.
+            <Link to={PATHS.generator}>Genera un prompt profesional</Link> o vuelve a{' '}
+            <Link to={PATHS.home}>la guía</Link>.
           </p>
         </section>
       </main>

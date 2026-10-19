@@ -4,6 +4,7 @@ import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import { GENERATOR_JSON_LD } from '../data/seoData'
 import styles from './GeneratorPage.module.css'
+import { PATHS } from '../data/paths'
 
 const PromptGenerator = lazy(() => import('../Componente/PromptGenerator'))
 
@@ -12,7 +13,7 @@ const GeneratorPage = () => {
     title: 'Generador de prompts gratis',
     description:
       'Generador de prompts profesionales en 3 pasos: elige el tipo de tarea, completa los detalles y copia el prompt listo para usar. Código, contenido, imágenes, SEO, email y más.',
-    path: '/generar-prompt',
+    path: PATHS.generator,
     jsonLd: GENERATOR_JSON_LD
   })
 

@@ -33,25 +33,41 @@ const getLastModified = () => {
 
 const ROUTES = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/generar-prompt', changefreq: 'monthly', priority: '0.8' },
-  { path: '/analizar-prompt', changefreq: 'monthly', priority: '0.8' },
-  { path: '/aviso-legal', changefreq: 'yearly', priority: '0.3' },
-  { path: '/privacidad', changefreq: 'yearly', priority: '0.3' },
-  { path: '/cookies', changefreq: 'yearly', priority: '0.3' }
+  { path: '/generar-prompt/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/analizar-prompt/', changefreq: 'monthly', priority: '0.8' },
+  { path: '/aviso-legal/', changefreq: 'yearly', priority: '0.3' },
+  { path: '/privacidad/', changefreq: 'yearly', priority: '0.3' },
+  { path: '/cookies/', changefreq: 'yearly', priority: '0.3' }
 ]
 
-/** `index.html` → `404.html`: la SPA arranca ya en la URL solicitada. */
+/**
+ * `index.html` → `404.html` y a una carpeta por ruta.
+ *
+ * GitHub Pages no tiene rewrite de rutas: una URL interna que no exista como
+ * fichero se sirve con el 404. Para que el crawler reciba un 200 (y no descarte
+ * la URL del sitemap) cada ruta tiene su carpeta con su `index.html`, que
+ * Pages sirve con un 200 y con barra final.
+ */
 const buildSpaFallback = async () => {
   const html = await fs.readFile(path.join(distDir, 'index.html'), 'utf8')
+
   await fs.writeFile(path.join(distDir, '404.html'), html, 'utf8')
   console.log('· dist/404.html — copia de index.html (fallback SPA)')
+
+  for (const route of ROUTES) {
+    if (route.path === '/') continue
+    const directory = path.join(distDir, route.path.replace(/^\/|\/$/g, ''))
+    await fs.mkdir(directory, { recursive: true })
+    await fs.writeFile(path.join(directory, 'index.html'), html, 'utf8')
+    console.log(`· dist${route.path}index.html — ruta con respuesta 200`)
+  }
 }
 
 const buildSitemap = async (origin) => {
   const lastmod = getLastModified()
   const urls = ROUTES.map(
     (route) => `  <url>
-    <loc>${origin}${route.path === '/' ? '/' : route.path}</loc>
+    <loc>${origin}${route.path}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>

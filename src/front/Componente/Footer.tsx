@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
+import { PATHS } from '../data/paths'
 
 interface Column {
   title: string
@@ -11,17 +12,17 @@ const columns: Column[] = [
   {
     title: 'Herramientas',
     links: [
-      { label: 'Generador de prompts', to: '/generar-prompt' },
-      { label: 'Analizador de prompts', to: '/analizar-prompt' },
-      { label: 'Guía de prompts', to: '/' }
+      { label: 'Generador de prompts', to: PATHS.generator },
+      { label: 'Analizador de prompts', to: PATHS.linter },
+      { label: 'Guía de prompts', to: PATHS.home }
     ]
   },
   {
     title: 'Legal',
     links: [
-      { label: 'Aviso legal', to: '/aviso-legal' },
-      { label: 'Política de privacidad', to: '/privacidad' },
-      { label: 'Política de cookies', to: '/cookies' }
+      { label: 'Aviso legal', to: PATHS.avisoLegal },
+      { label: 'Política de privacidad', to: PATHS.privacidad },
+      { label: 'Política de cookies', to: PATHS.cookies }
     ]
   }
 ]

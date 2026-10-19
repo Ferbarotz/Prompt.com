@@ -4,6 +4,7 @@ import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import type { LegalPage as LegalPageContent } from '../data/legalContent'
 import styles from './LegalPage.module.css'
+import { PATHS } from '../data/paths'
 
 /** Propiedades de la plantilla de página legal. */
 export interface LegalPageProps {
@@ -45,7 +46,7 @@ const LegalPage = ({ page, path }: LegalPageProps) => {
           ))}
 
           <p className={styles.back}>
-            <Link to="/">← Volver al inicio</Link>
+            <Link to={PATHS.home}>← Volver al inicio</Link>
           </p>
         </article>
       </main>
