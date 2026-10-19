@@ -202,6 +202,48 @@ GitHub Pages no tiene rewrite de rutas, así que las URLs internas (por ejemplo
 fichero es una **copia de `index.html`**: la SPA arranca directamente en la URL
 solicitada y el router resuelve la ruta, sin redirecciones ni recargas.
 
+## Dónde se publica el sitio
+
+El repositorio se puede publicar en tres sitios, y el build se adapts solo a
+cada uno (no hay que tocar el código):
+
+| Publicación        | URL resultante                       | Cómo se detecta                    |
+| ------------------ | ------------------------------------ | ---------------------------------- |
+| GitHub Pages       | `https://<usuario>.github.io/<repo>/` | valor por defecto                  |
+| Cloudflare Pages   | `https://<proyecto>.pages.dev`       | variable `CF_PAGES`                |
+| Vercel             | `https://<proyecto>.vercel.app`      | variable `VERCEL`                  |
+
+En Cloudflare Pages y Vercel el sitio se sirve en la **raíz** del subdominio,
+así que el `base` de Vite pasa a ser `/` y el sitemap, el `robots.txt` y las
+etiquetas `canonical` y Open Graph apuntan al subdominio correcto.
+
+Los ficheros de configuración ya están:
+
+- `public/_redirects` → fallback de la SPA en Cloudflare Pages.
+- `vercel.json` → build, carpeta de salida y reescritura de rutas en Vercel.
+
+### Publicar en Cloudflare Pages (gratis, subdominio `*.pages.dev`)
+
+1. Crea una cuenta en Cloudflare (gratis) y entra en **Workers & Pages**.
+2. **Create → Pages → Conectar un repositorio** y elige `Ferbarotz/Prompt.com`.
+3. Configuración de build:
+   - *Framework preset*: `None`
+   - *Build command*: `npm run build`
+   - *Build output directory*: `dist`
+   - *Root directory*: `/`
+4. Variables de entorno: ninguna (el build se autodetecta).
+5. **Save and Deploy**. La web queda en `https://<nombre>.pages.dev`.
+
+Para que el subdominio sea bonito, el proyecto se puede llamar `prompt` o
+`prompt-com`. Más adelante se puede añadir un dominio propio desde el panel de
+Pages, sin cambios en el código.
+
+### Publicar en Vercel (gratis, subdominio `*.vercel.app`)
+
+1. Crea una cuenta en Vercel e importa el repositorio.
+2. Vercel lee `vercel.json`: build `npm run build`, salida `dist`.
+3. **Deploy**. La web queda en `https://<proyecto>.vercel.app`.
+
 ## Dominio propio (opcional)
 
 Por defecto el sitio se publica en `https://<usuario>.github.io/<repositorio>/`.

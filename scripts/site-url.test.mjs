@@ -1,8 +1,23 @@
 import { describe, expect, it, beforeEach, afterEach } from 'vitest'
-import { getBase, getCustomDomain, getSiteOrigin, absoluteUrl } from './site-url.mjs'
+import {
+  getBase,
+  getCustomDomain,
+  getDeployment,
+  getSiteOrigin,
+  absoluteUrl
+} from './site-url.mjs'
 
 /** Variables de entorno que se manipulan en cada test. */
-const ENTORNO = ['CUSTOM_DOMAIN', 'SITE_URL', 'GITHUB_REPOSITORY']
+const ENTORNO = [
+  'CUSTOM_DOMAIN',
+  'SITE_URL',
+  'GITHUB_REPOSITORY',
+  'CF_PAGES',
+  'CF_PAGES_URL',
+  'VERCEL',
+  'VERCEL_URL',
+  'VERCEL_PROJECT_PRODUCTION_URL'
+]
 let guardados = {}
 
 beforeEach(() => {
@@ -63,5 +78,43 @@ describe('dominio propio', () => {
 
     expect(absoluteUrl('/')).toBe('https://prompt.com')
     expect(absoluteUrl('/generar-prompt/')).toBe('https://prompt.com/generar-prompt')
+  })
+})
+
+describe('hosting en la raíz del dominio', () => {
+  it('Cloudflare Pages se detecta solo', () => {
+    process.env.CF_PAGES = '1'
+    process.env.CF_PAGES_URL = 'https://prompt-com.pages.dev/'
+
+    expect(getDeployment()).toBe('cloudflare')
+    expect(getBase()).toBe('/')
+    expect(getSiteOrigin()).toBe('https://prompt-com.pages.dev')
+  })
+
+  it('Vercel se detecta solo y usa el dominio de producción', () => {
+    process.env.VERCEL = '1'
+    process.env.VERCEL_URL = 'prompt-com-abc123.vercel.app'
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = 'prompt-com.vercel.app'
+
+    expect(getDeployment()).toBe('vercel')
+    expect(getBase()).toBe('/')
+    expect(getSiteOrigin()).toBe('https://prompt-com.vercel.app')
+  })
+
+  it('Vercel sin dominio de producción usa el del despliegue', () => {
+    process.env.VERCEL = '1'
+    process.env.VERCEL_URL = 'prompt-com-abc123.vercel.app'
+
+    expect(getSiteOrigin()).toBe('https://prompt-com-abc123.vercel.app')
+  })
+
+  it('el dominio propio manda sobre la detección de hosting', () => {
+    process.env.CUSTOM_DOMAIN = 'prompt.com'
+    process.env.CF_PAGES = '1'
+    process.env.CF_PAGES_URL = 'https://prompt-com.pages.dev'
+
+    expect(getDeployment()).toBe('custom')
+    expect(getBase()).toBe('/')
+    expect(getSiteOrigin()).toBe('https://prompt.com')
   })
 })

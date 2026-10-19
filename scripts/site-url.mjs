@@ -1,16 +1,19 @@
 /**
  * Resolución de la URL pública del sitio.
  *
- * La web se publica en GitHub Pages, así que la URL canónica depende de quién
- * publique el repo. Se resuelve en este orden:
+ * La URL canónica depende de dónde se publique el repo:
  *
  *   1. `CUSTOM_DOMAIN` (dominio propio: "prompt.com"). El sitio se publica
  *      en la raíz de ese dominio, así que el `base` de Vite pasa a ser "/"
  *      y se añade un fichero `CNAME` al artefacto.
- *   2. `SITE_URL` (variables de entorno, para canonical/OG sin cambiar el base).
- *   3. `GITHUB_REPOSITORY` (definido por GitHub Actions en CI).
- *   4. El remoto `origin` de git (funciona en local y en un runner con checkout).
- *   5. Un origen de desarrollo por defecto.
+ *   2. Cloudflare Pages (`CF_PAGES`). Se detecta solo: publica en la raíz
+ *      y el origen es `CF_PAGES_URL` (p. ej. "https://prompt.pages.dev").
+ *   3. Vercel (`VERCEL`). También se detecta solo: publica en la raíz y el
+ *      origen es `VERCEL_PROJECT_PRODUCTION_URL`.
+ *   4. `SITE_URL` (para canonical/OG sin cambiar el base).
+ *   5. `GITHUB_REPOSITORY` (definido por GitHub Actions en CI).
+ *   6. El remoto `origin` de git (funciona en local y en un runner con checkout).
+ *   7. Un origen de desarrollo por defecto.
  *
  * Lo usan tanto el plugin de Vite (para inyectar las etiquetas de Open Graph
  * estáticas) como el script que genera el sitemap tras el build.
@@ -56,16 +59,43 @@ export const getCustomDomain = () => {
 /**
  * Base de las rutas del sitio.
  *
- * Con dominio propio el sitio vive en la raíz ("/"), así que no hay prefijo.
- * En un repositorio de proyecto de GitHub Pages, en cambio, se sirve bajo
- * "/<nombre-del-repo>/".
+ * Con dominio propio o en un hosting que sirve en la raíz (Cloudflare Pages,
+ * Vercel) el sitio vive en "/", así que no hay prefijo. En un repositorio de
+ * proyecto de GitHub Pages, en cambio, se sirve bajo "/<nombre-del-repo>/".
  */
-export const getBase = () => (getCustomDomain() ? '/' : `/${getRepoName()}/`)
+export const getBase = () => (getDeployment() === 'github-pages' ? `/${getRepoName()}/` : '/')
+
+/**
+ * Dónde se publica el sitio.
+ *
+ * - `custom`: dominio propio (CUSTOM_DOMAIN).
+ * - `cloudflare`: Cloudflare Pages (CF_PAGES).
+ * - `vercel`: Vercel (VERCEL).
+ * - `github-pages`: repositorio de proyecto de GitHub Pages (por defecto).
+ */
+export const getDeployment = () => {
+  if (getCustomDomain()) return 'custom'
+  if (process.env.CF_PAGES) return 'cloudflare'
+  if (process.env.VERCEL) return 'vercel'
+  return 'github-pages'
+}
 
 /** Origen del sitio sin barra final, p. ej. `https://prompt.com`. */
 export const getSiteOrigin = () => {
   const custom = getCustomDomain()
   if (custom) return `https://${custom}`
+
+  // Cloudflare Pages publica en la raíz y expone la URL pública.
+  if (process.env.CF_PAGES && process.env.CF_PAGES_URL) {
+    return process.env.CF_PAGES_URL.replace(/\/+$/, '')
+  }
+
+  // Vercel: `VERCEL_PROJECT_PRODUCTION_URL` es el dominio de producción y
+  // `VERCEL_URL` el de este despliegue concreto.
+  if (process.env.VERCEL) {
+    const url = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
+    if (url) return `https://${url.replace(/^https?:\/\//, '').replace(/\/+$/, '')}`
+  }
 
   if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/+$/, '')
 

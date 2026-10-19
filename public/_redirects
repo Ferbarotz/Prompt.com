@@ -1,0 +1,10 @@
+# Cloudflare Pages sirve el sitio en la raíz del subdominio del proyecto.
+# El build ya detecta el entorno (CF_PAGES) y ajusta el `base` y las URLs
+# canónicas, así que no hay que configurar nada más.
+#
+# Este fichero solo aporta el fallback de la SPA: sin él, una ruta interna
+# como /generar-prompt/ devolvería un 404 en vez de la aplicación.
+#
+# Nota: los ficheros estáticos (assets, fuentes, imágenes) se sirven antes de
+# aplicar estas reglas, así que las reglas no los capturan.
+/* /index.html 200

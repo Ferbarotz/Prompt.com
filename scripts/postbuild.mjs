@@ -129,7 +129,7 @@ Sitemap: ${origin}/sitemap.xml
 const buildCname = async () => {
   const domain = getCustomDomain()
   if (!domain) {
-    console.log('· sin CNAME (sitio en la URL de GitHub Pages)')
+    console.log('· sin CNAME (el dominio lo define el hosting)')
     return
   }
 
