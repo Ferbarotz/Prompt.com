@@ -14,7 +14,7 @@ const Navbar = () => {
       <span
         style={{
           fontSize: '1.5rem',
-          fontWeight: '800',
+          fontWeight: 800,
           letterSpacing: '0.02em',
           background: 'linear-gradient(90deg, #3b82f6 0%, #06b6d4 38%, #8b5cf6 72%, #ec4899 100%)',
           WebkitBackgroundClip: 'text',
@@ -26,6 +26,10 @@ const Navbar = () => {
       </span>
 
       <button
+        onClick={() => {
+          const el = document.getElementById('prompt-generator')
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }}
         style={{
           background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 55%, #ec4899 100%)',
           color: '#ffffff',
@@ -34,12 +38,12 @@ const Navbar = () => {
           borderRadius: '10px',
           cursor: 'pointer',
           fontSize: '1rem',
-          fontWeight: '700',
+          fontWeight: 700,
           boxShadow: '0 8px 22px rgba(139,92,246,0.3)',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease'
         }}
       >
-        Prompt
+        Generar Prompt
       </button>
     </nav>
   )
