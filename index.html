@@ -97,6 +97,18 @@
         color: #a5b4fc;
         font-size: 0.85rem;
       }
+      #root-fallback .root-fallback-errors {
+        max-width: 70ch;
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        color: #fca5a5;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+        word-break: break-word;
+      }
       #root-fallback button {
         padding: 0.6rem 1.4rem;
         border: 0;
@@ -117,17 +129,48 @@
         Suele pasar con una versión antigua guardada en la caché del navegador.
         Recarga la página para obtener la última versión.
       </p>
+      <p class="root-fallback-errors" id="root-fallback-errors" hidden></p>
       <button type="button" onclick="window.location.reload()">Recargar</button>
     </div>
 
     <script>
-      setTimeout(function () {
-        var root = document.getElementById('root')
-        if (root && root.childElementCount === 0) {
-          var fallback = document.getElementById('root-fallback')
-          if (fallback) fallback.hidden = false
-        }
-      }, 4000)
+      /* Detecta que la aplicación no ha montado y explica por qué. */
+      (function () {
+        var errores = []
+
+        window.addEventListener(
+          'error',
+          function (evento) {
+            var destino = evento.target
+            if (destino && destino !== window && destino.tagName === 'SCRIPT') {
+              errores.push('No se ha podido cargar: ' + (destino.src || 'script desconocido'))
+            } else {
+              errores.push(evento.message || String(evento.error || 'error desconocido'))
+            }
+          },
+          true
+        )
+
+        window.addEventListener('unhandledrejection', function (evento) {
+          var motivo = evento.reason
+          errores.push('Error en asíncronía: ' + (motivo && motivo.message ? motivo.message : String(motivo)))
+        })
+
+        setTimeout(function () {
+          var root = document.getElementById('root')
+          if (!root || root.childElementCount > 0) return
+
+          var aviso = document.getElementById('root-fallback')
+          if (aviso) aviso.hidden = false
+
+          if (!errores.length) return
+          var detalle = document.getElementById('root-fallback-errors')
+          if (detalle) {
+            detalle.textContent = errores.join(' · ')
+            detalle.hidden = false
+          }
+        }, 4000)
+      })()
     </script>
 
     <script type="module" src="/src/front/main.tsx"></script>
