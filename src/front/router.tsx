@@ -4,20 +4,37 @@ import type { RouteObject } from 'react-router-dom'
 import Home from './page/Home/Home'
 import { LEGAL_PAGES } from './data/legalContent'
 import { PATHS } from './data/paths'
+import { RouteError, RouteLoading } from './Componente/RouteStatus'
 
 /**
  * Las rutas secundarias se cargan bajo demanda: la home y su contenido son
  * lo primero que necesita el visitante y así no engordan el bundle inicial.
+ *
+ * Cada ruta diferida necesita:
+ * - `HydrateFallback`: si no, React Router renderiza `null` mientras descarga
+ *   el módulo y el visitante ve un hueco en blanco.
+ * - `errorElement`: si la descarga falla (red, extensión bloqueando la
+ *   petición...), se muestra una pantalla con opción de recargar.
+ *
+ * Los dos van como propiedades de la ruta y no dentro de `lazy`, porque un
+ * error durante la descarga del módulo ocurre antes de que `lazy` llegue a
+ * devolver sus propiedades.
  */
-const lazyRoute = (loader: () => Promise<{ default: ComponentType }>) => async () => {
-  const module = await loader()
-  return { Component: module.default }
-}
+const lazyRoute = (
+  loader: () => Promise<{ default: ComponentType }>
+): RouteObject => ({
+  lazy: async () => {
+    const module = await loader()
+    return { Component: module.default }
+  },
+  HydrateFallback: RouteLoading,
+  errorElement: <RouteError />
+})
 
 // Las páginas legales comparten plantilla: se generan a partir del catálogo.
 const legalRoutes = Object.entries(LEGAL_PAGES).map(([slug, page]) => ({
   path: `/${slug}`,
-  lazy: lazyRoute(async () => {
+  ...lazyRoute(async () => {
     const { default: LegalPage } = await import('./page/LegalPage')
     const Wrapped = () => <LegalPage page={page} path={`/${slug}/`} />
     return { default: Wrapped }
@@ -50,22 +67,24 @@ export const ALIAS_ROUTES: RouteObject[] = [
 export const routes = [
   {
     path: '/',
-    element: <Home />
+    element: <Home />,
+    HydrateFallback: RouteLoading,
+    errorElement: <RouteError />
   },
   {
     path: '/generar-prompt',
-    lazy: lazyRoute(() => import('./page/GeneratorPage'))
+    ...lazyRoute(() => import('./page/GeneratorPage'))
   },
   {
     path: '/analizar-prompt',
-    lazy: lazyRoute(() => import('./page/LinterPage'))
+    ...lazyRoute(() => import('./page/LinterPage'))
   },
   // Alias: las URLs en inglés o escritas a mano no deben acabar en la 404.
   ...ALIAS_ROUTES,
   ...legalRoutes,
   {
     path: '*',
-    lazy: lazyRoute(() => import('./page/NotFoundPage'))
+    ...lazyRoute(() => import('./page/NotFoundPage'))
   }
 ]
 

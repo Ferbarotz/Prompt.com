@@ -69,6 +69,10 @@
       con el bundle, así que si el bundle falla, el CSS tampoco está.
     -->
     <style>
+      /* El atributo `hidden` debe ganarle a `display: flex` de este bloque. */
+      #root-fallback[hidden] {
+        display: none;
+      }
       #root-fallback {
         position: fixed;
         inset: 0;
@@ -157,8 +161,9 @@
         })
 
         setTimeout(function () {
-          var root = document.getElementById('root')
-          if (!root || root.childElementCount > 0) return
+          /* Si la aplicación llegó a ejecutarse, no hay nada que avisar: puede
+             estar a punto de pintar el contenido de una ruta. */
+          if (document.documentElement.dataset.appMounted) return
 
           var aviso = document.getElementById('root-fallback')
           if (aviso) aviso.hidden = false

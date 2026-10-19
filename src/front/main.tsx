@@ -19,3 +19,9 @@ ReactDOM.createRoot(container).render(
     </>
   </React.StrictMode>
 )
+
+// Marca que el código de la aplicación se ha ejecutado. El aviso de carga
+// fallida del index.html solo se muestra si esta marca no existe: mientras la
+// app está viva puede haber un instante sin contenido (por ejemplo, mientras
+// se descarga el módulo de una ruta), y eso no es un fallo.
+document.documentElement.dataset.appMounted = 'true'

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import type { RouteObject } from 'react-router-dom'
 import { routes } from './router'
 import { LEGAL_PAGES } from './data/legalContent'
 
@@ -66,6 +67,29 @@ describe('enrutado', () => {
       await screen.findByRole('heading', { level: 1, name: /generador de prompts/i })
     ).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/Prompt.com/generar-prompt/')
+  })
+
+  it('las rutas diferidas tienen pantalla de carga y de error', async () => {
+    // Sin HydrateFallback, React Router renderiza null mientras descarga el
+    // módulo de la ruta y el visitante ve un hueco en blanco.
+    type RutaDiferida = RouteObject & {
+      lazy: () => Promise<{ Component?: unknown }>
+    }
+    const diferidas = routes.filter(
+      (ruta): ruta is RutaDiferida => typeof (ruta as RouteObject).lazy === 'function'
+    )
+
+    expect(diferidas.length).toBeGreaterThan(0)
+
+    for (const ruta of diferidas) {
+      // Las propiedades van en la ruta, no en el `lazy`: si la descarga del
+      // módulo falla, el `errorElement` tiene que existir ya.
+      expect(ruta.HydrateFallback).toBeDefined()
+      expect(ruta.errorElement).toBeTruthy()
+
+      const cargada = await ruta.lazy()
+      expect(cargada.Component).toBeDefined()
+    }
   })
 
   it('todas las rutas tienen un título de documento', async () => {    for (const path of ['/', '/generar-prompt', '/analizar-prompt', '/privacidad']) {
