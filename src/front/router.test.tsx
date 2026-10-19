@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './router'
 import { LEGAL_PAGES } from './data/legalContent'
@@ -47,9 +47,16 @@ describe('enrutado', () => {
   it('todas las rutas tienen un título de documento', async () => {
     for (const path of ['/', '/generar-prompt', '/analizar-prompt', '/privacidad']) {
       const router = createMemoryRouter(routes, { initialEntries: [path] })
-      render(<RouterProvider router={router} />)
-      await screen.findByRole('heading', { level: 1 })
+      const { container, unmount } = render(<RouterProvider router={router} />)
+
+      // La consulta se acota a este render: las rutas se cargan bajo demanda y
+      // el render anterior sigue en el DOM hasta que se desmonta.
+      await waitFor(() => {
+        expect(within(container).getByRole('heading', { level: 1 })).toBeInTheDocument()
+      })
       expect(document.title.length).toBeGreaterThan(5)
+
+      unmount()
     }
   })
 })

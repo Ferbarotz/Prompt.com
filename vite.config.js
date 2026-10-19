@@ -33,6 +33,10 @@ export default defineConfig({
     include: ['src/**/*.test.{js,jsx,ts,tsx}'],
     // Permite desplegar aunque todavía no haya tests escritos.
     passWithNoTests: true,
+    // Los runners de CI son más lentos que el portátil: 5 s por test es
+    // demasiado ajustado para las interacciones con `user-event`.
+    testTimeout: 15000,
+    hookTimeout: 15000,
     // Los tests de `useSeo` tocan document.head: se ejecutan en serie para
     // que las aserciones sobre las etiquetas no se pisen entre sí.
     fileParallelism: false
