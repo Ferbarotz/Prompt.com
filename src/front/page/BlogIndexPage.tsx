@@ -21,7 +21,7 @@ const BlogIndexPage = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main className={styles.listPage}>
+      <main id="contenido" className={styles.listPage}>
         <h1 className={styles.listTitle}>Blog: prompts en el trabajo real</h1>
         <p className={styles.listIntro}>
           Casos concretos, flujos de trabajo y errores que se repiten. Cada artículo va al grano,
@@ -31,9 +31,17 @@ const BlogIndexPage = () => {
         <ul className={styles.cards}>
           {ARTICLES.map((article) => (
             <li key={article.slug}>
-              <Link to={article.path} className={styles.card}>
+              {/* El nombre accesible del enlace es el título: si no, el lector
+                  de pantalla anuncia la tarjeta entera (descripción y fecha). */}
+              <Link
+                to={article.path}
+                className={styles.card}
+                aria-labelledby={`articulo-${article.slug}`}
+              >
                 <span className={styles.cardTag}>{article.tags[0]}</span>
-                <span className={styles.cardTitle}>{article.title}</span>
+                <span className={styles.cardTitle} id={`articulo-${article.slug}`}>
+                  {article.title}
+                </span>
                 <span className={styles.cardText}>{article.description}</span>
                 <span className={styles.meta}>
                   <time dateTime={article.date}>{article.date}</time> · {article.minutes} min

@@ -16,6 +16,8 @@ import { LINTER_JSON_LD } from '../data/seoData'
 import { getRouteSeo } from '../data/routeMeta'
 import usePersistentState from '../hooks/usePersistentState'
 import { EVENTS, trackEvent } from '../utils/analytics'
+import { copyToClipboard } from '../utils/clipboard'
+import ScrollableCode from '../Componente/ScrollableCode'
 import styles from './LinterPage.module.css'
 import { PATHS } from '../data/paths'
 
@@ -44,14 +46,14 @@ const LinterPage = () => {
 
   const copy = async (value: string, label: string) => {
     if (!value) return
-    try {
-      await navigator.clipboard.writeText(value)
+    const resultado = await copyToClipboard(value)
+    if (resultado === 'ok') {
       setCopied(label)
       setStatus(`${label} copiado al portapapeles`)
       trackEvent(label === 'Prompt mejorado' ? EVENTS.copyImproved : EVENTS.copyPrompt, {
         origen: 'analizador'
       })
-    } catch {
+    } else {
       setStatus('No se pudo copiar. Selecciona el texto y cópialo manualmente.')
     }
     if (copyTimeout.current) clearTimeout(copyTimeout.current)
@@ -68,7 +70,7 @@ const LinterPage = () => {
   return (
     <div className="site-bg">
       <Navbar />
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Analizador de prompts</h1>
           <p className={styles.subtitle}>
@@ -214,7 +216,9 @@ const LinterPage = () => {
                     <p className={styles.improvedNote}>
                       Se han añadido los bloques que faltan. Rellena los huecos entre &lt; &gt;.
                     </p>
-                    <pre className={styles.pre}>{improved}</pre>
+                    <ScrollableCode className={styles.pre} label="Prompt mejorado">
+                      {improved}
+                    </ScrollableCode>
                   </div>
                 )}
               </div>
@@ -237,7 +241,11 @@ const LinterPage = () => {
                   {criterion.label} ({criterion.weight} puntos)
                 </strong>
                 . {criterion.hint}{' '}
-                <Link to={`${PATHS.guia}${criterion.id}/`} className={styles.rubricLink}>
+                <Link
+                  to={`${PATHS.guia}${criterion.id}/`}
+                  className={styles.rubricLink}
+                  aria-label={`Ver la guía del bloque: ${criterion.label}`}
+                >
                   Ver la guía del bloque →
                 </Link>
               </li>

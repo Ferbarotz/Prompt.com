@@ -16,10 +16,16 @@ describe('página de etiqueta', () => {
     const tag = getArticleTag('agentes-de-ia')
     renderPage('agentes-de-ia')
 
+    // Solo la primera palabra va en minúscula: las siglas se respetan
+    // («agentes de IA», no «agentes de ia»).
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      tag?.label.toLowerCase() ?? ''
+      'agentes de IA'
     )
-    expect(screen.getByRole('link', { name: /prompts para agentes de ia/i })).toBeInTheDocument()
+    expect(tag?.label).toBe('Agentes de IA')
+    // También aparece en el pie (columna del blog): se busca el de la lista.
+    const enlaces = screen.getAllByRole('link', { name: /prompts para agentes de ia/i })
+    expect(enlaces.length).toBeGreaterThan(0)
+    expect(enlaces[0]).toHaveAttribute('href', '/blog/prompts-para-agentes-de-ia/')
   })
 
   it('con un solo artículo no se indexa', () => {

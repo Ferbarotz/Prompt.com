@@ -51,7 +51,7 @@ describe('enrutado', () => {
   it('una página de la guía carga su contenido', async () => {
     renderAt('/guia/rol')
     expect(
-      await screen.findByRole('heading', { level: 1, name: /el rol en un prompt/i })
+      await screen.findByRole('heading', { level: 1, name: /el rol: por qué decide/i })
     ).toBeInTheDocument()
   })
 

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import Footer from './Footer'
+import usePersistentState from '../hooks/usePersistentState'
 
 const renderFooter = () =>
   render(
@@ -41,6 +42,44 @@ describe('Footer', () => {
 
     expect(window.localStorage.getItem('prompt-com:generator')).toBeNull()
     expect(screen.getByRole('status')).toHaveTextContent(/no queda nada guardado/i)
+  })
+
+  it('lo borrado no vuelve al almacenamiento al desmontar el generador', async () => {
+    const user = userEvent.setup()
+
+    const Generador = () => {
+      const [idea] = usePersistentState<string>('generator', '')
+      return <span>{idea}</span>
+    }
+
+    const { unmount } = render(
+      <MemoryRouter>
+        <Generador />
+        <Footer />
+      </MemoryRouter>
+    )
+
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:generator')).not.toBeNull()
+    )
+
+    await user.click(screen.getByRole('button', { name: /borrar los datos guardados/i }))
+    expect(window.localStorage.getItem('prompt-com:generator')).toBeNull()
+
+    // Al navegar a otra página el valor en memoria se desmonta: si el hook no
+    // se enterara del borrado, volvería a escribirse aquí.
+    unmount()
+    expect(window.localStorage.getItem('prompt-com:generator')).toBeNull()
+  })
+
+  it('avisa cuando no había nada guardado', async () => {
+    const user = userEvent.setup()
+    window.localStorage.clear()
+    renderFooter()
+
+    await user.click(screen.getByRole('button', { name: /borrar los datos guardados/i }))
+
+    expect(screen.getByRole('status')).toHaveTextContent(/no había datos guardados/i)
   })
 
   it('la columna de la guía enlaza con los bloques', () => {

@@ -9,12 +9,19 @@ import { getRouteSeo } from '../../data/routeMeta'
 import styles from './Home.module.css'
 import { PATHS } from '../../data/paths'
 
-/** Los colores de acento dependen de la sección, así que se aplican en línea. */
-const accentStyle = (accent: string): CSSProperties =>
+/**
+ * Los colores de acento dependen de la sección, así que se aplican en línea.
+ *
+ * Cada sección lleva dos tonos: el vivo, para bordes y sombras, y el oscuro,
+ * para el título en el tema claro (allí el color vivo no tiene contraste
+ * suficiente como texto).
+ */
+const accentStyle = (accent: string, accentText: string): CSSProperties =>
   ({
     '--section-accent': `${accent}66`,
     '--section-shadow': `0 8px 22px ${accent}1f`,
-    '--title-gradient': `linear-gradient(90deg, ${accent} 0%, #b690ff 100%)`
+    '--section-accent-solid': accent,
+    '--section-accent-text': accentText
   }) as CSSProperties
 
 const Home = () => {
@@ -27,7 +34,7 @@ const Home = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Guía de prompts: qué son y cómo escribirlos</h1>
           <p className={styles.subtitle}>
@@ -55,7 +62,7 @@ const Home = () => {
                   id={section.id}
                   aria-labelledby={`${section.id}-title`}
                   className={styles.section}
-                  style={accentStyle(section.accent)}
+                  style={accentStyle(section.accent, section.accentText)}
                 >
                   <img
                     src={section.image.src}
@@ -76,7 +83,12 @@ const Home = () => {
                   <p className={styles.summary}>{section.summary}</p>
 
                   <p className={styles.more}>
-                    <Link to={`${PATHS.guia}${section.id}/`}>Leer el bloque completo →</Link>
+                    <Link
+                      to={`${PATHS.guia}${section.id}/`}
+                      aria-label={`Leer el bloque completo: ${section.title}`}
+                    >
+                      Leer el bloque completo →
+                    </Link>
                   </p>
                 </section>
               ))}

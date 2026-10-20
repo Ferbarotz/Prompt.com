@@ -24,7 +24,7 @@ const GuideIndexPage = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main className={styles.listPage}>
+      <main id="contenido" className={styles.listPage}>
         <h1 className={styles.listTitle}>Guía de prompts: todos los bloques, uno a uno</h1>
         <p className={styles.listIntro}>
           Un prompt se construye por bloques. Cada bloque tiene su propia página, con lo que
@@ -36,8 +36,16 @@ const GuideIndexPage = () => {
         <ul className={styles.cards}>
           {sections.map((page) => (
             <li key={page.slug}>
-              <Link to={page.path} className={styles.card}>
-                <span className={styles.cardTitle}>{page.title}</span>
+              {/* El nombre accesible del enlace es el título: si no, el lector
+                  de pantalla anuncia la tarjeta entera. */}
+              <Link
+                to={page.path}
+                className={styles.card}
+                aria-labelledby={`guia-${page.slug}`}
+              >
+                <span className={styles.cardTitle} id={`guia-${page.slug}`}>
+                  {page.title}
+                </span>
                 <span className={styles.cardText}>{page.description}</span>
               </Link>
             </li>
@@ -48,9 +56,15 @@ const GuideIndexPage = () => {
         <ul className={styles.cards}>
           {criteria.map((page) => (
             <li key={page.slug}>
-              <Link to={page.path} className={styles.card}>
+              <Link
+                to={page.path}
+                className={styles.card}
+                aria-labelledby={`guia-${page.slug}`}
+              >
                 <span className={styles.cardTag}>Bloque</span>
-                <span className={styles.cardTitle}>{page.title}</span>
+                <span className={styles.cardTitle} id={`guia-${page.slug}`}>
+                  {page.title}
+                </span>
                 <span className={styles.cardText}>{page.description}</span>
               </Link>
             </li>

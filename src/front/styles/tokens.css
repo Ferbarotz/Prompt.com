@@ -59,12 +59,33 @@
   --border-soft: rgba(111, 137, 255, 0.18);
   --border-strong: rgba(111, 137, 255, 0.45);
   --border-accent: rgba(157, 177, 255, 0.34);
+  /*
+   * Borde de los controles (botones, campos, opciones). Tiene que poder
+   * distinguirse del fondo con 3:1 (WCAG 1.4.11): `--border` es decorativo y
+   * no llega.
+   */
+  --border-control: rgba(129, 140, 248, 0.75);
 
   /* -------------------------------------------------------------------------
      Degradados
      ------------------------------------------------------------------------- */
-  --gradient-brand: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 55%, #ec4899 100%);
+  --gradient-brand: linear-gradient(90deg, #2563eb 0%, #7c3aed 55%, #be185d 100%);
+  --gradient-brand-mark: linear-gradient(90deg, #3b82f6 0%, #06b6d4 38%, #8b5cf6 72%, #ec4899 100%);
   --gradient-text: linear-gradient(90deg, #9fd2ff 0%, #d4b7ff 50%, #ffa0de 100%);
+  /*
+   * Último color del degradado de los títulos de la guía. El color de acento
+   * de cada sección se lo pone el componente (--section-accent-text), porque
+   * en el tema claro el color vivo no tiene contraste suficiente como texto.
+   */
+  --title-gradient-end: #b690ff;
+
+  /* -------------------------------------------------------------------------
+     Colores de la puntuación del analizador
+     ------------------------------------------------------------------------- */
+  --score-excellent: #10b981;
+  --score-good: #06b6d4;
+  --score-fair: #f59e0b;
+  --score-poor: #f87171;
   --gradient-header: linear-gradient(
     90deg,
     rgba(59, 130, 246, 0.24),
@@ -168,15 +189,26 @@
   --text-muted: #4b5478;
   --text-link: #3c3f8f;
   --text-subtle: #5b638a;
-  --text-faint: #6a7296;
+  --text-faint: #5f6788;
 
   --border: rgba(99, 102, 241, 0.26);
   --border-soft: rgba(99, 102, 241, 0.15);
   --border-strong: rgba(99, 102, 241, 0.4);
   --border-accent: rgba(99, 102, 241, 0.28);
+  /* Contraste de 3:1 sobre fondo claro (WCAG 1.4.11). */
+  --border-control: #6366f1;
 
-  --gradient-brand: linear-gradient(90deg, #4f46e5 0%, #7c3aed 55%, #db2777 100%);
+  --gradient-brand: linear-gradient(90deg, #4338ca 0%, #6d28d9 55%, #be185d 100%);
+  --gradient-brand-mark: linear-gradient(90deg, #1d4ed8 0%, #0e7490 38%, #6d28d9 72%, #be185d 100%);
   --gradient-text: linear-gradient(90deg, #1d4ed8 0%, #6d28d9 50%, #be185d 100%);
+  --title-gradient-end: #6d28d9;
+
+  /* Los cuatro niveles de la puntuación, oscurecidos para que se lean como
+     texto sobre fondo claro (WCAG AA). */
+  --score-excellent: #047857;
+  --score-good: #0e7490;
+  --score-fair: #b45309;
+  --score-poor: #b91c1c;
   --gradient-header: linear-gradient(
     90deg,
     rgba(79, 70, 229, 0.12),

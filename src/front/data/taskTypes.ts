@@ -185,10 +185,10 @@ Código fuente completo, funcional y listo para ejecutar, con instrucciones de i
         options: [
           'Profesional y cercano',
           'Divertido y desenfadado',
-          'Técnico y autoriza',
+          'Técnico y autorizado',
           'Inspiracional y emocional',
           'Directo y sin rodeos',
-          'Corporate / institucional'
+          'Corporativo / institucional'
         ]
       },
       {
@@ -729,7 +729,7 @@ Una hoja de ruta de SEO accionable, con los textos finales incluidos.`
         label: 'Tipo de material',
         options: [
           'Contrato o documento legal',
-          'Informe o informe trimestral',
+          'Informe trimestral',
           'Artículo o paper',
           'Transcripción de reunión',
           'Manual o documentación',

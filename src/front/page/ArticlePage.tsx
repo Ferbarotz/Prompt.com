@@ -5,6 +5,8 @@ import useSeo from '../hooks/useSeo'
 import { getRouteSeo } from '../data/routeMeta'
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildJsonLdGraph } from '../data/seoData'
 import { getArticle, tagSlug } from '../data/articles'
+import { getGuidePage } from '../data/guidePages'
+import { assetUrl } from '../utils/siteUrl'
 import { PATHS } from '../data/paths'
 import styles from './ContentPage.module.css'
 
@@ -29,6 +31,9 @@ const ArticlePage = ({ slug }: { slug: string }) => {
 
   useSeo({
     ...getRouteSeo(article?.path ?? BLOG_INDEX_PATH),
+    // Un artículo del blog es un `article` de Open Graph, no una web: sin
+    // esto, las redes lo muestran como una página más y pierden la fecha.
+    type: 'article',
     jsonLd: article
       ? buildJsonLdGraph([
           buildArticleJsonLd({
@@ -37,6 +42,7 @@ const ArticlePage = ({ slug }: { slug: string }) => {
             path: article.path,
             datePublished: article.date,
             section: article.tags[0] ?? 'Blog',
+            image: assetUrl(`og/blog/${article.slug}.png`),
             wordCount: article.sections.reduce(
               (total, section) => total + section.paragraphs.join(' ').split(/\s+/).length,
               0
@@ -55,7 +61,7 @@ const ArticlePage = ({ slug }: { slug: string }) => {
     return (
       <div className="site-bg">
         <Navbar />
-        <main className={styles.main}>
+        <main id="contenido" className={styles.main}>
           <h1 className={styles.title}>Artículo no encontrado</h1>
           <p className={styles.paragraph}>
             Ese artículo no existe. <Link to={BLOG_INDEX_PATH}>Ver todos los artículos</Link>.
@@ -70,7 +76,7 @@ const ArticlePage = ({ slug }: { slug: string }) => {
     <div className="site-bg">
       <Navbar />
 
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <nav aria-label="Migas de pan" className={styles.breadcrumb}>
           <Link to={PATHS.home}>Inicio</Link> › <Link to={BLOG_INDEX_PATH}>Blog</Link> ›{' '}
           {article.title}
@@ -114,6 +120,27 @@ const ArticlePage = ({ slug }: { slug: string }) => {
                 </ul>
               </div>
             </section>
+          ) : null}
+
+          {/* Los bloques de la guía de los que habla el artículo: el blog y la
+              guía se apuntan el uno al otro. */}
+          {article.blocks.length > 0 ? (
+            <nav aria-label="Bloques de la guía" className={styles.related}>
+              <h2 className={styles.relatedTitle}>Los bloques de la guía</h2>
+              <ul className={styles.relatedList}>
+                {article.blocks.map((slug) => {
+                  const bloque = getGuidePage(slug)
+                  if (!bloque) return null
+                  return (
+                    <li key={slug}>
+                      <Link to={bloque.path} className={styles.relatedLink}>
+                        {bloque.title}
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            </nav>
           ) : null}
 
           <div className={styles.cta}>

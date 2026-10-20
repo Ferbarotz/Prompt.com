@@ -70,7 +70,23 @@ describe('páginas de la guía', () => {
       const route = ROUTES.find((item) => item.path === page.path)
       expect(route).toBeDefined()
       expect(route?.title).toBe(page.title)
+      expect(route?.description).toBe(page.description)
       expect(route?.og?.file).toBe(`guia/${page.slug}`)
+    }
+  })
+
+  it('los títulos no son tan largos como para que se corten en el buscador', () => {
+    // Con el sufijo " — Prompt.com", el título no debería pasar de 60
+    // caracteres: Google corta el title tag y muestra "…".
+    for (const page of GUIDE_PAGES) {
+      expect(page.title.length + ' — Prompt.com'.length).toBeLessThanOrEqual(60)
+    }
+  })
+
+  it('las descripciones caben en el resultado del buscador y no se cortan a media frase', () => {
+    for (const page of GUIDE_PAGES) {
+      expect(page.description.length).toBeLessThanOrEqual(160)
+      expect(page.description.endsWith('…')).toBe(false)
     }
   })
 })

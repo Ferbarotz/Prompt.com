@@ -61,3 +61,15 @@
 .back a {
   color: var(--text-link);
 }
+
+/* Aviso de datos del titular sin completar (dirección fiscal, NIF). */
+.warning {
+  margin: 0 0 1.4rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--brand-amber);
+  border-radius: var(--radius-md);
+  background: var(--surface-tint);
+  color: var(--text-bright);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}

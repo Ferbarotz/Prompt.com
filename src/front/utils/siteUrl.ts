@@ -27,6 +27,11 @@ export const absoluteUrl = (path = '/'): string => {
   return clean ? `${origin()}${base}${clean}/` : `${origin()}${base}`
 }
 
-/** URL absoluta de un fichero estático (imágenes, manifest…). */
+/**
+ * URL absoluta de un fichero estático (imágenes, manifest…).
+ *
+ * `BASE_URL` nunca acaba en barra (se normaliza al principio del fichero), así
+ * que la unión con la ruta no produce una doble barra.
+ */
 export const assetUrl = (path: string): string =>
   `${origin()}${BASE_URL}/${path.replace(/^\/+/, '')}`

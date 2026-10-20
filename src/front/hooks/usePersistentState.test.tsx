@@ -87,4 +87,41 @@ describe('usePersistentState', () => {
 
     getItem.mockRestore()
   })
+
+  it('tras borrar, lo borrado no vuelve al almacenamiento', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(<Probe storageKey="borrado" initial="hola" />)
+
+    await user.click(screen.getByRole('button', { name: 'añadir' }))
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:borrado')).toContain('hola!')
+    )
+
+    clearPersistedState()
+    expect(window.localStorage.getItem('prompt-com:borrado')).toBeNull()
+
+    // El valor en memoria vuelve a su estado inicial…
+    expect(screen.getByTestId('value')).toHaveTextContent('hola')
+
+    // …y no se resucita al desmontar el componente (al navegar a otra página).
+    unmount()
+    expect(window.localStorage.getItem('prompt-com:borrado')).toBeNull()
+  })
+
+  it('tras borrar, el visitante puede seguir trabajando y se guarda de nuevo', async () => {
+    const user = userEvent.setup()
+    render(<Probe storageKey="otra" initial="hola" />)
+
+    await user.click(screen.getByRole('button', { name: 'añadir' }))
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:otra')).toContain('hola!')
+    )
+
+    clearPersistedState()
+    await user.click(screen.getByRole('button', { name: 'añadir' }))
+
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:otra')).toContain('hola!')
+    )
+  })
 })

@@ -100,6 +100,32 @@ textarea {
   border: 0;
 }
 
+/* Enlace para saltar al contenido: solo aparece cuando recibe el foco
+   (WCAG 2.4.1). La navegación se repite en todas las páginas, así que
+   quien navega con teclado necesita poder saltarla. */
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/* El contenido principal que apunta el enlace de salto. */
+#contenido:focus {
+  outline: none;
+}
+
 /* ---------------------------------------------------------------------------
    Controles de formulario
    ---------------------------------------------------------------------------
@@ -114,9 +140,14 @@ textarea {
   font-size: var(--text-base);
   color: var(--text-bright);
   background: var(--surface-raised);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   border-radius: var(--radius-sm);
   resize: vertical;
+}
+
+/* Campo con error: el borde tiene que verse (WCAG 1.4.11). */
+.field-input[aria-invalid='true'] {
+  border-color: var(--brand-red);
 }
 
 .field-input::placeholder {
@@ -213,7 +244,7 @@ select.field-input option {
 .btn-outline {
   background: transparent;
   color: var(--text-muted);
-  border-color: var(--border);
+  border-color: var(--border-control);
 }
 
 .btn-outline:hover:not(:disabled) {

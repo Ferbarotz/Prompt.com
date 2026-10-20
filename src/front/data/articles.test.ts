@@ -50,7 +50,16 @@ describe('artículos del blog', () => {
       const route = ROUTES.find((item) => item.path === article.path)
       expect(route).toBeDefined()
       expect(route?.title).toBe(article.title)
+      expect(route?.description).toBe(article.description)
       expect(route?.og?.file).toBe(`blog/${article.slug}`)
+    }
+  })
+
+  it('los títulos no son tan largos como para que se corten en el buscador', () => {
+    // Con el sufijo " — Prompt.com", el título no debería pasar de 60
+    // caracteres: Google corta el title tag y muestra "…".
+    for (const article of ARTICLES) {
+      expect(article.title.length + ' — Prompt.com'.length).toBeLessThanOrEqual(60)
     }
   })
 

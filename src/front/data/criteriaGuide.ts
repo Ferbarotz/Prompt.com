@@ -32,13 +32,20 @@ export interface CriterionGuide {
   mistakes: string[]
   /** Slugs de las páginas relacionadas. */
   related: string[]
+  /**
+   * Slug del artículo del blog que habla de este bloque.
+   *
+   * Es el enlace inverso al que hace el artículo: la guía y el blog se
+   * apuntan el uno al otro en lugar de ser dos silos.
+   */
+  post?: string
 }
 
 export const CRITERIA_GUIDE: CriterionGuide[] = [
   {
     criterionId: 'rol',
     slug: 'rol',
-    title: 'El rol en un prompt: por qué decide cómo responde el modelo',
+    title: 'El rol: por qué decide cómo responde el modelo',
     description:
       'Cómo definir el rol o la persona del modelo en un prompt: qué hace, cuándo funciona y los errores que más se repiten.',
     summary:
@@ -48,7 +55,7 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
         heading: 'Qué hace el rol',
         paragraphs: [
           'Un modelo de lenguaje no "es" nadie: estima la siguiente palabra más probable. La instrucción "actúa como un redactor publicitario" no lo convierte en redactor, pero desplaza la distribución de la respuesta hacia el estilo, los ejemplos y el vocabulario que suele ver en textos de ese tipo.',
-          'El efecto real es de tres cosas: el tono (formal o cercano), la terminología (qué palabras usa) y el criterio (qué considera importante). Un "analista de marketing B2B" mira conversiones y coste por lead; un "periodista" mira contexto y consecuencias'
+          'El efecto real es de tres cosas: el tono (formal o cercano), la terminología (qué palabras usa) y el criterio (qué considera importante). Un "analista de marketing B2B" mira conversiones y coste por lead; un "periodista" mira contexto y consecuencias.'
         ]
       },
       {
@@ -66,14 +73,15 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Cambiar de rol a mitad del prompt sin avisar: el modelo mezcla dos registros.',
       'Pedir un rol sin después pedir formato ni restricciones: el modelo entrega un texto genérico en el registro correcto.'
     ],
-    related: ['contexto', 'objetivo', 'formato']
+    related: ['contexto', 'objetivo', 'formato'],
+    post: 'un-mismo-prompt-con-varios-modelos'
   },
   {
     criterionId: 'objetivo',
     slug: 'objetivo',
-    title: 'El objetivo del prompt: la instrucción que no puede faltar',
+    title: 'El objetivo: la instrucción que no puede faltar',
     description:
-      'Cómo escribir el objetivo de un prompt con un verbo claro en imperativo, con el alcance y el alcance de la respuesta.',
+      'Cómo escribir el objetivo de un prompt con un verbo claro en imperativo, con el alcance y el formato de la respuesta.',
     summary:
       'El objetivo es la respuesta a la pregunta "¿qué tiene que hacer el modelo?". Sin él, el modelo rellena el hueco con lo más habitual, y lo más habitual suele ser un texto largo y genérico que luego hay que editar a mano.',
     sections: [
@@ -81,7 +89,7 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
         heading: 'Qué es un buen objetivo',
         paragraphs: [
           'Un objetivo útil empieza por un verbo en imperativo y termina delimitando el alcance: "resume", "genera", "clasifica", "compara". El verbo decide el tipo de trabajo (extraer, crear, ordenar) y el alcance decide cuánto se entrega.',
-          'Lo que no funciona es un objetivo que solo describe el tema. "Contrato" no es un objetivo; "resume este contrato en ocho riesgos citing cláusulas" sí lo es. La diferencia es que el segundo se puede evaluar cuando llega la respuesta.'
+          'Lo que no funciona es un objetivo que solo describe el tema. "Contrato" no es un objetivo; "resume este contrato en ocho riesgos citando cláusulas" sí lo es. La diferencia es que el segundo se puede evaluar cuando llega la respuesta.'
         ]
       },
       {
@@ -96,15 +104,16 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
     example: 'Genera 5 hipótesis de mejora ordenadas por impacto esperado.',
     mistakes: [
       'Describir el tema en lugar de pedir una acción ("información sobre el GDPR").',
-      'Meter tres objetivos en el mismo prompt y esperar que los tres salgan Iguales.',
+      'Meter tres objetivos en el mismo prompt y esperar que los tres salgan iguales.',
       'No decir en qué formato ni con qué extensión: el modelo decide por su cuenta.'
     ],
-    related: ['rol', 'formato', 'restricciones']
+    related: ['rol', 'formato', 'restricciones'],
+    post: 'revisar-y-mejorar-un-prompt-que-no-funciona'
   },
   {
     criterionId: 'contexto',
     slug: 'contexto',
-    title: 'Contexto y audiencia: por qué la misma pregunta da respuestas distintas',
+    title: 'Contexto y audiencia: la respuesta cambia',
     description:
       'Cómo declarar el contexto, la audiencia y el nivel de conocimiento en un prompt para que la respuesta no sea genérica.',
     summary:
@@ -113,7 +122,7 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       {
         heading: 'Qué información aporta el contexto',
         paragraphs: [
-          'El contexto cubre tres cosas: la situación (en qué momento se pide), el destinatario (quién lee) y el marco (sector, tamaño, regulatory, herramientas). Con eso, el modelo puede elegir ejemplos, vocabulario y nivel de tecnicidad.',
+          'El contexto cubre tres cosas: la situación (en qué momento se pide), el destinatario (quién lee) y el marco (sector, tamaño, marco regulatorio, herramientas). Con eso, el modelo puede elegir ejemplos, vocabulario y nivel de tecnicidad.',
           'También sirve para acotar lo que el modelo no sabe: si escribes "para el CEO de una empresa de 20 personas, sin conocimientos técnicos", evitas una respuesta llena de jerga.'
         ]
       },
@@ -134,12 +143,13 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Describir la audiencia sin decir qué sabe: "para clientes" no dice nada.',
       'Faltarse el contexto en prompts que ya parecen detallados: el detalle del formato no compensa la falta de destinatario.'
     ],
-    related: ['rol', 'datos', 'objetivo']
+    related: ['rol', 'datos', 'objetivo'],
+    post: 'revisar-y-mejorar-un-prompt-que-no-funciona'
   },
   {
     criterionId: 'datos',
     slug: 'datos',
-    title: 'Datos de entrada: qué darle al modelo para que no invente',
+    title: 'Datos de entrada: qué darle para que no invente',
     description:
       'Cómo pasar los datos de entrada a un prompt (texto, tabla, archivo) y qué hacer para que el modelo no se los invente.',
     summary:
@@ -168,12 +178,13 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Pegar los datos sin separarlos de las instrucciones: el modelo los lee como parte de la tarea.',
       'No decir qué hacer con lo que falta, y acabar con números inventados.'
     ],
-    related: ['validacion', 'restricciones', 'formato']
+    related: ['validacion', 'restricciones', 'formato'],
+    post: 'prompts-para-agentes-de-ia'
   },
   {
     criterionId: 'restricciones',
     slug: 'restricciones',
-    title: 'Restricciones: acota la respuesta y evita el relleno',
+    title: 'Restricciones: acota y quita el relleno',
     description:
       'Cómo escribir las restricciones de un prompt: límites de extensión, cosas que no incluir y tono, para que la respuesta no se desvíe.',
     summary:
@@ -203,12 +214,13 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Acumular restricciones sin comprobar que encajan entre sí.',
       'Olvidar la restricción más importante: la extensión.'
     ],
-    related: ['formato', 'objetivo', 'datos']
+    related: ['formato', 'objetivo', 'datos'],
+    post: 'un-mismo-prompt-con-varios-modelos'
   },
   {
     criterionId: 'formato',
     slug: 'formato',
-    title: 'Formato de salida: la diferencia entre una respuesta usable y otra no',
+    title: 'Formato de salida: que la respuesta sea usable',
     description:
       'Cómo especificar el formato de salida de un prompt (JSON, tabla markdown, lista numerada) para poder usar la respuesta sin retocarla.',
     summary:
@@ -237,12 +249,13 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Pedir JSON sin indicar las claves: el modelo inventa la estructura.',
       'Fijar el formato y olvidarse del idioma o las unidades.'
     ],
-    related: ['objetivo', 'restricciones', 'ejemplos']
+    related: ['objetivo', 'restricciones', 'ejemplos'],
+    post: 'prompts-para-agentes-de-ia'
   },
   {
     criterionId: 'ejemplos',
     slug: 'ejemplos',
-    title: 'Ejemplos y referencias: la forma más barata de controlar el estilo',
+    title: 'Ejemplos: la forma barata de fijar el estilo',
     description:
       'Cómo usar ejemplos (few-shot) en un prompt para fijar el estilo y la estructura de la respuesta, y cuándo no hacen falta.',
     summary:
@@ -271,12 +284,13 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Dar un ejemplo sin el resto de la estructura: el modelo copia solo esa parte.',
       'Usar ejemplos que contradicen las instrucciones escritas.'
     ],
-    related: ['formato', 'rol', 'validacion']
+    related: ['formato', 'rol', 'validacion'],
+    post: 'un-mismo-prompt-con-varios-modelos'
   },
   {
     criterionId: 'validacion',
     slug: 'validacion',
-    title: 'Criterio de validación: cómo saber si la respuesta sirve',
+    title: 'Validación: cómo saber si la respuesta sirve',
     description:
       'Cómo escribir el criterio de validación de un prompt para comprobar que la respuesta cumple, y cómo pedir la revisión antes de entregarla.',
     summary:
@@ -305,6 +319,7 @@ export const CRITERIA_GUIDE: CriterionGuide[] = [
       'Validar el estilo en lugar del contenido: la forma es fácil, los datos no.',
       'No usar el criterio para iterar: si el resultado falla, el prompt debería cambiar.'
     ],
-    related: ['datos', 'ejemplos', 'restricciones']
+    related: ['datos', 'ejemplos', 'restricciones'],
+    post: 'revisar-y-mejorar-un-prompt-que-no-funciona'
   }
 ]

@@ -22,8 +22,13 @@ const upsertMeta = (attribute: string, key: string, content?: string): void => {
 
 /** Crea o actualiza un `<link rel>`. */
 const upsertLink = (rel: string, href?: string | null): void => {
-  if (!href) return
   let element = document.head.querySelector(`link[rel="${rel}"]`)
+  if (!href) {
+    // Sin destino no se deja el enlace anterior: una página `noindex` (la 404
+    // o una página de etiqueta) no puede heredar la canonical de la anterior.
+    element?.remove()
+    return
+  }
   if (!element) {
     element = document.createElement('link')
     element.setAttribute('rel', rel)
@@ -105,6 +110,13 @@ const useSeo = ({
   // Los datos estructurados son específicos de la ruta: se insertan al entrar
   // y se retiran al salir para no dejar datos de otra página en el DOM.
   useEffect(() => {
+    // El HTML estático ya trae sus propios datos estructurados: si la
+    // aplicación arrancara sin quitarlo, la página tendría dos bloques
+    // `ld+json` (el estático y el de la ruta).
+    for (const estatico of document.querySelectorAll('script[data-seo="static"]')) {
+      estatico.remove()
+    }
+
     if (!jsonLd) return undefined
 
     const script = document.createElement('script')

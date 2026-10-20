@@ -106,10 +106,30 @@
   margin: 0;
   font-size: var(--text-lg);
   line-height: 1.35;
+  /*
+   * El degradado se declara aquí (y no en los tokens) para que la variable
+   * `--section-accent-solid` se resuelva en el propio título. En el tema
+   * oscuro vale el color vivo de la sección; en el claro hace falta la
+   * variante oscura, porque el color vivo no llega a 4.5:1 como texto
+   * (WCAG AA).
+   */
+  --title-gradient: linear-gradient(
+    90deg,
+    var(--section-accent-solid) 0%,
+    var(--title-gradient-end) 100%
+  );
   background: var(--title-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+:global([data-theme='light']) .cardTitle {
+  --title-gradient: linear-gradient(
+    90deg,
+    var(--section-accent-text) 0%,
+    var(--title-gradient-end) 100%
+  );
 }
 
 .summary {

@@ -106,7 +106,7 @@ export const AI_TOOLS_BY_TASK: Record<string, AiToolsSuggestion> = {
       {
         name: 'Gemini',
         url: 'https://gemini.google.com',
-        note: 'Cómodo si editas después en Google Docs o publicas desde el ecosystem de Google.'
+        note: 'Cómodo si editas después en Google Docs o publicas desde el ecosistema de Google.'
       },
       {
         name: 'Predis',
@@ -251,7 +251,7 @@ export const AI_TOOLS_BY_TASK: Record<string, AiToolsSuggestion> = {
       {
         name: 'Gemini',
         url: 'https://gemini.google.com',
-        note: 'Practicalo si después redactas y envías desde Gmail.'
+        note: 'Práctico si después redactas y envías desde Gmail.'
       },
       {
         name: 'Lavender',
@@ -261,7 +261,7 @@ export const AI_TOOLS_BY_TASK: Record<string, AiToolsSuggestion> = {
       {
         name: 'Brevo',
         url: 'https://www.brevo.com',
-        note: 'Envío, plantillas y automatización de campaigns cuando ya tienes la lista.'
+        note: 'Envío, plantillas y automatización de campañas cuando ya tienes la lista.'
       }
     ]
   },
@@ -331,7 +331,7 @@ export const AI_TOOLS_BY_TASK: Record<string, AiToolsSuggestion> = {
       {
         name: 'DeepL',
         url: 'https://www.deepl.com',
-        note: 'La calidad de traducción es→en más natural, y conserva el formato original.',
+        note: 'La calidad de la traducción de español a inglés es más natural, y conserva el formato original.',
         recommended: true
       },
       {

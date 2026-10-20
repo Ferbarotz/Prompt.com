@@ -10,21 +10,39 @@ interface Column {
   links: Array<{ label: string; to: string }>
 }
 
+/*
+ * Las columnas del pie salen del catálogo de rutas (`routes.json`), que ya
+ * está en el bundle inicial: así el pie enlaza con todo el contenido sin
+ * traer el texto de los artículos.
+ */
 const columns: Column[] = [
   {
     title: 'Herramientas',
     links: [
       { label: 'Generador de prompts', to: PATHS.generator },
-      { label: 'Analizador de prompts', to: PATHS.linter },
-      { label: 'Blog', to: PATHS.blog }
+      { label: 'Analizador de prompts', to: PATHS.linter }
     ]
   },
   {
     title: 'Guía',
     links: [
       { label: 'Guía de prompts', to: PATHS.guia },
+      ...routesByGroup('guide-sections').map((route) => ({
+        label: route.short ?? route.title,
+        to: route.path
+      })),
       ...routesByGroup('guide-blocks').map((route) => ({
         label: route.short ?? route.title,
+        to: route.path
+      }))
+    ]
+  },
+  {
+    title: 'Blog',
+    links: [
+      { label: 'Todos los artículos', to: PATHS.blog },
+      ...routesByGroup('blog').map((route) => ({
+        label: route.title,
         to: route.path
       }))
     ]
@@ -40,11 +58,15 @@ const columns: Column[] = [
 ]
 
 const Footer = () => {
-  const [cleared, setCleared] = useState(false)
+  const [cleared, setCleared] = useState<string>('')
 
   const handleClear = () => {
-    clearPersistedState()
-    setCleared(true)
+    const hadData = clearPersistedState()
+    setCleared(
+      hadData
+        ? 'Listo: no queda nada guardado en este navegador.'
+        : 'No había datos guardados en este navegador.'
+    )
   }
 
   return (
@@ -61,7 +83,7 @@ const Footer = () => {
               Borrar los datos guardados
             </button>
             <span role="status" className={styles.clearStatus}>
-              {cleared ? 'Listo: no queda nada guardado en este navegador.' : ''}
+              {cleared}
             </span>
           </p>
         </div>
@@ -84,9 +106,7 @@ const Footer = () => {
 
       <div className={styles.bottom}>
         <span>© {new Date().getFullYear()} Prompt.com</span>
-        <span>
-          Hecho con <span aria-label="amor">♥</span> para quienes escriben prompts
-        </span>
+        <span>Hecho con cariño para quienes escriben prompts</span>
       </div>
     </footer>
   )

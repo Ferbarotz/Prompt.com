@@ -47,6 +47,13 @@ jobs:
           # ningún script de terceros.
           VITE_ANALYTICS_URL: ${{ vars.VITE_ANALYTICS_URL }}
           VITE_ANALYTICS_DOMAIN: ${{ vars.VITE_ANALYTICS_DOMAIN }}
+          # Datos del titular para los textos legales. Vacío = el aviso legal
+          # y la privacidad se publican con un aviso de datos incompletos.
+          VITE_SITE_OWNER_NAME: ${{ vars.VITE_SITE_OWNER_NAME }}
+          VITE_SITE_OWNER_LEGAL_NAME: ${{ vars.VITE_SITE_OWNER_LEGAL_NAME }}
+          VITE_SITE_OWNER_TAX_ID: ${{ vars.VITE_SITE_OWNER_TAX_ID }}
+          VITE_SITE_OWNER_ADDRESS: ${{ vars.VITE_SITE_OWNER_ADDRESS }}
+          VITE_SITE_OWNER_EMAIL: ${{ vars.VITE_SITE_OWNER_EMAIL }}
 
       - name: Verify build output
         run: |
@@ -76,10 +83,26 @@ jobs:
           grep -q 'canonical" href="https://[^"]*/guia/rol/"' dist/guia/rol/index.html
           # Los alias existen como carpeta (200) pero no se indexan.
           ! grep -q 'generator-prompt' dist/sitemap.xml
+          # Los datos estructurados van también en el HTML estático (para los
+          # buscadores que no ejecutan JavaScript).
+          grep -q 'application/ld+json' dist/index.html
+          grep -q 'application/ld+json' dist/guia/rol/index.html
+          # Los artículos se anuncian como `article` en Open Graph.
+          grep -q 'og:type" content="article"' dist/blog/un-mismo-prompt-con-varios-modelos/index.html
           # Con dominio propio, el CNAME debe estar en el artefacto.
           if [ -n "${{ vars.CUSTOM_DOMAIN }}" ]; then
             test -f dist/CNAME
             grep -q "${{ vars.CUSTOM_DOMAIN }}" dist/CNAME
+          fi
+
+      - name: Aviso: datos del titular incompletos
+        # No bloquea el despliegue: avisa de que los textos legales se
+        # publican sin la dirección fiscal y el NIF del titular.
+        # El texto legal viaja en el chunk perezoso de la ruta, no en el HTML.
+        continue-on-error: true
+        run: |
+          if grep -rq 'Dirección fiscal del titular' dist/assets/; then
+            echo "::warning::Faltan VITE_SITE_OWNER_ADDRESS y VITE_SITE_OWNER_TAX_ID: los textos legales se publican con un aviso de datos incompletos."
           fi
 
       # Si Pages está configurado como "Deploy from a branch", GitHub lanza en

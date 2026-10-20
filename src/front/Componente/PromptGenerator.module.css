@@ -60,7 +60,7 @@
 }
 
 .stepCurrent {
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: var(--gradient-brand);
   color: #fff;
   border-color: rgba(139, 92, 246, 0.6);
   box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
@@ -284,6 +284,15 @@
   font-weight: 600;
 }
 
+/* Mensaje de error de un campo (WCAG 3.3.1). */
+.errorText {
+  margin: 0.45rem 0 0;
+  color: var(--brand-red);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
 .error {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
@@ -308,7 +317,7 @@
   display: grid;
   gap: 0.15rem;
   padding: 0.7rem 0.85rem;
-  border: 1px solid rgba(111, 137, 255, 0.32);
+  border: 1px solid var(--border-control);
   border-radius: var(--radius-md);
   background: var(--surface-soft);
   cursor: pointer;

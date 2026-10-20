@@ -1,4 +1,4 @@
-import { absoluteUrl } from '../utils/siteUrl'
+import { absoluteUrl, assetUrl } from '../utils/siteUrl'
 import { GUIDE_SECTIONS } from './guideSections'
 import { GUIDE_PREFIX } from './guidePages'
 import { PATHS } from './paths'
@@ -37,6 +37,7 @@ export interface ArticleNode {
   inLanguage: string
   datePublished: string
   dateModified: string
+  image: string
   author: { '@type': 'Organization'; name: string; url: string }
   publisher: { '@type': 'Organization'; '@id': string; name: string; url: string }
   mainEntity: {
@@ -101,6 +102,7 @@ export const HOME_JSON_LD: HomeJsonLd = {
       inLanguage: 'es-ES',
       datePublished: '2026-10-20',
       dateModified: '2026-10-20',
+      image: assetUrl('og-image.png'),
       author: {
         '@type': 'Organization',
         name: 'Prompt.com',
@@ -178,6 +180,7 @@ export const buildArticleJsonLd = ({
   datePublished,
   dateModified,
   section,
+  image,
   wordCount
 }: {
   title: string
@@ -186,6 +189,8 @@ export const buildArticleJsonLd = ({
   datePublished: string
   dateModified?: string
   section: string
+  /** URL absoluta de la imagen del artículo (la tarjeta Open Graph). */
+  image?: string
   wordCount?: number
 }) => ({
   '@context': 'https://schema.org',
@@ -198,6 +203,9 @@ export const buildArticleJsonLd = ({
   articleSection: section,
   datePublished,
   dateModified: dateModified ?? datePublished,
+  // La imagen es requisito para que Google conceda el resultado enriquecido
+  // de artículo: sin ella, el `Article` no se muestra con miniatura.
+  ...(image ? { image } : {}),
   ...(wordCount ? { wordCount } : {}),
   author: {
     '@type': 'Organization',
@@ -218,7 +226,8 @@ export const buildJsonLdGraph = (nodes: object[]) => ({
 })
 
 /** Datos estructurados de la página del analizador. */
-export const LINTER_JSON_LD = {  '@context': 'https://schema.org',
+export const LINTER_JSON_LD = {
+  '@context': 'https://schema.org',
   '@type': 'WebApplication',
   '@id': `${absoluteUrl(PATHS.linter)}#app`,
   name: 'Analizador de prompts de Prompt.com',

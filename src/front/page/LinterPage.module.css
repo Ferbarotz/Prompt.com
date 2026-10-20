@@ -126,7 +126,9 @@
 
 .scoreText {
   flex: 1;
-  min-width: 220px;
+  /* Sin `min()` el bloque no cabía en pantallas de 320 px y salía una barra
+     horizontal. */
+  min-width: min(220px, 100%);
 }
 
 .scoreLevel {

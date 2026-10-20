@@ -55,6 +55,8 @@ export interface GuidePage {
   mistakes?: string[]
   /** Slugs de las páginas relacionadas. */
   related: string[]
+  /** Slug del artículo del blog que habla de este bloque. */
+  post?: string
   /** Imagen de cabecera (solo la tienen las secciones de la guía). */
   image?: ContentImage
   /** Criterio de la rúbrica que explica la página, si aplica. */
@@ -66,15 +68,6 @@ export const GUIDE_PREFIX = '/guia/'
 
 /** Ruta del índice de la guía. */
 export const GUIDE_INDEX_PATH = GUIDE_PREFIX
-
-/** Recorta un texto para usarlo como descripción sin pasarse de largo. */
-const shorten = (text: string, max = 155): string => {
-  const clean = text.replace(/\s+/g, ' ').trim()
-  if (clean.length <= max) return clean
-  const cut = clean.slice(0, max)
-  const lastSpace = cut.lastIndexOf(' ')
-  return `${cut.slice(0, lastSpace > 0 ? lastSpace : max).trimEnd()}…`
-}
 
 /**
  * Páginas relacionadas de cada sección de la guía.
@@ -112,7 +105,7 @@ const sectionPages: GuidePage[] = GUIDE_SECTIONS.map((section) => ({
   slug: section.id,
   path: `${GUIDE_PREFIX}${section.id}/`,
   title: section.title,
-  description: shorten(section.summary),
+  description: section.description,
   summary: section.summary,
   accent: section.accent,
   sections: [
@@ -142,6 +135,7 @@ const criterionPages: GuidePage[] = CRITERIA_GUIDE.map((criterion) => ({
   example: criterion.example,
   mistakes: criterion.mistakes,
   related: criterion.related,
+  post: criterion.post,
   criterionId: criterion.criterionId
 }))
 

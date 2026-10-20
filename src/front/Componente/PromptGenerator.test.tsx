@@ -53,10 +53,17 @@ describe('PromptGenerator', () => {
     const user = userEvent.setup()
     renderGenerator()
 
-    expect(screen.getByRole('button', { name: 'Siguiente' })).toBeDisabled()
+    // El botón no se deshabilita: al pulsarlo sin idea explica qué falta
+    // (WCAG 3.3.1).
+    await user.click(screen.getByRole('button', { name: 'Siguiente' }))
+    expect(screen.getByRole('alert')).toHaveTextContent(/escribe tu idea/i)
+    expect(screen.getByLabelText(/describe tu idea/i)).toHaveAttribute('aria-invalid', 'true')
 
     await user.type(screen.getByLabelText(/describe tu idea/i), 'Una tienda online')
-    expect(screen.getByRole('button', { name: 'Siguiente' })).toBeEnabled()
+    expect(screen.queryByRole('alert')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: 'Siguiente' }))
+    expect(screen.getByRole('button', { name: 'Anterior' })).toBeInTheDocument()
   })
 
   it('el botón de ejemplo rellena la idea con el ejemplo del tipo elegido', async () => {

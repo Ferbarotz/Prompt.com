@@ -18,7 +18,7 @@ const GeneratorPage = () => {
   return (
     <div className="site-bg">
       <Navbar />
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Generador de Prompts</h1>
           <p className={styles.subtitle}>

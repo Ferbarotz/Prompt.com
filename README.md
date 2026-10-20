@@ -57,16 +57,18 @@ npm run dev     # http://localhost:5173/Prompt.com/
 
 ```
 src/front/
-├── Componente/   Navbar, Footer, PromptGenerator, Analytics, ThemeToggle
+├── Componente/   Navbar, Footer, PromptGenerator, Analytics, ThemeToggle,
+│                 PromptAnatomy, ScrollableCode, RouteStatus
 │                 (+ .module.css)
 ├── data/         taskTypes, guideSections, promptLinter, legalContent, seoData,
-│                 criteriaGuide, guidePages, articles, generatorLink,
-│                 routes.json (catálogo de rutas), routeMeta
+│                 criteriaGuide, guidePages, articles, generatorLink, aiTools,
+│                 routes.json (catálogo de rutas), routeMeta, paths
 ├── hooks/        useSeo, usePersistentState
 ├── page/         Home, GeneratorPage, LinterPage, LegalPage, NotFoundPage,
-│                 GuidePage, GuideIndexPage, ArticlePage, BlogIndexPage
+│                 GuidePage, GuideIndexPage, ArticlePage, BlogIndexPage, TagPage
 ├── styles/       tokens.css (design tokens) y global.css (reset y utilidades)
-├── utils/        siteUrl (URLs absolutas del sitio)
+├── utils/        siteUrl (URLs absolutas), storage (localStorage),
+│                 clipboard (copiar con reserva), analytics (eventos)
 ├── router.tsx    rutas (las secundarias se cargan bajo demanda)
 └── main.tsx
 ```
@@ -77,11 +79,20 @@ src/front/
   `src/front/styles/tokens.css` como variables CSS. Cambiar la marca es editar
   ese fichero, no perseguir literales por los componentes.
 - **CSS Modules**: cada componente tiene su `*.module.css`. Los estilos
-  globales (reset, `.field-input`, `.btn`, `.sr-only`, `.site-bg`) están en
-  `src/front/styles/global.css`.
+  globales (reset, `.field-input`, `.btn`, `.sr-only`, `.skip-link`,
+  `.site-bg`) están en `src/front/styles/global.css`.
 - No queda ni un `style={{…}}` en el código: los únicos valores dinámicos
   (color de acento por sección, degradado del gauge) se aplican como
   propiedades CSS personalizadas.
+- **Contraste**: los dos temas cumplen WCAG AA (4.5:1 en texto, 3:1 en el
+  borde de los controles). Para que siga siendo cierto:
+  - el color de acento de cada sección de la guía tiene dos tonos
+    (`accent` y `accentText`): el vivo para bordes y sombras, y el oscuro
+    para el título, porque en el tema claro el vivo no llega a 4.5:1;
+  - la puntuación del analizador usa los tokens `--score-excellent`,
+    `--score-good`, `--score-fair` y `--score-poor`, no colores sueltos;
+  - el borde de los controles usa `--border-control`, no `--border` (que es
+    decorativo).
 
 ## Generador de prompts
 
@@ -153,21 +164,34 @@ usuario nunca sale del navegador.
   aplicación (`src/front/data/routeMeta.ts`) y el post-build.
 - `src/front/hooks/useSeo.ts` sincroniza por ruta el título, la descripción,
   `canonical`, Open Graph, Twitter Card y `robots` en el navegador.
-- `src/front/data/seoData.ts` define los datos estructurados: `FAQPage` +
-  `WebSite` en la home (la guía es un formato de pregunta y respuesta, que
-  encaja con el tipo de schema.org) y `WebApplication` en el generador y en el
-  analizador.
+- `src/front/data/seoData.ts` define los datos estructurados: `WebSite` +
+  `Article` en la home (la guía es un artículo), `Article` + `BreadcrumbList`
+  en la guía y en el blog, y `WebApplication` en el generador y en el
+  analizador. El `Article` **incluye `image`**: sin ella, Google no concede
+  el resultado enriquecido.
 - `index.html` lleva las etiquetas estáticas con URL absoluta: las sustituye
   `__SITE_URL__` con el origen real, lo hace el plugin `seoTags` de
   `vite.config.js` usando `scripts/site-url.mjs`.
-- `scripts/postbuild.mjs` genera `sitemap.xml` y `robots.txt` tras el build, y
-  **un HTML por ruta** con sus propias etiquetas SEO (`scripts/seo-head.mjs`).
-  Es lo que ven los previews de Slack, WhatsApp o X y los buscadores que no
-  ejecutan JavaScript: sin eso, todas las rutas se presentarían como la home
-  y su `canonical` apuntaría a la home (y se descartarían como duplicadas).
+- `scripts/postbuild.mjs` genera `sitemap.xml`, `robots.txt` y `llms.txt` tras
+  el build, y **un HTML por ruta** con sus propias etiquetas SEO
+  (`scripts/seo-head.mjs`). Es lo que ven los previews de Slack, WhatsApp o X y
+  los buscadores que no ejecutan JavaScript: sin eso, todas las rutas se
+  presentarían como la home y su `canonical` apuntaría a la home (y se
+  descartarían como duplicadas).
+- El HTML estático **también lleva los datos estructurados**
+  (`scripts/json-ld.mjs`): sin ellos, un buscador que no ejecuta JavaScript no
+  ve ningún `Article`. Cuando la aplicación arranca, quita ese bloque y pone
+  el suyo (más completo, con las migas de pan): nunca hay dos a la vez.
+- Los artículos se anuncian como `og:type=article` (con su fecha de
+  publicación) en vez de `website`.
 - El bloque SEO del HTML va entre los marcadores `<!-- SEO:START -->` y
   `<!-- SEO:END -->`: si desaparecen, el build falla en lugar de publicar
   etiquetas equivocadas.
+- **Títulos y descripciones**: el título de cada ruta, con el sufijo
+  " — Prompt.com", no pasa de 60 caracteres (Google corta el *title tag*), y
+  las descripciones no pasan de 160 ni se cortan a media frase. Hay tests que
+  lo comprueban y que comparan el catálogo con el contenido: si uno de los dos
+  cambia, el otro tiene que cambiar también.
 
 La URL del sitio se resuelve en este orden: `SITE_URL` → `GITHUB_REPOSITORY` →
 remoto `origin` de git → origen de desarrollo.
@@ -178,8 +202,16 @@ remoto `origin` de git → origen de desarrollo.
   `localStorage` (`src/front/hooks/usePersistentState.ts`): si recarga o
   vuelve atrás, no pierde lo que había escrito. Solo se guarda en su propio
   navegador: no hay cookies ni datos personales.
-- Lo guardado **caduca a los 30 días** y el pie de página tiene un enlace
-  para **borrarlo** (lo que dice la política de privacidad, y se cumple).
+- Todo lo que se guarda (el prompt, el texto analizado y también el tema)
+  lleva su fecha y **caduca a los 30 días**: es lo que dice la política de
+  privacidad, y se cumple. El formato es el mismo para todos
+  (`src/front/utils/storage.ts`): `{"v":1,"savedAt":…,"value":…}`.
+- El pie de página tiene un enlace para **borrarlo**. Al pulsarlo:
+  - se vacían las claves `prompt-com:*` del `localStorage`;
+  - los componentes que tenían el valor en memoria lo saben y **no lo vuelven
+    a escribir** (si lo escribieran, el prompt reaparecería al navegar a otra
+    página). Para eso está la lista de suscriptores de `storage.ts`;
+  - el estado en pantalla se reinicia y el tema vuelve al oscuro.
 - El prompt del generador viaja en la URL (`src/front/data/generatorLink.ts`):
   `?t=` tipo de tarea, `?i=` idea, `?d=` detalles, `?x=` extra. En la página
   del generador la URL se actualiza sola, así que se puede compartir el
@@ -188,6 +220,9 @@ remoto `origin` de git → origen de desarrollo.
   navegador y abre el resultado directamente en el paso 3.
 - El enlace se recorta si es demasiado largo (1200 caracteres): primero se
   caen los detalles y, si sigue largo, la idea.
+- **El prompt viaja en la URL**: eso significa que, al recargar o abrir un
+  enlace compartido, el texto llega al servidor que sirve la página (queda en
+  sus registros). La política de privacidad lo dice con todas sus letras.
 
 ## Contenido: guía por bloques y blog
 
@@ -211,6 +246,9 @@ remoto `origin` de git → origen de desarrollo.
   artículo, su página se marca como `noindex` y no entra en el sitemap: no
   tiene contenido para merecer un puesto. En cuanto haya dos, se publica
   sola (lo decide el catálogo de rutas y hay un test que lo comprueba).
+- **La guía y el blog se apuntan el uno al otro**: cada artículo declara los
+  bloques de los que habla (`blocks`) y cada bloque declara el artículo que lo
+  explica (`post`). Así el reparto de autoridad no se queda en dos silos.
 - El contenido viaja en los chunks perezosos de sus rutas: el catálogo de
   rutas (`routes.json`) solo lleva las URLs y los metadatos, así que el bundle
   inicial no crece con el texto.
@@ -234,12 +272,35 @@ La marca es oscura, pero leer la guía entera en fondo oscuro cansa. El botón
 - Los dos temas se definen **solo con tokens** (`src/front/styles/tokens.css`):
   el tema claro redefine las variables del oscuro, así que los componentes no
   cambian.
-- La elección se guarda en `localStorage` y se aplica **antes de pintar**
-  (script en `index.html`), así que al recargar no hay destello.
+- La elección se guarda en `localStorage` (con su fecha, como el resto de lo
+  guardado) y se aplica **antes de pintar** (script en `index.html`), así que
+  al recargar no hay destello.
 - `prefers-reduced-motion` se respeta en toda la aplicación: quien pide menos
   movimiento no lo tiene.
 - El tema claro se ha **revisado con un navegador real** (capturas en los dos
   temas): así se detectaron las tarjetas de la home que se quedaban oscuras.
+- **El contraste está medido**: los dos temas cumplen WCAG AA. Antes de
+  cambiar un color de acento o un degradado, comprueba el contraste del
+  color nuevo sobre el fondo del tema (hay un test que lo hace para los
+  títulos de la guía).
+
+## Accesibilidad
+
+- **Enlace para saltar al contenido** (`Saltar al contenido`): la navegación
+  se repite en todas las páginas, así que quien navega con teclado necesita
+  poder saltarla. Aparece al recibir el foco.
+- **Un nombre accesible por enlace**: los enlaces repetidos ("Leer el bloque
+  completo →", "Ver la guía del bloque →") dicen a dónde llevan, y las
+  tarjetas de la guía y del blog usan `aria-labelledby` para que el lector de
+  pantalla anuncie el título y no la tarjeta entera.
+- **Los bloques de código con scroll son enfocables** (`ScrollableCode`): si
+  no, el prompt largo es inalcanzable con el teclado.
+- **Los campos obligatorios se explican**: el botón no se deshabilita, al
+  pulsarlo avisa de qué falta (`role="alert"` y `aria-invalid`).
+- La barra de navegación y el pie están también en la 404 y en la pantalla de
+  error de carga.
+- Durante una navegación a una ruta que se carga bajo demanda, la barra
+  superior muestra el progreso.
 
 ## Rendimiento
 
@@ -253,6 +314,9 @@ La marca es oscura, pero leer la guía entera en fondo oscuro cansa. El botón
 - Las rutas secundarias y el generador se cargan con `lazy`: no forman parte
   del bundle inicial. También el contenido de la guía, el blog y el texto de
   las páginas legales: el bundle inicial solo lleva el catálogo de rutas.
+- El chunk compartido con React y React Router se llama `vendor`
+  (`manualChunks` en `vite.config.js`), no como el primer módulo que
+  contiene.
 - La **home** pesa ~94 kB gzip, de los cuales ~90 kB son React y React Router.
   El código de la aplicación en sí ocupa ~4 kB: no hay nada más que quitar
   sin cambiar de framework.
@@ -272,14 +336,18 @@ Copia `.env.example` a `.env.local` para activar las integraciones opcionales:
 | --------------------------- | ------------------------------------------------------- |
 | `VITE_ANALYTICS_URL`        | Script de analítica sin cookies (Plausible o compatible) |
 | `VITE_ANALYTICS_DOMAIN`     | Dominio que se reporta a la analítica                   |
+| `VITE_SITE_OWNER_NAME`      | Nombre del sitio en los textos legales                  |
+| `VITE_SITE_OWNER_LEGAL_NAME`| Nombre legal o razón social del titular                |
+| `VITE_SITE_OWNER_TAX_ID`    | NIF, NIE o CIF del titular                              |
+| `VITE_SITE_OWNER_ADDRESS`   | Dirección fiscal del titular                            |
+| `VITE_SITE_OWNER_EMAIL`     | Correo de contacto                                      |
 
 Sin estas variables el sitio funciona igual: no se carga ningún script de
 terceros.
 
-En producción (GitHub Pages) las dos variables se definen en **Settings →
-Secrets and variables → Actions → Variables** (`VITE_ANALYTICS_URL` y
-`VITE_ANALYTICS_DOMAIN`): el workflow las pasa al build y quedan en el
-bundle. Con Plausible, el dominio es el del sitio y el script
+En producción (GitHub Pages) las variables se definen en **Settings →
+Secrets and variables → Actions → Variables**: el workflow las pasa al build y
+quedan en el bundle. Con Plausible, el dominio es el del sitio y el script
 `https://plausible.io/js/script.js`; con Umami o cualquier servicio que use
 el mismo esquema, la URL es la de su script.
 
@@ -322,9 +390,14 @@ sin miedo y no rompe nada si el visitante bloquea el script.
 
 ## ⚠️ Antes de publicar
 
-- Completa los datos del titular en `src/front/data/legalContent.ts`
-  (`siteOwner`): nombre legal, dirección fiscal y correo de contacto. Las
-  páginas legales son una base de trabajo y deben ser validadas por un
+- **Define los datos del titular** en las variables del repositorio
+  (`VITE_SITE_OWNER_LEGAL_NAME`, `VITE_SITE_OWNER_TAX_ID`,
+  `VITE_SITE_OWNER_ADDRESS` y `VITE_SITE_OWNER_EMAIL`). Sin ellos, el aviso
+  legal y la política de privacidad se publican con un **aviso de datos
+  incompletos** (y el build lo dice por pantalla). El artículo 10 de la Ley
+  34/2002 y el artículo 13 del RGPD obligan a identificar al responsable: es
+  lo primero que hay que resolver antes de publicar en un dominio propio.
+- Las páginas legales son una base de trabajo y deben ser validadas por un
   profesional.
 - Revisa la imagen Open Graph (`npm run assets`) si cambia la marca.
 

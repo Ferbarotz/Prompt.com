@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import styles from './NotFoundPage.module.css'
@@ -14,8 +15,9 @@ const NotFoundPage = () => {
 
   return (
     <div className="site-bg">
+      <Navbar />
       <div className={styles.wrapper}>
-        <main className={styles.main}>
+        <main id="contenido" className={styles.main}>
           <span className={styles.code}>404</span>
 
           <h1 className={styles.title}>No hemos encontrado esta página</h1>

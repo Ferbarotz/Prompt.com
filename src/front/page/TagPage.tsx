@@ -3,7 +3,7 @@ import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import { getRouteSeo } from '../data/routeMeta'
-import { getArticleTag } from '../data/articles'
+import { getArticleTag, lowerFirst } from '../data/articles'
 import { PATHS } from '../data/paths'
 import styles from './ContentPage.module.css'
 
@@ -28,7 +28,7 @@ const TagPage = ({ slug }: { slug: string }) => {
     return (
       <div className="site-bg">
         <Navbar />
-        <main className={styles.listPage}>
+        <main id="contenido" className={styles.listPage}>
           <h1 className={styles.listTitle}>Etiqueta no encontrada</h1>
           <p className={styles.listIntro}>
             Esa etiqueta no existe. <Link to={PATHS.blog}>Ver todos los artículos</Link>.
@@ -43,13 +43,13 @@ const TagPage = ({ slug }: { slug: string }) => {
     <div className="site-bg">
       <Navbar />
 
-      <main className={styles.listPage}>
+      <main id="contenido" className={styles.listPage}>
         <nav aria-label="Migas de pan" className={styles.breadcrumb}>
           <Link to={PATHS.home}>Inicio</Link> › <Link to={PATHS.blog}>Blog</Link> ›{' '}
           {tag.label}
         </nav>
 
-        <h1 className={styles.listTitle}>Artículos sobre {tag.label.toLowerCase()}</h1>
+        <h1 className={styles.listTitle}>Artículos sobre {lowerFirst(tag.label)}</h1>
         <p className={styles.listIntro}>
           {tag.articles.length === 1
             ? 'Un artículo sobre este tema.'
@@ -59,9 +59,17 @@ const TagPage = ({ slug }: { slug: string }) => {
         <ul className={styles.cards}>
           {tag.articles.map((article) => (
             <li key={article.slug}>
-              <Link to={article.path} className={styles.card}>
+              {/* El nombre accesible del enlace es el título: si no, el lector
+                  de pantalla anuncia la tarjeta entera. */}
+              <Link
+                to={article.path}
+                className={styles.card}
+                aria-labelledby={`articulo-${article.slug}`}
+              >
                 <span className={styles.cardTag}>{article.tags[0]}</span>
-                <span className={styles.cardTitle}>{article.title}</span>
+                <span className={styles.cardTitle} id={`articulo-${article.slug}`}>
+                  {article.title}
+                </span>
                 <span className={styles.cardText}>{article.description}</span>
                 <span className={styles.meta}>
                   <time dateTime={article.date}>{article.date}</time> · {article.minutes} min

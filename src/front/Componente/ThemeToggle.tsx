@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import styles from './ThemeToggle.module.css'
+import { onDataCleared, readStored, storageKey, writeStored } from '../utils/storage'
 
 /** Temas disponibles. */
 export type Theme = 'dark' | 'light'
 
-/** Clave en `localStorage`. */
-export const THEME_STORAGE_KEY = 'prompt-com:theme'
+/** Clave en `localStorage` (con el prefijo de la aplicación). */
+export const THEME_STORAGE_KEY = storageKey('theme')
 
 /** Color de la barra del navegador en cada tema. */
 const THEME_COLOR: Record<Theme, string> = {
@@ -39,7 +40,7 @@ export const applyTheme = (theme: Theme): void => {
 /** Devuelve el tema guardado (o el oscuro, que es el de la marca). */
 export const getStoredTheme = (): Theme => {
   try {
-    return window.localStorage.getItem(THEME_STORAGE_KEY) === 'light' ? 'light' : 'dark'
+    return readStored<Theme>('theme', 'dark') === 'light' ? 'light' : 'dark'
   } catch {
     return 'dark'
   }
@@ -64,11 +65,26 @@ const ThemeToggle = () => {
     applyTheme(theme)
   }, [theme])
 
+  // Si el visitante borra los datos guardados, el tema vuelve al de la
+  // marca: la preferencia también era un dato guardado en el navegador.
+  useEffect(
+    () =>
+      onDataCleared(() => {
+        setTheme('dark')
+      }),
+    []
+  )
+
+  // El cambio de tema se anuncia: el nombre accesible del botón cambia, pero
+  // la mayoría de los lectores de pantalla no lo dicen en voz alta.
+  const [anuncio, setAnuncio] = useState('')
+
   const toggle = () => {
     const next: Theme = theme === 'light' ? 'dark' : 'light'
     setTheme(next)
+    setAnuncio(next === 'light' ? 'Tema claro activado' : 'Tema oscuro activado')
     try {
-      window.localStorage.setItem(THEME_STORAGE_KEY, next)
+      writeStored('theme', next)
     } catch {
       // Sin almacenamiento, el tema dura lo que dura la pestaña.
     }
@@ -77,15 +93,21 @@ const ThemeToggle = () => {
   const label = theme === 'light' ? 'Cambiar al tema oscuro' : 'Cambiar al tema claro'
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      className={styles.toggle}
-      aria-label={label}
-      title={label}
-    >
-      <span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={toggle}
+        className={styles.toggle}
+        aria-label={label}
+        title={label}
+      >
+        <span aria-hidden="true">{theme === 'light' ? '☾' : '☀'}</span>
+      </button>
+
+      <span className="sr-only" role="status" aria-live="polite">
+        {anuncio}
+      </span>
+    </>
   )
 }
 

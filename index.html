@@ -68,15 +68,33 @@
 
       Si el visitante eligió el tema claro en una visita anterior, se aplica
       aquí (y no al montar React) para que la página no destelle en oscuro.
+
+      El valor se guarda con su fecha (como el resto de lo que guarda la web)
+      y caduca a los 30 días. Este script no puede importar módulos, así que
+      lee el mismo formato a mano: `{"v":1,"savedAt":…,"value":"light"}`.
     -->
     <script>
       (function () {
         try {
-          if (localStorage.getItem('prompt-com:theme') === 'light') {
-            document.documentElement.dataset.theme = 'light'
-            var meta = document.querySelector('meta[name="theme-color"]')
-            if (meta) meta.setAttribute('content', '#f5f7fc')
+          var raw = localStorage.getItem('prompt-com:theme')
+          if (!raw) return
+
+          var value = raw
+          if (raw.charAt(0) === '{') {
+            var parsed = JSON.parse(raw)
+            value = parsed && parsed.value
+            var caducado = Date.now() - (parsed.savedAt || 0) > 30 * 24 * 60 * 60 * 1000
+            if (caducado) {
+              localStorage.removeItem('prompt-com:theme')
+              return
+            }
           }
+
+          if (value !== 'light') return
+
+          document.documentElement.dataset.theme = 'light'
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.setAttribute('content', '#f5f7fc')
         } catch (error) {
           /* Sin almacenamiento, se queda el tema oscuro. */
         }

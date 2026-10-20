@@ -26,6 +26,13 @@ export interface Article {
   date: string
   /** Etiquetas del artículo. */
   tags: string[]
+  /**
+   * Bloques de la guía de los que habla el artículo.
+   *
+   * Son los slugs de `/guia/<bloque>/`: cada artículo enlaza con los bloques
+   * que explica, para que la guía y el blog no sean dos silos.
+   */
+  blocks: string[]
   /** Minutos de lectura estimados. */
   minutes: number
   /** Apartados del artículo. */
@@ -39,11 +46,12 @@ export const ARTICLES: Article[] = [
   {
     slug: 'prompts-para-agentes-de-ia',
     path: '/blog/prompts-para-agentes-de-ia/',
-    title: 'Prompts para agentes de IA: instrucciones para un sistema que usa herramientas',
+    title: 'Prompts para agentes de IA: cómo se escriben',
     description:
       'Cómo escribir prompts para agentes de IA: qué herramienta usar, en qué orden, cómo limitar los pasos y qué formato debe devolver el agente.',
     date: '2026-09-22',
     tags: ['Agentes de IA'],
+    blocks: ['rol', 'objetivo', 'datos', 'formato', 'validacion'],
     minutes: 4,
     sections: [
       {
@@ -97,11 +105,12 @@ export const ARTICLES: Article[] = [
   {
     slug: 'revisar-y-mejorar-un-prompt-que-no-funciona',
     path: '/blog/revisar-y-mejorar-un-prompt-que-no-funciona/',
-    title: 'Revisar y mejorar un prompt que ha dejado de funcionar',
+    title: 'Revisar un prompt que ha dejado de funcionar',
     description:
       'Un prompt que empezó a fallar no se arregla reescribiéndolo entero. Método para localizar el bloque culpable, medirlo y corregirlo con criterio.',
     date: '2026-08-05',
     tags: ['Iteración'],
+    blocks: ['objetivo', 'contexto', 'datos', 'restricciones', 'validacion'],
     minutes: 4,
     sections: [
       {
@@ -155,11 +164,12 @@ export const ARTICLES: Article[] = [
   {
     slug: 'un-mismo-prompt-con-varios-modelos',
     path: '/blog/un-mismo-prompt-con-varios-modelos/',
-    title: 'Un mismo prompt para varios modelos: ChatGPT, Claude y Gemini',
+    title: 'Un mismo prompt para varios modelos',
     description:
       'Qué partes de un prompt funcionan igual en ChatGPT, Claude y Gemini, y qué conviene ajustar en cada uno para no perder calidad al cambiar de modelo.',
     date: '2026-06-18',
     tags: ['Comparativa'],
+    blocks: ['rol', 'objetivo', 'datos', 'formato', 'ejemplos'],
     minutes: 4,
     sections: [
       {
@@ -220,7 +230,9 @@ export const ARTICLE_BY_SLUG: Record<string, Article> = Object.fromEntries(
 /** Devuelve el artículo que corresponde a un slug. */
 export const getArticle = (slug: string): Article | undefined => ARTICLE_BY_SLUG[slug]
 
-/** Etiqueta del blog con su versión en URL. */
+/**
+ * Etiqueta del blog con su versión en URL.
+ */
 export interface ArticleTag {
   /** Etiqueta tal y como se escribe («Agentes de IA»). */
   label: string
@@ -240,6 +252,15 @@ export const tagSlug = (label: string): string =>
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+
+/**
+ * Pone en minúscula la primera palabra de una etiqueta.
+ *
+ * Las siglas se quedan como están: «Agentes de IA» → «agentes de IA» (no
+ * «agentes de ia»).
+ */
+export const lowerFirst = (label: string): string =>
+  label.charAt(0).toLocaleLowerCase('es') + label.slice(1)
 
 /** Todas las etiquetas del blog, con sus artículos. */
 export const ARTICLE_TAGS: ArticleTag[] = Array.from(

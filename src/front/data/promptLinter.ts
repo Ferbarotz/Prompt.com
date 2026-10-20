@@ -261,11 +261,18 @@ const detectStructure = (text: string) => {
   return { headings: headings.length, structured: headings.length + labeled.length >= 2 }
 }
 
+/**
+ * Los cuatro niveles de la puntuación.
+ *
+ * El color no se escribe aquí: es una variable de CSS, para que el tema
+ * claro pueda oscurecerlo (como texto sobre fondo blanco tiene que llegar a
+ * 4.5:1) sin tocar este catálogo.
+ */
 const LEVELS: Array<{ min: number; label: string; color: string }> = [
-  { min: 80, label: 'Excelente', color: '#10b981' },
-  { min: 60, label: 'Bueno', color: '#06b6d4' },
-  { min: 40, label: 'Mejorable', color: '#f59e0b' },
-  { min: 0, label: 'Débil', color: '#f87171' }
+  { min: 80, label: 'Excelente', color: 'var(--score-excellent)' },
+  { min: 60, label: 'Bueno', color: 'var(--score-good)' },
+  { min: 40, label: 'Mejorable', color: 'var(--score-fair)' },
+  { min: 0, label: 'Débil', color: 'var(--score-poor)' }
 ]
 
 /** Puntos por usar bloques separados por títulos. */

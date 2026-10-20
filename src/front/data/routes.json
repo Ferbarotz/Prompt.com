@@ -12,7 +12,7 @@
       "key": "generator",
       "path": "/generar-prompt/",
       "title": "Generador de prompts gratis",
-      "description": "Generador de prompts profesionales en 3 pasos: elige el tipo de tarea, completa los detalles y copia el prompt listo para usar. Código, contenido, imágenes, SEO, email y más.",
+      "description": "Generador de prompts profesionales en 3 pasos: elige el tipo de tarea, completa los detalles y copia el prompt listo para usar.",
       "changefreq": "monthly",
       "priority": "0.8"
     },
@@ -20,7 +20,7 @@
       "key": "linter",
       "path": "/analizar-prompt/",
       "title": "Analizador de prompts: puntúa y mejora el tuyo",
-      "description": "Pega tu prompt y obtén una puntuación de 0 a 100 con el desglose de lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y criterio de validación.",
+      "description": "Pega tu prompt y obtén una puntuación de 0 a 100 con lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y validación.",
       "changefreq": "monthly",
       "priority": "0.8"
     },
@@ -68,7 +68,7 @@
       "key": "guia-que-es-un-prompt",
       "path": "/guia/que-es-un-prompt/",
       "title": "¿Qué es un prompt?",
-      "description": "En términos técnicos, un prompt es la especificación de entrada que condiciona cómo un LLM (Large Language Model) interpreta una tarea y genera su salida…",
+      "description": "Qué es un prompt: la especificación de entrada que condiciona cómo un LLM interpreta una tarea y genera su salida. No es solo una pregunta.",
       "changefreq": "monthly",
       "priority": "0.7",
       "og": {
@@ -83,7 +83,7 @@
       "key": "guia-para-que-sirve-un-prompt",
       "path": "/guia/para-que-sirve-un-prompt/",
       "title": "¿Para qué sirve un prompt?",
-      "description": "Un prompt sirve para transformar la capacidad general de un LLM en resultados útiles para una tarea concreta. Es el mecanismo que alinea al modelo con tu…",
+      "description": "Un prompt sirve para transformar la capacidad general de un LLM en resultados útiles: es lo que alinea el modelo con tu intención y tus restricciones.",
       "changefreq": "monthly",
       "priority": "0.7",
       "og": {
@@ -98,7 +98,7 @@
       "key": "guia-claves-para-un-buen-prompt",
       "path": "/guia/claves-para-un-buen-prompt/",
       "title": "Claves para un buen prompt",
-      "description": "Las mejores prácticas de prompt engineering combinan claridad operativa, contexto suficiente y validación iterativa. Un buen prompt reduce la variabilidad…",
+      "description": "Las claves de un buen prompt: claridad operativa, contexto suficiente, ejemplos y validación iterativa para reducir la variabilidad de la respuesta.",
       "changefreq": "monthly",
       "priority": "0.7",
       "og": {
@@ -112,7 +112,7 @@
     {
       "key": "guia-rol",
       "path": "/guia/rol/",
-      "title": "El rol en un prompt: por qué decide cómo responde el modelo",
+      "title": "El rol: por qué decide cómo responde el modelo",
       "description": "Cómo definir el rol o la persona del modelo en un prompt: qué hace, cuándo funciona y los errores que más se repiten.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -127,8 +127,8 @@
     {
       "key": "guia-objetivo",
       "path": "/guia/objetivo/",
-      "title": "El objetivo del prompt: la instrucción que no puede faltar",
-      "description": "Cómo escribir el objetivo de un prompt con un verbo claro en imperativo, con el alcance y el alcance de la respuesta.",
+      "title": "El objetivo: la instrucción que no puede faltar",
+      "description": "Cómo escribir el objetivo de un prompt con un verbo claro en imperativo, con el alcance y el formato de la respuesta.",
       "changefreq": "monthly",
       "priority": "0.7",
       "og": {
@@ -142,7 +142,7 @@
     {
       "key": "guia-contexto",
       "path": "/guia/contexto/",
-      "title": "Contexto y audiencia: por qué la misma pregunta da respuestas distintas",
+      "title": "Contexto y audiencia: la respuesta cambia",
       "description": "Cómo declarar el contexto, la audiencia y el nivel de conocimiento en un prompt para que la respuesta no sea genérica.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -157,7 +157,7 @@
     {
       "key": "guia-datos",
       "path": "/guia/datos/",
-      "title": "Datos de entrada: qué darle al modelo para que no invente",
+      "title": "Datos de entrada: qué darle para que no invente",
       "description": "Cómo pasar los datos de entrada a un prompt (texto, tabla, archivo) y qué hacer para que el modelo no se los invente.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -172,7 +172,7 @@
     {
       "key": "guia-restricciones",
       "path": "/guia/restricciones/",
-      "title": "Restricciones: acota la respuesta y evita el relleno",
+      "title": "Restricciones: acota y quita el relleno",
       "description": "Cómo escribir las restricciones de un prompt: límites de extensión, cosas que no incluir y tono, para que la respuesta no se desvíe.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -187,7 +187,7 @@
     {
       "key": "guia-formato",
       "path": "/guia/formato/",
-      "title": "Formato de salida: la diferencia entre una respuesta usable y otra no",
+      "title": "Formato de salida: que la respuesta sea usable",
       "description": "Cómo especificar el formato de salida de un prompt (JSON, tabla markdown, lista numerada) para poder usar la respuesta sin retocarla.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -202,7 +202,7 @@
     {
       "key": "guia-ejemplos",
       "path": "/guia/ejemplos/",
-      "title": "Ejemplos y referencias: la forma más barata de controlar el estilo",
+      "title": "Ejemplos: la forma barata de fijar el estilo",
       "description": "Cómo usar ejemplos (few-shot) en un prompt para fijar el estilo y la estructura de la respuesta, y cuándo no hacen falta.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -217,7 +217,7 @@
     {
       "key": "guia-validacion",
       "path": "/guia/validacion/",
-      "title": "Criterio de validación: cómo saber si la respuesta sirve",
+      "title": "Validación: cómo saber si la respuesta sirve",
       "description": "Cómo escribir el criterio de validación de un prompt para comprobar que la respuesta cumple, y cómo pedir la revisión antes de entregarla.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -245,7 +245,7 @@
     {
       "key": "blog-prompts-para-agentes-de-ia",
       "path": "/blog/prompts-para-agentes-de-ia/",
-      "title": "Prompts para agentes de IA: instrucciones para un sistema que usa herramientas",
+      "title": "Prompts para agentes de IA: cómo se escriben",
       "description": "Cómo escribir prompts para agentes de IA: qué herramienta usar, en qué orden, cómo limitar los pasos y qué formato debe devolver el agente.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -254,12 +254,13 @@
         "kicker": "Blog"
       },
       "group": "blog",
-      "lastmod": "2026-09-22"
+      "lastmod": "2026-09-22",
+      "published": "2026-09-22"
     },
     {
       "key": "blog-revisar-y-mejorar-un-prompt-que-no-funciona",
       "path": "/blog/revisar-y-mejorar-un-prompt-que-no-funciona/",
-      "title": "Revisar y mejorar un prompt que ha dejado de funcionar",
+      "title": "Revisar un prompt que ha dejado de funcionar",
       "description": "Un prompt que empezó a fallar no se arregla reescribiéndolo entero. Método para localizar el bloque culpable, medirlo y corregirlo con criterio.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -268,12 +269,13 @@
         "kicker": "Blog"
       },
       "group": "blog",
-      "lastmod": "2026-08-05"
+      "lastmod": "2026-08-05",
+      "published": "2026-08-05"
     },
     {
       "key": "blog-un-mismo-prompt-con-varios-modelos",
       "path": "/blog/un-mismo-prompt-con-varios-modelos/",
-      "title": "Un mismo prompt para varios modelos: ChatGPT, Claude y Gemini",
+      "title": "Un mismo prompt para varios modelos",
       "description": "Qué partes de un prompt funcionan igual en ChatGPT, Claude y Gemini, y qué conviene ajustar en cada uno para no perder calidad al cambiar de modelo.",
       "changefreq": "monthly",
       "priority": "0.7",
@@ -282,13 +284,14 @@
         "kicker": "Blog"
       },
       "group": "blog",
-      "lastmod": "2026-06-18"
+      "lastmod": "2026-06-18",
+      "published": "2026-06-18"
     },
     {
       "key": "blog-etiqueta-agentes-de-ia",
       "path": "/blog/etiqueta/agentes-de-ia/",
       "title": "Artículos sobre agentes de ia",
-      "description": "Prompts para agentes de IA: qué cambia, cómo se limita y cómo se prueba.",
+      "description": "Artículos sobre agentes de IA: qué cambia, cómo se limita y cómo se prueba.",
       "changefreq": "monthly",
       "priority": "0.4",
       "group": "blog-tag",
@@ -302,7 +305,7 @@
       "key": "blog-etiqueta-iteracion",
       "path": "/blog/etiqueta/iteracion/",
       "title": "Artículos sobre iteración",
-      "description": "Revisar y melhorar un prompt que ha dejado de funcionar: diagnóstico, corrección y prueba de regresión.",
+      "description": "Artículos sobre iteración: diagnóstico, corrección y prueba de regresión.",
       "changefreq": "monthly",
       "priority": "0.4",
       "group": "blog-tag",
@@ -316,7 +319,7 @@
       "key": "blog-etiqueta-comparativa",
       "path": "/blog/etiqueta/comparativa/",
       "title": "Artículos sobre comparativa",
-      "description": "Un mismo prompt para varios modelos: qué se mantiene y qué hay que ajustar en cada uno.",
+      "description": "Artículos sobre comparativa: qué se mantiene y qué hay que ajustar en cada modelo.",
       "changefreq": "monthly",
       "priority": "0.4",
       "group": "blog-tag",

@@ -39,6 +39,9 @@ export const escapeHtml = (value) =>
  * @property {string} image URL absoluta de la imagen Open Graph.
  * @property {string} [siteName] Nombre del sitio.
  * @property {boolean} [noindex] Impide la indexación (la 404).
+ * @property {string} [type] Tipo de Open Graph (`website` o `article`).
+ * @property {string} [published] Fecha de publicación (ISO), para `article`.
+ * @property {object} [jsonLd] Datos estructurados de la ruta.
  */
 
 /**
@@ -53,7 +56,10 @@ export const renderSeoHead = ({
   url,
   image,
   siteName = 'Prompt.com',
-  noindex = false
+  noindex = false,
+  type = 'website',
+  published,
+  jsonLd
 }) => {
   const fullTitle = title ? `${title} — ${siteName}` : siteName
   const meta = (attribute, key, content) =>
@@ -64,7 +70,10 @@ export const renderSeoHead = ({
     meta('name', 'description', description),
     ...(noindex ? [] : [`    <link rel="canonical" href="${escapeHtml(url)}" />`]),
     meta('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow'),
-    meta('property', 'og:type', 'website'),
+    meta('property', 'og:type', type),
+    ...(type === 'article' && published
+      ? [meta('property', 'article:published_time', published)]
+      : []),
     meta('property', 'og:site_name', siteName),
     meta('property', 'og:locale', 'es_ES'),
     meta('property', 'og:title', fullTitle),
@@ -79,7 +88,22 @@ export const renderSeoHead = ({
     meta('name', 'twitter:title', fullTitle),
     meta('name', 'twitter:description', description),
     meta('name', 'twitter:image', image),
-    meta('name', 'twitter:image:alt', fullTitle)
+    meta('name', 'twitter:image:alt', fullTitle),
+    /*
+     * Los datos estructurados van también en el HTML estático: sin esto, un
+     * buscador que no ejecuta JavaScript no ve ningún `Article` y la página
+     * pierde el resultado enriquecido.
+     *
+     * La aplicación sustituye este bloque por el suyo (más completo, con las
+     * migas de pan) cuando arranca, así que nunca hay dos a la vez.
+     */
+    ...(jsonLd
+      ? [
+          '    <script type="application/ld+json" data-seo="static">',
+          `      ${JSON.stringify(jsonLd)}`,
+          '    </script>'
+        ]
+      : [])
   ].join('\n')
 }
 

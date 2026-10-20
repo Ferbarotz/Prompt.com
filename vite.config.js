@@ -26,6 +26,23 @@ const seoTags = () => ({
 export default defineConfig({
   plugins: [react(), seoTags()],
   base,
+  build: {
+    rollupOptions: {
+      output: {
+        /*
+         * Sin esto, Rollup llama al chunk compartido como el primer módulo que
+         * contiene (usePersistentState), aunque lo que lleva dentro es React y
+         * React Router. El nombre no dice nada y confunde al leer el build.
+         */
+        manualChunks(id) {
+          if (/node_modules\/(react|react-dom|react-router|react-router-dom|scheduler)\//.test(id)) {
+            return 'vendor'
+          }
+          return undefined
+        }
+      }
+    }
+  },
   test: {
     // Entorno de navegador: los componentes se renderizan de verdad.
     environment: 'jsdom',

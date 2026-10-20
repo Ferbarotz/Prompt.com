@@ -3,7 +3,7 @@ import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import { ROUTE_BY_KEY, getRouteSeo } from '../data/routeMeta'
-import { LEGAL_PAGES } from '../data/legalContent'
+import { LEGAL_PAGES, OWNER_WARNING, siteOwnerIncomplete } from '../data/legalContent'
 import { PATHS } from '../data/paths'
 import { analyticsEnabled } from '../utils/analytics'
 import styles from './LegalPage.module.css'
@@ -40,12 +40,21 @@ const LegalPage = ({ routeKey }: LegalPageProps) => {
   return (
     <div className="site-bg">
       <Navbar />
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <article className={styles.article}>
           <h1 className={styles.title}>{page.title}</h1>
           <p className={styles.updated}>
             Última actualización: <time dateTime={page.updated}>{page.updated}</time>
           </p>
+
+          {/* Si faltan datos del titular, se avisa en la propia página: los
+              textos legales no pueden publicarse con marcadores de posición
+              sin que se note. */}
+          {siteOwnerIncomplete() ? (
+            <p className={styles.warning} role="note">
+              {OWNER_WARNING}
+            </p>
+          ) : null}
 
           {page.sections.map((section) => (
             <section key={section.heading} className={styles.section}>

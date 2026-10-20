@@ -25,6 +25,7 @@ import { execSync } from 'node:child_process'
 import { getCustomDomain, getSiteOrigin } from './site-url.mjs'
 import { renderSeoHead, replaceSeoBlock } from './seo-head.mjs'
 import { renderOgImage } from './og-images.mjs'
+import { buildJsonLd } from './json-ld.mjs'
 
 const distDir = path.resolve('dist')
 
@@ -60,7 +61,10 @@ const headFor = (route, origin) =>
     description: route.description,
     url: `${origin}${route.path}`,
     image: `${origin}${route.og ? `/og/${route.og.file}.png` : '/og-image.png'}`,
-    noindex: route.noindex
+    noindex: route.noindex,
+    type: route.group === 'blog' ? 'article' : 'website',
+    published: route.published,
+    jsonLd: buildJsonLd(route, origin)
   })
 
 /**
@@ -197,12 +201,14 @@ ${secciones}
   await fs.writeFile(path.join(distDir, 'llms.txt'), txt, 'utf8')
   console.log(`· dist/llms.txt — ${publicas.length} páginas`)
 }
-
 const buildRobots = async (origin) => {
   const txt = `User-agent: *
 Allow: /
 
 Sitemap: ${origin}/sitemap.xml
+
+# Mapa del sitio en texto plano, para los asistentes de IA.
+LLMS-Txt: ${origin}/llms.txt
 `
   await fs.writeFile(path.join(distDir, 'robots.txt'), txt, 'utf8')
   console.log(`· dist/robots.txt — ${origin}/sitemap.xml`)
@@ -247,6 +253,29 @@ const reportAnalytics = () => {
   console.log('· analítica desactivada (define VITE_ANALYTICS_URL y VITE_ANALYTICS_DOMAIN)')
 }
 
+/**
+ * Datos del titular en los textos legales.
+ *
+ * El aviso legal y la política de privacidad necesitan identificar al
+ * responsable (art. 10 de la Ley 34/2002 y art. 13 del RGPD). Si faltan, el
+ * sitio se publica con marcadores de posición: el build lo avisa para que no
+ * pase inadvertido.
+ */
+const reportOwner = () => {
+  const missing = []
+  if (!process.env.VITE_SITE_OWNER_ADDRESS) missing.push('VITE_SITE_OWNER_ADDRESS')
+  if (!process.env.VITE_SITE_OWNER_TAX_ID) missing.push('VITE_SITE_OWNER_TAX_ID')
+
+  if (missing.length > 0) {
+    console.warn(
+      `· ⚠ textos legales sin datos del titular: define ${missing.join(' y ')} ` +
+        '(Settings → Secrets and variables → Actions → Variables)'
+    )
+    return
+  }
+  console.log('· textos legales con los datos del titular completos')
+}
+
 const main = async () => {
   const origin = getSiteOrigin()
   await buildOgImages()
@@ -256,6 +285,7 @@ const main = async () => {
   await buildLlmsTxt(origin)
   await buildCname()
   reportAnalytics()
+  reportOwner()
 }
 
 main().catch((error) => {

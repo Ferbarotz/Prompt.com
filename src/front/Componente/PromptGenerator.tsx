@@ -10,6 +10,8 @@ import {
 } from '../data/generatorLink'
 import usePersistentState from '../hooks/usePersistentState'
 import { EVENTS, trackEvent } from '../utils/analytics'
+import { copyToClipboard } from '../utils/clipboard'
+import ScrollableCode from './ScrollableCode'
 import styles from './PromptGenerator.module.css'
 import { PATHS } from '../data/paths'
 
@@ -74,6 +76,8 @@ const PromptGenerator = () => {
 
   const [copied, setCopied] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
+  // Error del campo obligatorio: se muestra al pulsar "Siguiente" sin idea.
+  const [ideaError, setIdeaError] = useState('')
   // Mensaje para la región live: es la única fuente de anuncios, para que el
   // contenido del prompt (que cambia en cada pulsación) no se lea entero.
   const [status, setStatus] = useState('')
@@ -163,28 +167,13 @@ const PromptGenerator = () => {
 
   const handleCopy = async () => {
     if (!generatedPrompt) return
-    try {
-      await navigator.clipboard.writeText(generatedPrompt)
+    const resultado = await copyToClipboard(generatedPrompt)
+    if (resultado === 'ok') {
       showCopiedFeedback()
       announce('Prompt copiado al portapapeles', true)
       trackEvent(EVENTS.copyPrompt, { tipo: task.id })
-    } catch {
-      // Fallback para navegadores sin Clipboard API o sin contexto seguro (http).
-      const textarea = document.createElement('textarea')
-      textarea.value = generatedPrompt
-      textarea.setAttribute('readonly', '')
-      textarea.style.position = 'fixed'
-      textarea.style.opacity = '0'
-      document.body.appendChild(textarea)
-      textarea.select()
-      const ok = document.execCommand('copy')
-      document.body.removeChild(textarea)
-      if (ok) {
-        showCopiedFeedback()
-        announce('Prompt copiado al portapapeles', true)
-      } else {
-        announce('No se pudo copiar. Selecciona el texto y cópialo manualmente.', true)
-      }
+    } else {
+      announce('No se pudo copiar. Selecciona el texto y cópialo manualmente.', true)
     }
   }
 
@@ -196,14 +185,14 @@ const PromptGenerator = () => {
    */
   const handleCopyLink = async () => {
     const url = buildShareUrl(state)
-    try {
-      await navigator.clipboard.writeText(url)
+    const resultado = await copyToClipboard(url)
+    if (resultado === 'ok') {
       setLinkCopied(true)
       if (linkTimeout.current) clearTimeout(linkTimeout.current)
       linkTimeout.current = setTimeout(() => setLinkCopied(false), 2000)
       announce('Enlace del prompt copiado al portapapeles', true)
       trackEvent(EVENTS.copyLink, { tipo: task.id })
-    } catch {
+    } else {
       announce('No se pudo copiar el enlace. Cópialo de la barra de direcciones.', true)
     }
   }
@@ -310,14 +299,27 @@ const PromptGenerator = () => {
                 id={fieldIds.idea}
                 className="field-input"
                 value={idea}
-                onChange={(event) => update({ idea: event.target.value })}
+                onChange={(event) => {
+                  setIdeaError('')
+                  update({ idea: event.target.value })
+                }}
                 placeholder='Ej: "Una página para mi negocio de pasteles", "Un email para recuperar clientes que no compran hace meses"...'
                 rows={3}
+                required
+                aria-required="true"
+                aria-invalid={ideaError ? true : undefined}
+                aria-describedby={ideaError ? `${fieldIds.idea}-error` : undefined}
               />
+              {ideaError ? (
+                <p className={styles.errorText} id={`${fieldIds.idea}-error`} role="alert">
+                  {ideaError}
+                </p>
+              ) : null}
               <div className={styles.exampleButton}>
                 <button
                   type="button"
                   onClick={() => {
+                    setIdeaError('')
                     update({ idea: task.exampleIdea })
                     trackEvent(EVENTS.useExample, { tipo: task.id })
                   }}
@@ -329,10 +331,21 @@ const PromptGenerator = () => {
             </div>
 
             <div>
+              {/*
+                El botón no se deshabilita: un botón deshabilitado no explica
+                por qué no se puede avanzar. Al pulsarlo sin idea, se avisa
+                (WCAG 3.3.1).
+              */}
               <button
                 type="button"
-                onClick={() => idea.trim() && goToStep(2)}
-                disabled={!idea.trim()}
+                onClick={() => {
+                  if (!idea.trim()) {
+                    setIdeaError('Escribe tu idea para continuar: es el único paso obligatorio.')
+                    return
+                  }
+                  setIdeaError('')
+                  goToStep(2)
+                }}
                 className="btn btn-primary"
               >
                 Siguiente
@@ -426,15 +439,17 @@ const PromptGenerator = () => {
                     </button>
                   </div>
                 </div>
-                <pre className={styles.pre}>{generatedPrompt}</pre>
+                <ScrollableCode className={styles.pre} label="Prompt generado">
+                  {generatedPrompt}
+                </ScrollableCode>
 
                 <section
                   className={styles.aiBlock}
                   aria-labelledby={`ai-tools-${uid}`}
                 >
-                  <h3 className={styles.aiTitle} id={`ai-tools-${uid}`}>
+                  <h2 className={styles.aiTitle} id={`ai-tools-${uid}`}>
                     Dónde pegar este prompt
-                  </h3>
+                  </h2>
                   <p className={styles.aiIntro}>{aiSuggestion.intro}</p>
                   <ul className={styles.aiList}>
                     {aiSuggestion.tools.map((tool) => (
