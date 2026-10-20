@@ -174,12 +174,11 @@ Copia `.env.example` a `.env.local` para activar las integraciones opcionales:
 
 | Variable                    | Para qué sirve                                          |
 | --------------------------- | ------------------------------------------------------- |
-| `VITE_NEWSLETTER_ENDPOINT`  | Endpoint del formulario del boletín                     |
 | `VITE_ANALYTICS_URL`        | Script de analítica sin cookies (Plausible o compatible) |
 | `VITE_ANALYTICS_DOMAIN`     | Dominio que se reporta a la analítica                   |
 
 Sin estas variables el sitio funciona igual: no se carga ningún script de
-terceros y el boletín avisa de que no está disponible.
+terceros.
 
 ## ⚠️ Antes de publicar
 

@@ -99,26 +99,25 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
         heading: 'Datos que se recogen',
         paragraphs: [
           'Este sitio es estático y se ejecuta íntegramente en el navegador. Los prompts que escribes en el generador o en el analizador se procesan de forma local: no se envían a ningún servidor ni se almacenan.',
-          'Únicamente se recogen los datos que decides enviar de forma explícita, como el correo electrónico al suscribirte al boletín. Si en el futuro se incorporan herramientas de analítica, se indicará en esta política y en la de cookies antes de su activación.'
+          'Únicamente se recogen los datos que decides enviar de forma explícita, como el correo electrónico si decides escribirnos. Si en el futuro se incorporan herramientas de analítica, se indicará en esta política y en la de cookies antes de su activación.'
         ]
       },
       {
         heading: 'Finalidad y legitimación',
         paragraphs: [
-          'Los datos que facilitas al suscribirte al boletín se utilizan exclusivamente para enviarte los contenidos del boletín y gestionar tu baja. La legitimación es tu consentimiento, que puedes retirar en cualquier momento.',
           'Los datos enviados por correo electrónico para comunicaciones con el titular se utilizan para atender tu consulta.'
         ]
       },
       {
         heading: 'Conservación',
         paragraphs: [
-          'Los datos de suscripción al boletín se conservan mientras mantengas la suscripción o hasta que solicites tu baja. Las comunicaciones con el titular se conservan durante el tiempo necesario para resolver la solicitud y, después, durante los plazos exigidos por la normativa aplicable.'
+          'Las comunicaciones con el titular se conservan durante el tiempo necesario para resolver la solicitud y, después, durante los plazos exigidos por la normativa aplicable.'
         ]
       },
       {
         heading: 'Destinatarios y transferencias internacionales',
         paragraphs: [
-          'No se ceden datos a terceros con fines comerciales. Si algún servicio utilizado para el boletín o el alojamiento del sitio implicara una transferencia internacional, esta se garantizará con las garantías adecuadas del RGPD y se indicará en esta política.'
+          'No se ceden datos a terceros con fines comerciales. Si el alojamiento del sitio implicara una transferencia internacional, esta se garantizará con las garantías adecuadas del RGPD y se indicará en esta política.'
         ]
       },
       {
