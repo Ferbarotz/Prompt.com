@@ -41,23 +41,6 @@ describe('Home (presentación)', () => {
     }
   })
 
-  it('el índice enlaza con las secciones', () => {
-    render(
-      <MemoryRouter>
-        <Home />
-      </MemoryRouter>
-    )
-
-    const links = Array.from(
-      screen.getByRole('navigation', { name: /índice de la guía/i }).querySelectorAll('a')
-    )
-    expect(links).toHaveLength(3)
-    for (const link of links) {
-      const id = link.getAttribute('href')?.slice(1)
-      expect(document.getElementById(id ?? '')).not.toBeNull()
-    }
-  })
-
   it('el footer está presente', () => {
     render(
       <MemoryRouter>
@@ -86,15 +69,17 @@ describe('Home (presentación)', () => {
     )
   })
 
-  it('hay un acceso rápido al contenido para quien navega con teclado', () => {
+  it('cada sección enlaza con su página de la guía', () => {
     render(
       <MemoryRouter>
         <Home />
       </MemoryRouter>
     )
 
-    const skip = screen.getByRole('link', { name: /saltar al contenido/i })
-    expect(skip).toHaveAttribute('href', '#contenido')
-    expect(document.getElementById('contenido')).not.toBeNull()
+    const enlaces = screen.getAllByRole('link', { name: /leer la guía completa/i })
+    expect(enlaces).toHaveLength(3)
+    for (const enlace of enlaces) {
+      expect(enlace.getAttribute('href')).toMatch(/^\/guia\/[a-z-]+\/$/)
+    }
   })
 })

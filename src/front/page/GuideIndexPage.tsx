@@ -24,7 +24,7 @@ const GuideIndexPage = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main id="contenido" className={styles.listPage}>
+      <main className={styles.listPage}>
         <h1 className={styles.listTitle}>Guía de prompts: todos los bloques, uno a uno</h1>
         <p className={styles.listIntro}>
           Un prompt se construye por bloques. Cada bloque tiene su propia página, con lo que

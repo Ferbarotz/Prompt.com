@@ -48,7 +48,7 @@ const GuidePage = ({ slug }: { slug: string }) => {
     return (
       <div className="site-bg">
         <Navbar />
-        <main id="contenido" className={styles.main}>
+        <main className={styles.main}>
           <h1 className={styles.title}>Página no encontrada</h1>
           <p className={styles.paragraph}>
             Esa página de la guía no existe. <Link to={GUIDE_INDEX_PATH}>Ver el índice</Link>.
@@ -67,7 +67,7 @@ const GuidePage = ({ slug }: { slug: string }) => {
     <div className="site-bg">
       <Navbar />
 
-      <main id="contenido" className={styles.main}>
+      <main className={styles.main}>
         <nav aria-label="Migas de pan" className={styles.breadcrumb}>
           <Link to={PATHS.home}>Inicio</Link> › <Link to={GUIDE_INDEX_PATH}>Guía</Link> ›{' '}
           {page.title}

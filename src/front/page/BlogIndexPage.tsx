@@ -21,7 +21,7 @@ const BlogIndexPage = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main id="contenido" className={styles.listPage}>
+      <main className={styles.listPage}>
         <h1 className={styles.listTitle}>Blog: prompts en el trabajo real</h1>
         <p className={styles.listIntro}>
           Casos concretos, flujos de trabajo y errores que se repiten. Cada artículo va al grano,

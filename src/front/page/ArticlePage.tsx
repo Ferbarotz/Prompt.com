@@ -52,7 +52,7 @@ const ArticlePage = ({ slug }: { slug: string }) => {
     return (
       <div className="site-bg">
         <Navbar />
-        <main id="contenido" className={styles.main}>
+        <main className={styles.main}>
           <h1 className={styles.title}>Artículo no encontrado</h1>
           <p className={styles.paragraph}>
             Ese artículo no existe. <Link to={BLOG_INDEX_PATH}>Ver todos los artículos</Link>.
@@ -67,7 +67,7 @@ const ArticlePage = ({ slug }: { slug: string }) => {
     <div className="site-bg">
       <Navbar />
 
-      <main id="contenido" className={styles.main}>
+      <main className={styles.main}>
         <nav aria-label="Migas de pan" className={styles.breadcrumb}>
           <Link to={PATHS.home}>Inicio</Link> › <Link to={BLOG_INDEX_PATH}>Blog</Link> ›{' '}
           {article.title}

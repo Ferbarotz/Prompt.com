@@ -64,7 +64,7 @@ const LinterPage = () => {
   return (
     <div className="site-bg">
       <Navbar />
-      <main id="contenido" className={styles.main}>
+      <main className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Analizador de prompts</h1>
           <p className={styles.subtitle}>

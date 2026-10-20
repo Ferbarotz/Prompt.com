@@ -24,77 +24,37 @@
 .links {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
 }
 
+/* Todos los enlaces de navegación tienen el mismo formato: solo cambia el
+   color cuando están activos. */
 .link {
-  color: var(--text-muted);
+  display: inline-block;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-tint);
+  color: var(--text-body);
   text-decoration: none;
   font-size: var(--text-base);
   font-weight: 600;
-  padding: 0.4rem 0.2rem;
-  border-bottom: 2px solid transparent;
+  white-space: nowrap;
   transition:
     color 0.15s ease,
-    border-color 0.15s ease;
-  white-space: nowrap;
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
 .link:hover {
-  color: var(--text);
+  color: var(--text-bright);
+  border-color: var(--border-strong);
+  background: var(--surface-tint-strong);
 }
 
 .linkActive {
-  color: var(--text);
-  border-bottom-color: var(--brand-violet);
-}
-
-.cta {
-  background: var(--gradient-brand);
-  color: #fff;
-  border: 1px solid var(--border-glass);
-  padding: 0.55rem 1.55rem;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: var(--shadow-cta);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
-}
-
-/* ---------------------------------------------------------------------------
-   Acceso rápido al contenido
-   ---------------------------------------------------------------------------
-
-   Invisible hasta que recibe el foco (teclado), momento en el que aparece
-   sobre la barra de navegación. Es el primer elemento que encuentra quien
-   navega sin ratón. */
-
-.skipLink {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -120%);
-  z-index: 100;
-  padding: 0.7rem 1.2rem;
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
-  background: var(--gradient-brand);
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform 0.15s ease;
-}
-
-.skipLink:focus-visible {
-  transform: translate(-50%, 0);
-  outline: 2px solid var(--brand-violet);
-  outline-offset: 2px;
+  color: var(--text-bright);
+  border-color: var(--brand-violet);
+  background: var(--surface-tint-strong);
 }

@@ -7,15 +7,19 @@
 }
 
 .hero {
-  textAlign: center;
+  text-align: center;
   margin-bottom: 0.25rem;
 }
 
 .title {
   font-size: var(--text-display);
-  margin: 0;
+  margin: 0 auto;
   line-height: 1.12;
   text-wrap: balance;
+  text-align: center;
+  /* El degradado se aplica al texto, no a la caja: si la caja midiera toda
+     la pantalla, el título solo mostraría la parte central de la rampa. */
+  display: inline-block;
   background: var(--gradient-text);
   -webkit-background-clip: text;
   background-clip: text;
@@ -29,6 +33,7 @@
   margin: 0.6rem auto 0;
   max-width: 60ch;
   line-height: 1.6;
+  text-align: center;
 }
 
 /* Botones de entrada: el visitante que llega por un buscador quiere la
@@ -39,45 +44,6 @@
   flex-wrap: wrap;
   gap: 0.7rem;
   margin-top: 1.4rem;
-}
-
-/* ---------------------------------------------------------------------------
-   Índice
-   --------------------------------------------------------------------------- */
-
-.tocTitle {
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.11em;
-  color: var(--text-muted);
-  margin: 0 0 0.5rem;
-  font-weight: 800;
-}
-
-.tocList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tocLink {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-soft);
-  background: var(--surface-tint);
-  color: var(--text-link);
-  text-decoration: none;
-  font-size: var(--text-sm);
-  font-weight: 600;
-}
-
-.tocLink:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-tint-strong);
 }
 
 /* ---------------------------------------------------------------------------
@@ -189,6 +155,3 @@
   text-decoration: underline;
 }
 
-.lazySpacer {
-  min-height: 120px;
-}

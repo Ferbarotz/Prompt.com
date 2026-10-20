@@ -40,7 +40,7 @@ npm run dev     # http://localhost:5173/Prompt.com/
 
 | Ruta                | Página                                              |
 | ------------------- | --------------------------------------------------- |
-| `/`                 | Home con la guía de prompts y el generador          |
+| `/`                 | Home con la guía de prompts (los fundamentos)          |
 | `/generar-prompt`   | Generador de prompts (flujo de 3 pasos)             |
 | `/analizar-prompt`  | Analizador que puntúa y mejora un prompt             |
 | `/guia`             | Índice de la guía: los bloques del prompt, uno a uno |

@@ -1,4 +1,4 @@
-import { lazy, Suspense, type CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../../Componente/Navbar'
 import Footer from '../../Componente/Footer'
@@ -8,10 +8,6 @@ import { HOME_JSON_LD } from '../../data/seoData'
 import { getRouteSeo } from '../../data/routeMeta'
 import styles from './Home.module.css'
 import { PATHS } from '../../data/paths'
-
-// El generador pesa ~25 KB: se carga después del contenido principal para no
-// retrasar el LCP de la home.
-const PromptGenerator = lazy(() => import('../../Componente/PromptGenerator'))
 
 /** Los colores de acento dependen de la sección, así que se aplican en línea. */
 const accentStyle = (accent: string): CSSProperties =>
@@ -31,7 +27,7 @@ const Home = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main id="contenido" className={styles.main}>
+      <main className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Guía de prompts: qué son y cómo escribirlos</h1>
           <p className={styles.subtitle}>
@@ -47,19 +43,6 @@ const Home = () => {
             </Link>
           </div>
         </section>
-
-        <nav aria-label="Índice de la guía">
-          <h2 className={styles.tocTitle}>En esta guía</h2>
-          <ul className={styles.tocList}>
-            {GUIDE_SECTIONS.map((section) => (
-              <li key={section.id}>
-                <a href={`#${section.id}`} className={styles.tocLink}>
-                  {section.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
 
         <section>
           <article className={styles.card}>
@@ -108,10 +91,6 @@ const Home = () => {
             </div>
           </article>
         </section>
-
-        <Suspense fallback={<div className={styles.lazySpacer} aria-hidden="true" />}>
-          <PromptGenerator />
-        </Suspense>
       </main>
       <Footer />
     </div>

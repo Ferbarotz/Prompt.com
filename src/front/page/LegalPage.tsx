@@ -24,7 +24,7 @@ const LegalPage = ({ page, path }: LegalPageProps) => {
   return (
     <div className="site-bg">
       <Navbar />
-      <main id="contenido" className={styles.main}>
+      <main className={styles.main}>
         <article className={styles.article}>
           <h1 className={styles.title}>{page.title}</h1>
           <p className={styles.updated}>
