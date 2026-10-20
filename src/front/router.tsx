@@ -3,7 +3,7 @@ import type { ComponentType } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import Home from './page/Home/Home'
 import { LEGAL_PAGES } from './data/legalContent'
-import { ALIASES, ROUTE_BY_KEY } from './data/routeMeta'
+import { ALIASES, ROUTE_BY_KEY, ROUTES } from './data/routeMeta'
 import { RouteError, RouteLoading } from './Componente/RouteStatus'
 
 /**
@@ -43,6 +43,10 @@ const legalRoutes = Object.entries(LEGAL_PAGES).map(([key, page]) => ({
   })
 }))
 
+/** Slug de una ruta: la última parte con contenido (`/guia/rol/` → `rol`). */
+const slugFromPath = (path: string): string =>
+  path.split('/').filter(Boolean).pop() ?? ''
+
 /**
  * Alias de las rutas secundarias.
  *
@@ -62,6 +66,46 @@ export const ALIAS_ROUTES: RouteObject[] = ALIASES.map((alias) => ({
   element: <Navigate to={ROUTE_BY_KEY[alias.target].path} replace />
 }))
 
+// Las páginas de la guía: una URL por bloque del prompt, más el índice.
+//
+// Las rutas salen del catálogo (`routes.json`), no del contenido: así el texto
+// de la guía viaja en el chunk perezoso de su página y no engorda el bundle
+// inicial, que es lo primero que descarga el visitante.
+const guideRoutes: RouteObject[] = [
+  {
+    path: '/guia',
+    ...lazyRoute(() => import('./page/GuideIndexPage'))
+  },
+  ...ROUTES.filter((route) => route.path.startsWith('/guia/') && route.path !== '/guia/').map(
+    (route) => ({
+      path: route.path.replace(/\/$/, ''),
+      ...lazyRoute(async () => {
+        const { default: GuidePage } = await import('./page/GuidePage')
+        const Wrapped = () => <GuidePage slug={slugFromPath(route.path)} />
+        return { default: Wrapped }
+      })
+    })
+  )
+]
+
+// El blog: el índice y un artículo por entrada.
+const blogRoutes: RouteObject[] = [
+  {
+    path: '/blog',
+    ...lazyRoute(() => import('./page/BlogIndexPage'))
+  },
+  ...ROUTES.filter((route) => route.path.startsWith('/blog/') && route.path !== '/blog/').map(
+    (route) => ({
+      path: route.path.replace(/\/$/, ''),
+      ...lazyRoute(async () => {
+        const { default: ArticlePage } = await import('./page/ArticlePage')
+        const Wrapped = () => <ArticlePage slug={slugFromPath(route.path)} />
+        return { default: Wrapped }
+      })
+    })
+  )
+]
+
 export const routes = [
   {
     path: '/',
@@ -80,6 +124,8 @@ export const routes = [
   // Alias: las URLs en inglés o escritas a mano no deben acabar en la 404.
   ...ALIAS_ROUTES,
   ...legalRoutes,
+  ...guideRoutes,
+  ...blogRoutes,
   {
     path: '*',
     ...lazyRoute(() => import('./page/NotFoundPage'))

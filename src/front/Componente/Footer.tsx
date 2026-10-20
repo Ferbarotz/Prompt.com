@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
 import { PATHS } from '../data/paths'
+import { routesByGroup } from '../data/routeMeta'
 
 interface Column {
   title: string
@@ -13,7 +14,17 @@ const columns: Column[] = [
     links: [
       { label: 'Generador de prompts', to: PATHS.generator },
       { label: 'Analizador de prompts', to: PATHS.linter },
-      { label: 'Guía de prompts', to: PATHS.home }
+      { label: 'Blog', to: PATHS.blog }
+    ]
+  },
+  {
+    title: 'Guía',
+    links: [
+      { label: 'Guía de prompts', to: PATHS.guia },
+      ...routesByGroup('guide-blocks').map((route) => ({
+        label: route.short ?? route.title,
+        to: route.path
+      }))
     ]
   },
   {

@@ -3,7 +3,15 @@ import { Link } from 'react-router-dom'
 import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
-import { CRITERIA, EXAMPLE_PROMPT, analyzePrompt, improvePrompt } from '../data/promptLinter'
+import {
+  CRITERIA,
+  CRITERIA_POINTS,
+  EXAMPLE_PROMPT,
+  LENGTH_POINTS,
+  STRUCTURE_POINTS,
+  analyzePrompt,
+  improvePrompt
+} from '../data/promptLinter'
 import { LINTER_JSON_LD } from '../data/seoData'
 import { getRouteSeo } from '../data/routeMeta'
 import usePersistentState from '../hooks/usePersistentState'
@@ -210,14 +218,21 @@ const LinterPage = () => {
         <section className={styles.rubric}>
           <h2 className={styles.rubricTitle}>Los 8 criterios de la rúbrica</h2>
           <p className={styles.rubricText}>
-            La puntuación es la suma de los criterios que el prompt cumple. Cada uno
-            aporta 10 puntos, y se suman 10 más por usar bloques estructurados y 10
-            más por una longitud equilibrada.
+            La puntuación es la suma del peso de los criterios que el prompt
+            cumple: {CRITERIA_POINTS} puntos en total. Se suman {STRUCTURE_POINTS} más
+            por usar bloques estructurados y {LENGTH_POINTS} más por una longitud
+            equilibrada.
           </p>
           <ol className={styles.rubricList}>
             {CRITERIA.map((criterion) => (
               <li key={criterion.id}>
-                <strong>{criterion.label}</strong>. {criterion.hint}
+                <strong>
+                  {criterion.label} ({criterion.weight} puntos)
+                </strong>
+                . {criterion.hint}{' '}
+                <Link to={`${PATHS.guia}${criterion.id}/`} className={styles.rubricLink}>
+                  Ver la guía del bloque →
+                </Link>
               </li>
             ))}
           </ol>

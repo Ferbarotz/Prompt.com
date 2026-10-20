@@ -1,6 +1,7 @@
 import { absoluteUrl } from '../utils/siteUrl'
 import { GUIDE_SECTIONS } from './guideSections'
 import { PATHS } from './paths'
+import { SITE_NAME } from './routeMeta'
 
 const siteUrl = absoluteUrl('/')
 
@@ -114,9 +115,73 @@ export const GENERATOR_JSON_LD = {
   ]
 }
 
-/** Datos estructurados de la página del analizador. */
-export const LINTER_JSON_LD = {
+/**
+ * Migas de pan en schema.org.
+ *
+ * Las páginas de contenido (guía y artículos) están a dos niveles: la home y
+ * la sección. Declararlo ayuda a los buscadores a entender la estructura del
+ * sitio y a mostrar el camino en el resultado.
+ */
+export const buildBreadcrumbJsonLd = (items: Array<{ name: string; path: string }>) => ({
   '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    item: absoluteUrl(item.path)
+  }))
+})
+
+/** Datos estructurados de un artículo de contenido. */
+export const buildArticleJsonLd = ({
+  title,
+  description,
+  path,
+  datePublished,
+  dateModified,
+  section,
+  wordCount
+}: {
+  title: string
+  description: string
+  path: string
+  datePublished: string
+  dateModified?: string
+  section: string
+  wordCount?: number
+}) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  url: absoluteUrl(path),
+  mainEntityOfPage: absoluteUrl(path),
+  inLanguage: 'es-ES',
+  articleSection: section,
+  datePublished,
+  dateModified: dateModified ?? datePublished,
+  ...(wordCount ? { wordCount } : {}),
+  author: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: absoluteUrl('/')
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: absoluteUrl('/')
+  }
+})
+
+/** Agrupa varios nodos de datos estructurados en un solo grafo. */
+export const buildJsonLdGraph = (nodes: object[]) => ({
+  '@context': 'https://schema.org',
+  '@graph': nodes
+})
+
+/** Datos estructurados de la página del analizador. */
+export const LINTER_JSON_LD = {  '@context': 'https://schema.org',
   '@type': 'WebApplication',
   '@id': `${absoluteUrl(PATHS.linter)}#app`,
   name: 'Analizador de prompts de Prompt.com',

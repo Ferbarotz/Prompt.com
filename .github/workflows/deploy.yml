@@ -55,9 +55,17 @@ jobs:
           test -f dist/analizar-prompt/index.html
           test -f dist/generator-prompt/index.html
           test -f dist/linter/index.html
+          test -f dist/guia/index.html
+          test -f dist/guia/rol/index.html
+          test -f dist/blog/index.html
+          test -f dist/og/guia/rol.png
           grep -q 'rel="canonical"' dist/index.html
           grep -q 'og:image' dist/index.html
           grep -q 'https://' dist/sitemap.xml
+          # Cada ruta tiene su propia canonical: sin esto, todas se
+          # presentarían como la home.
+          grep -q 'canonical" href="https://[^"]*/generar-prompt/"' dist/generar-prompt/index.html
+          grep -q 'canonical" href="https://[^"]*/guia/rol/"' dist/guia/rol/index.html
           # Los alias existen como carpeta (200) pero no se indexan.
           ! grep -q 'generator-prompt' dist/sitemap.xml
           # Con dominio propio, el CNAME debe estar en el artefacto.

@@ -24,6 +24,7 @@ import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { getCustomDomain, getSiteOrigin } from './site-url.mjs'
 import { renderSeoHead, replaceSeoBlock } from './seo-head.mjs'
+import { renderOgImage } from './og-images.mjs'
 
 const distDir = path.resolve('dist')
 
@@ -50,16 +51,35 @@ const getLastModified = () => {
 /**
  * Etiquetas SEO de una ruta.
  *
- * `url` es la URL canónica absoluta y `image` la imagen Open Graph, que
- * siempre es la misma para todas las rutas.
+ * `url` es la URL canónica absoluta y `image` la imagen Open Graph, que es
+ * propia de cada ruta cuando la tiene (`dist/og/<fichero>.png`).
  */
 const headFor = (route, origin) =>
   renderSeoHead({
     title: route.title,
     description: route.description,
     url: `${origin}${route.path}`,
-    image: `${origin}/og-image.png`
+    image: `${origin}${route.og ? `/og/${route.og.file}.png` : '/og-image.png'}`
   })
+
+/**
+ * Genera las imágenes Open Graph de las rutas que las tienen.
+ *
+ * Una tarjeta de 1200×630 por ruta (guía y artículos): sin esto, todos los
+ * enlaces se verían igual en Slack, WhatsApp o X.
+ */
+const buildOgImages = async () => {
+  const withOg = ROUTES.filter((route) => route.og)
+  if (withOg.length === 0) return
+
+  for (const route of withOg) {
+    const file = path.join(distDir, 'og', `${route.og.file}.png`)
+    await fs.mkdir(path.dirname(file), { recursive: true })
+    const png = await renderOgImage({ title: route.title, kicker: route.og.kicker })
+    await fs.writeFile(file, png)
+  }
+  console.log(`· dist/og/ — ${withOg.length} imágenes Open Graph`)
+}
 
 /**
  * `index.html` → `404.html` y a una carpeta por ruta.
@@ -171,6 +191,7 @@ const buildCname = async () => {
 
 const main = async () => {
   const origin = getSiteOrigin()
+  await buildOgImages()
   await buildSpaFallback(origin)
   await buildSitemap(origin)
   await buildRobots(origin)

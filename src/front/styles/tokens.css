@@ -114,4 +114,98 @@
      ------------------------------------------------------------------------- */
   --focus-ring: 0 0 0 3px rgba(139, 92, 246, 0.35);
   --focus-ring-strong: 0 0 0 4px rgba(139, 92, 246, 0.55);
+
+  /* -------------------------------------------------------------------------
+     Colores que estaban escritos a pelo en los componentes
+     ------------------------------------------------------------------------- */
+
+  /* Borde translúcido sobre superficies de color (botones, tarjetas). */
+  --border-glass: rgba(255, 255, 255, 0.25);
+
+  /* Fondo de los bloques de código (los prompts y sus ejemplos). */
+  --surface-code: rgba(13, 18, 35, 0.75);
+  --code-text: #eaf1ff;
+
+  /* Halos del fondo de la aplicación. */
+  --glow-violet: rgba(139, 92, 246, 0.28);
+  --glow-blue: rgba(59, 130, 246, 0.34);
+  --glow-cyan: rgba(6, 182, 212, 0.16);
+}
+
+/* ---------------------------------------------------------------------------
+   Tema claro
+   ---------------------------------------------------------------------------
+
+   La marca es oscura, pero leer un texto largo en fondo oscuro cansa. El
+   tema claro es una alternativa explícita (botón en la barra de navegación),
+   no una preferencia del sistema: el sitio declara `color-scheme: dark` y
+   el visitante decide.
+
+   Solo se redefinen tokens: los componentes no cambian. */
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f5f7fc;
+  --bg-alt: #eef1fa;
+
+  --surface-card: linear-gradient(180deg, #ffffff 0%, #f6f8ff 100%);
+  --surface-panel: linear-gradient(180deg, #ffffff 0%, #f4f7ff 100%);
+  --surface-raised: #ffffff;
+  --surface-sunken: #f1f4fd;
+  --surface-soft: #f4f6ff;
+  --surface-nav: linear-gradient(90deg, #ffffff 0%, #f5f7ff 60%, #eceaff 100%);
+  --surface-tint: rgba(99, 102, 241, 0.08);
+  --surface-tint-strong: rgba(99, 102, 241, 0.14);
+
+  --text: #1a2038;
+  --text-bright: #10152a;
+  --text-body: #2b3250;
+  --text-soft: #232a47;
+  --text-muted: #4b5478;
+  --text-link: #3c3f8f;
+  --text-subtle: #5b638a;
+  --text-faint: #6a7296;
+
+  --border: rgba(99, 102, 241, 0.26);
+  --border-soft: rgba(99, 102, 241, 0.15);
+  --border-strong: rgba(99, 102, 241, 0.4);
+  --border-accent: rgba(99, 102, 241, 0.28);
+
+  --gradient-brand: linear-gradient(90deg, #4f46e5 0%, #7c3aed 55%, #db2777 100%);
+  --gradient-text: linear-gradient(90deg, #1d4ed8 0%, #6d28d9 50%, #be185d 100%);
+  --gradient-header: linear-gradient(
+    90deg,
+    rgba(79, 70, 229, 0.12),
+    rgba(124, 58, 237, 0.1),
+    rgba(6, 182, 212, 0.1)
+  );
+  --gradient-header-alt: linear-gradient(
+    90deg,
+    rgba(219, 39, 119, 0.1),
+    rgba(124, 58, 237, 0.1),
+    rgba(79, 70, 229, 0.1)
+  );
+
+  --shadow-card: 0 12px 30px rgba(30, 41, 82, 0.1), 0 4px 14px rgba(99, 102, 241, 0.08);
+  --shadow-soft: 0 6px 18px rgba(30, 41, 82, 0.08);
+  --shadow-nav: 0 4px 14px rgba(30, 41, 82, 0.07);
+  --shadow-cta: 0 8px 20px rgba(124, 58, 237, 0.22);
+
+  --focus-ring: 0 0 0 3px rgba(124, 58, 237, 0.25);
+  --focus-ring-strong: 0 0 0 4px rgba(124, 58, 237, 0.4);
+
+  --border-glass: rgba(24, 30, 60, 0.16);
+  --surface-code: #f2f5fd;
+  --code-text: #1f2540;
+
+  /* Los verdes y rojos se oscurecen: en el tema claro se usan como texto y
+     necesitan más contraste sobre fondo blanco. */
+  --brand-green: #047857;
+  --brand-red: #b91c1c;
+  --brand-amber: #b45309;
+
+  --glow-violet: rgba(124, 58, 237, 0.16);
+  --glow-blue: rgba(59, 130, 246, 0.16);
+  --glow-cyan: rgba(6, 182, 212, 0.1);
 }

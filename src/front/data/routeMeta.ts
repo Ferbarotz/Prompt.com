@@ -22,6 +22,14 @@ export const DEFAULT_TITLE = `${SITE_NAME} — Guía y generador de prompts`
 export const DEFAULT_DESCRIPTION =
   'Aprende qué es un prompt, para qué sirve y cómo escribir los mejores. Generador de prompts profesionales para código, contenido, imágenes, SEO y más.'
 
+/** Imagen Open Graph propia de una ruta. */
+export interface RouteOg {
+  /** Fichero de la imagen (sin extensión) dentro de `dist/og/`. */
+  file: string
+  /** Etiqueta de la imagen (la categoría de la página). */
+  kicker: string
+}
+
 /** Ruta pública con sus metadatos de SEO y de sitemap. */
 export interface RouteMeta {
   /** Identificador de la ruta (`home`, `generator`…). */
@@ -36,6 +44,12 @@ export interface RouteMeta {
   changefreq: string
   /** Prioridad para el sitemap. */
   priority: string
+  /** Imagen Open Graph propia (si la tiene). */
+  og?: RouteOg
+  /** Grupo de la ruta (para agrupar enlaces internos). */
+  group?: string
+  /** Nombre corto, para las listas de enlaces (el footer, por ejemplo). */
+  short?: string
 }
 
 /** Todas las rutas públicas, en el orden en que se publican. */
@@ -71,6 +85,14 @@ export const normalizePath = (path: string): string => {
 /** Devuelve la ruta pública que corresponde a una URL interna. */
 export const getRouteByPath = (path: string): RouteMeta | undefined =>
   ROUTE_BY_PATH[normalizePath(path)]
+
+/** URL de la imagen Open Graph de una ruta (relativa al sitio). */
+export const getOgImagePath = (route: RouteMeta | undefined): string | undefined =>
+  route?.og ? `og/${route.og.file}.png` : undefined
+
+/** Rutas de un grupo (los bloques de la guía, los artículos…). */
+export const routesByGroup = (group: string): RouteMeta[] =>
+  ROUTES.filter((route) => route.group === group)
 
 /** Metadatos SEO que necesita `useSeo`. */
 export interface RouteSeo {

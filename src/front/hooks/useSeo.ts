@@ -1,5 +1,11 @@
 import { useEffect } from 'react'
-import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME } from '../data/routeMeta'
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  SITE_NAME,
+  getOgImagePath,
+  getRouteByPath
+} from '../data/routeMeta'
 import { absoluteUrl, assetUrl } from '../utils/siteUrl'
 
 /** Crea o actualiza una etiqueta `<meta>`. */
@@ -62,7 +68,10 @@ const useSeo = ({
 }: SeoOptions = {}): void => {
   useEffect(() => {
     const url = absoluteUrl(path)
-    const imageUrl = image ?? assetUrl('og-image.png')
+    // Cada ruta puede tener su propia imagen Open Graph: la que genera el
+    // post-build en `dist/og/`. Sin ella, todos los enlaces se verían igual.
+    const ogImage = getOgImagePath(getRouteByPath(path))
+    const imageUrl = image ?? (ogImage ? assetUrl(ogImage) : assetUrl('og-image.png'))
     const fullTitle = title ? `${title} — ${SITE_NAME}` : DEFAULT_TITLE
 
     document.title = fullTitle

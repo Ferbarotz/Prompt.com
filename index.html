@@ -62,6 +62,26 @@
     <!-- La fuente se descarga en paralelo al HTML para evitar un salto de
          contenido al aplicar Inter. -->
     <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!--
+      Tema claro, aplicado antes de pintar.
+
+      Si el visitante eligió el tema claro en una visita anterior, se aplica
+      aquí (y no al montar React) para que la página no destelle en oscuro.
+    -->
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('prompt-com:theme') === 'light') {
+            document.documentElement.dataset.theme = 'light'
+            var meta = document.querySelector('meta[name="theme-color"]')
+            if (meta) meta.setAttribute('content', '#f5f7fc')
+          }
+        } catch (error) {
+          /* Sin almacenamiento, se queda el tema oscuro. */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

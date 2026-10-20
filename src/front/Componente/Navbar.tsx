@@ -1,4 +1,5 @@
 import { Link, NavLink } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
 import styles from './Navbar.module.css'
 import { PATHS } from '../data/paths'
 
@@ -32,9 +33,18 @@ const Navbar = () => {
             Analizar prompt
           </NavLink>
 
+          <NavLink
+            to={PATHS.blog}
+            className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+          >
+            Blog
+          </NavLink>
+
           <Link to={PATHS.generator} className={styles.cta}>
             Crear
           </Link>
+
+          <ThemeToggle />
         </div>
       </nav>
     </>

@@ -99,6 +99,10 @@ const Home = () => {
                   </ul>
 
                   <p className={styles.example}>{section.example}</p>
+
+                  <p className={styles.more}>
+                    <Link to={`${PATHS.guia}${section.id}/`}>Leer la guía completa →</Link>
+                  </p>
                 </section>
               ))}
             </div>

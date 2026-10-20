@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { CRITERIA, EXAMPLE_PROMPT, analyzePrompt, improvePrompt } from './promptLinter'
+import {
+  CRITERIA,
+  CRITERIA_POINTS,
+  EXAMPLE_PROMPT,
+  LENGTH_POINTS,
+  STRUCTURE_POINTS,
+  analyzePrompt,
+  improvePrompt
+} from './promptLinter'
 import type { PromptAnalysis } from './promptLinter'
 
 const idsOf = (analysis: PromptAnalysis) =>
@@ -122,11 +130,24 @@ describe('analyzePrompt', () => {
 
   it('todos los criterios tienen peso y metadatos', () => {
     for (const criterion of CRITERIA) {
-      expect(criterion.weight).toBe(10)
+      expect(criterion.weight).toBeGreaterThan(0)
       expect(criterion.hint.length).toBeGreaterThan(20)
       expect(criterion.template.length).toBeGreaterThan(10)
       expect(criterion.patterns.length).toBeGreaterThan(0)
     }
+  })
+
+  it('los pesos de los criterios completan los 80 puntos de la rúbrica', () => {
+    expect(CRITERIA_POINTS).toBe(80)
+    expect(CRITERIA_POINTS + STRUCTURE_POINTS + LENGTH_POINTS).toBe(100)
+  })
+
+  it('un prompt con los criterios importantes puntúa más', () => {
+    // Mismo número de criterios, pero el objetivo pesa más que el rol.
+    const conObjetivo = analyzePrompt('Genera un informe de ventas con los datos del trimestre.')
+    const conRol = analyzePrompt('Actúa como un redactaor: escribe un informe con los datos.')
+
+    expect(conObjetivo.score).toBeGreaterThan(conRol.score)
   })
 })
 

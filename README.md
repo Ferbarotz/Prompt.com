@@ -43,6 +43,10 @@ npm run dev     # http://localhost:5173/Prompt.com/
 | `/`                 | Home con la guía de prompts y el generador          |
 | `/generar-prompt`   | Generador de prompts (flujo de 3 pasos)             |
 | `/analizar-prompt`  | Analizador que puntúa y mejora un prompt             |
+| `/guia`             | Índice de la guía: los bloques del prompt, uno a uno |
+| `/guia/<bloque>`    | Página de un bloque (rol, objetivo, contexto…)      |
+| `/blog`             | Artículos sobre prompt engineering en el trabajo real |
+| `/blog/<articulo>`  | Un artículo del blog                                 |
 | `/aviso-legal`      | Aviso legal                                        |
 | `/privacidad`       | Política de privacidad                              |
 | `/cookies`          | Política de cookies                                 |
@@ -52,11 +56,14 @@ npm run dev     # http://localhost:5173/Prompt.com/
 
 ```
 src/front/
-├── Componente/   Navbar, Footer, PromptGenerator, Analytics (+ .module.css)
+├── Componente/   Navbar, Footer, PromptGenerator, Analytics, ThemeToggle
+│                 (+ .module.css)
 ├── data/         taskTypes, guideSections, promptLinter, legalContent, seoData,
-│                 routes.json (catálogo de rutas), routeMeta, generatorLink
+│                 criteriaGuide, guidePages, articles, generatorLink,
+│                 routes.json (catálogo de rutas), routeMeta
 ├── hooks/        useSeo, usePersistentState
-├── page/         Home, GeneratorPage, LinterPage, LegalPage, NotFoundPage
+├── page/         Home, GeneratorPage, LinterPage, LegalPage, NotFoundPage,
+│                 GuidePage, GuideIndexPage, ArticlePage, BlogIndexPage
 ├── styles/       tokens.css (design tokens) y global.css (reset y utilidades)
 ├── utils/        siteUrl (URLs absolutas del sitio)
 ├── router.tsx    rutas (las secundarias se cargan bajo demanda)
@@ -176,6 +183,34 @@ remoto `origin` de git → origen de desarrollo.
   prompt copiando la barra de direcciones; el botón **Copiar enlace** hace lo
   mismo con un clic. Un enlace compartido manda sobre lo guardado en el
   navegador y abre el resultado directamente en el paso 3.
+
+## Contenido: guía por bloques y blog
+
+- La guía de la home resume los fundamentos, pero cada bloque del prompt tiene
+  su propia página (`src/front/data/guidePages.ts` y `criteriaGuide.ts`): las
+  tres secciones de la guía y los ocho bloques de la rúbrica (rol, objetivo,
+  contexto, datos, restricciones, formato, ejemplos y validación). Cada página
+  explica qué hace el bloque, cómo se escribe, qué falla cuando falta y
+  enlaza con el generador y el analizador.
+- El blog (`src/front/data/articles.ts`) cubre lo que no cabe en la guía:
+  casos concretos, flujos de trabajo y errores reales. Cada artículo es una
+  página con su URL, sus datos estructurados y su entrada en el sitemap.
+- El contenido viaja en los chunks perezosos de sus rutas: el catálogo de
+  rutas (`routes.json`) solo lleva las URLs y los metadatos, así que el bundle
+  inicial no crece con el texto.
+
+## Tema claro
+
+La marca es oscura, pero leer la guía entera en fondo oscuro cansa. El botón
+☀/☾ de la barra de navegación alterna al tema claro:
+
+- Los dos temas se definen **solo con tokens** (`src/front/styles/tokens.css`):
+  el tema claro redefine las variables del oscuro, así que los componentes no
+  cambian.
+- La elección se guarda en `localStorage` y se aplica **antes de pintar**
+  (script en `index.html`), así que al recargar no hay destello.
+- `prefers-reduced-motion` se respeta en toda la aplicación: quien pide menos
+  movimiento no lo tiene.
 
 ## Rendimiento
 

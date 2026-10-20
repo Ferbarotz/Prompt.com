@@ -11,16 +11,18 @@
  * fuente única que comparten la aplicación y el post-build.
  */
 
-import { ROUTE_BY_KEY } from './routeMeta'
+import { ROUTES } from './routeMeta'
 
 export const PATHS = {
-  home: ROUTE_BY_KEY.home.path,
-  generator: ROUTE_BY_KEY.generator.path,
-  linter: ROUTE_BY_KEY.linter.path,
-  avisoLegal: ROUTE_BY_KEY.avisoLegal.path,
-  privacidad: ROUTE_BY_KEY.privacidad.path,
-  cookies: ROUTE_BY_KEY.cookies.path
+  home: ROUTES.find((route) => route.key === 'home')?.path ?? '/',
+  generator: ROUTES.find((route) => route.key === 'generator')?.path ?? '/generar-prompt/',
+  linter: ROUTES.find((route) => route.key === 'linter')?.path ?? '/analizar-prompt/',
+  avisoLegal: ROUTES.find((route) => route.key === 'avisoLegal')?.path ?? '/aviso-legal/',
+  privacidad: ROUTES.find((route) => route.key === 'privacidad')?.path ?? '/privacidad/',
+  cookies: ROUTES.find((route) => route.key === 'cookies')?.path ?? '/cookies/',
+  guia: ROUTES.find((route) => route.key === 'guia')?.path ?? '/guia/',
+  blog: ROUTES.find((route) => route.key === 'blog')?.path ?? '/blog/'
 }
 
 /** Rutas que aparecen en el sitemap. */
-export const PUBLIC_PATHS: string[] = Object.values(PATHS)
+export const PUBLIC_PATHS: string[] = ROUTES.map((route) => route.path)

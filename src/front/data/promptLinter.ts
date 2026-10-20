@@ -68,7 +68,12 @@ export interface PromptAnalysis {
   length: number
 }
 
-/** Criterios de la rúbrica, con su peso en la puntuación final. */
+/**
+ * Criterios de la rúbrica, con su peso en la puntuación final.
+ *
+ * Los pesos suman 80. Los 20 puntos restantes son la estructura (10) y la
+ * longitud equilibrada (10), de modo que el máximo sigue siendo 100.
+ */
 export const CRITERIA: LinterCriterion[] = [
   {
     id: 'rol',
@@ -90,7 +95,7 @@ export const CRITERIA: LinterCriterion[] = [
   {
     id: 'objetivo',
     label: 'Objetivo claro',
-    weight: 10,
+    weight: 12,
     hint: 'Qué tiene que hacer, con un verbo concreto. "Resume el contrato" es un objetivo; "Contrato" no.',
     blockTitle: 'Objetivo',
     template: '<Verbo en imperativo> <qué hay que hacer> <sobre qué>.',
@@ -146,7 +151,7 @@ export const CRITERIA: LinterCriterion[] = [
   {
     id: 'restricciones',
     label: 'Restricciones y límites',
-    weight: 10,
+    weight: 8,
     hint: 'Lo que el modelo NO debe hacer. Acota la respuesta y evita el relleno.',
     blockTitle: 'Restricciones',
     template: '## Restricciones\n- Máximo <N> palabras\n- No incluyas <lo que sobra>\n- <Otras restricciones>',
@@ -167,7 +172,7 @@ export const CRITERIA: LinterCriterion[] = [
   {
     id: 'formato',
     label: 'Formato de salida',
-    weight: 10,
+    weight: 12,
     hint: 'Cómo debe entregarse la respuesta. Sin formato, cada respuesta viene de una manera.',
     blockTitle: 'Formato de salida',
     template: '## Formato de salida\n<JSON | tabla markdown | lista numerada | párrafos>',
@@ -209,7 +214,7 @@ export const CRITERIA: LinterCriterion[] = [
   {
     id: 'validacion',
     label: 'Criterio de validación',
-    weight: 10,
+    weight: 8,
     hint: 'Cómo se comprueba que la respuesta es buena. Sin esto, no hay forma de iterar.',
     blockTitle: 'Criterio de validación',
     template: '## Criterio de validación\n<Cómo comprobar que la respuesta cumple>',
@@ -263,6 +268,15 @@ const LEVELS: Array<{ min: number; label: string; color: string }> = [
   { min: 0, label: 'Débil', color: '#f87171' }
 ]
 
+/** Puntos por usar bloques separados por títulos. */
+export const STRUCTURE_POINTS = 10
+
+/** Puntos por una longitud dentro del rango recomendado. */
+export const LENGTH_POINTS = 10
+
+/** Puntos que suman los ocho criterios de la rúbrica. */
+export const CRITERIA_POINTS = CRITERIA.reduce((total, criterion) => total + criterion.weight, 0)
+
 /**
  * Analiza un prompt y devuelve la puntuación y el desglose.
  * @param {string} text Texto del prompt a analizar.
@@ -283,9 +297,12 @@ export const analyzePrompt = (text: string): PromptAnalysis => {
   const structure = detectStructure(clean)
   const lengthOk = clean.length >= 150 && clean.length <= 2000
 
+  // Cada criterio aporta su peso, no un punto fijo: el objetivo y el formato
+  // valen más que el resto porque son los que más cambian el resultado.
+  const criteriaPoints = found.reduce((total, criterion) => total + criterion.weight, 0)
   const score = Math.min(
     100,
-    found.length * 10 + (structure.structured ? 10 : 0) + (lengthOk ? 10 : 0)
+    criteriaPoints + (structure.structured ? STRUCTURE_POINTS : 0) + (lengthOk ? LENGTH_POINTS : 0)
   )
 
   const issues: PromptIssue[] = []

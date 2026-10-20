@@ -41,6 +41,34 @@ describe('enrutado', () => {
     ).toBeInTheDocument()
   })
 
+  it('el índice de la guía carga su listado', async () => {
+    renderAt('/guia')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /todos los bloques/i })
+    ).toBeInTheDocument()
+  })
+
+  it('una página de la guía carga su contenido', async () => {
+    renderAt('/guia/rol')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /el rol en un prompt/i })
+    ).toBeInTheDocument()
+  })
+
+  it('el índice del blog carga los artículos', async () => {
+    renderAt('/blog')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /prompts en el trabajo real/i })
+    ).toBeInTheDocument()
+  })
+
+  it('un artículo del blog carga su contenido', async () => {
+    renderAt('/blog/un-mismo-prompt-con-varios-modelos')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /un mismo prompt para varios modelos/i })
+    ).toBeInTheDocument()
+  })
+
   it('una ruta inexistente muestra la 404', async () => {
     renderAt('/no-existe-esta-pagina')
     expect(await screen.findByText('404')).toBeInTheDocument()

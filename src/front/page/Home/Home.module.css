@@ -167,10 +167,26 @@
 
 .example {
   margin: 0;
-  color: #d6e3ff;
+  color: var(--text-body);
   line-height: 1.68;
   font-size: 1.01rem;
   font-style: italic;
+}
+
+/* Enlace a la página completa de la sección (una URL por bloque). */
+.more {
+  margin: 0.9rem 0 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.more a {
+  color: var(--text-link);
+  text-decoration: none;
+}
+
+.more a:hover {
+  text-decoration: underline;
 }
 
 .lazySpacer {
