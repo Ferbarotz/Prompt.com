@@ -1,0 +1,100 @@
+/* ---------------------------------------------------------------------------
+   Anatomía de un prompt
+   ---------------------------------------------------------------------------
+
+   Diagrama de los ocho bloques, con el de la página resaltado. Se dibuja con
+   HTML y CSS para que siga al tema y no pese nada. */
+
+.anatomy {
+  margin: 0 0 2rem;
+  padding: 1.1rem 1.2rem 1rem;
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+}
+
+.caption {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--text-muted);
+  font-weight: 800;
+  margin-bottom: 0.7rem;
+}
+
+.blocks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.block,
+.blockCurrent {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: var(--text-sm);
+}
+
+.block {
+  color: var(--text-faint);
+  background: var(--surface-soft);
+}
+
+.blockCurrent {
+  color: var(--text-bright);
+  font-weight: 700;
+  background: var(--surface-tint-strong);
+  border-color: var(--brand-violet);
+}
+
+.index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: 0 0 1.5rem;
+  border-radius: 50%;
+  background: var(--surface-tint);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.blockCurrent .index {
+  background: var(--gradient-brand);
+  color: #fff;
+}
+
+.name {
+  flex: 1;
+}
+
+.weight {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}
+
+.here {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  color: var(--text-link);
+}
+
+.foot {
+  margin: 0.8rem 0 0;
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+}
+
+.foot a {
+  color: var(--text-link);
+}

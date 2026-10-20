@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  MAX_QUERY_LENGTH,
   buildShareUrl,
   decodeGeneratorState,
   encodeGeneratorState,
@@ -61,5 +62,31 @@ describe('enlace del generador', () => {
     expect(url).toContain('/generar-prompt/')
     expect(url).toContain('t=video')
     expect(url.startsWith('http')).toBe(true)
+  })
+
+  it('un enlace demasiado largo se recorta', () => {
+    const largo = {
+      taskId: 'web',
+      idea: 'a'.repeat(5000),
+      details: { tipo: 'x'.repeat(2000) },
+      extra: 'b'.repeat(500)
+    }
+    const query = encodeGeneratorState(largo)
+
+    // El query no puede crecer sin límite: algunos navegadores lo cortan.
+    expect(query.length).toBeLessThanOrEqual(MAX_QUERY_LENGTH)
+  })
+
+  it('al recortar se conservan el tipo y el principio de la idea', () => {
+    const query = encodeGeneratorState({
+      taskId: 'web',
+      idea: 'a'.repeat(5000),
+      details: {},
+      extra: ''
+    })
+    const decodificado = decodeGeneratorState(query)
+
+    expect(decodificado.taskId).toBe('web')
+    expect(decodificado.idea?.startsWith('aaa')).toBe(true)
   })
 })

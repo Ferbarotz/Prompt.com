@@ -76,7 +76,7 @@ describe('Home (presentación)', () => {
       </MemoryRouter>
     )
 
-    const enlaces = screen.getAllByRole('link', { name: /leer la guía completa/i })
+    const enlaces = screen.getAllByRole('link', { name: /leer el bloque completo/i })
     expect(enlaces).toHaveLength(3)
     for (const enlace of enlaces) {
       expect(enlace.getAttribute('href')).toMatch(/^\/guia\/[a-z-]+\/$/)

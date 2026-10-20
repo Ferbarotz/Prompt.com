@@ -30,10 +30,24 @@ const NotFoundPage = () => {
               Volver al inicio
             </Link>
 
+            <Link to={PATHS.guia} className={styles.secondary}>
+              Ver la guía
+            </Link>
+
             <Link to={PATHS.generator} className={styles.secondary}>
               Crear un prompt
             </Link>
+
+            <Link to={PATHS.linter} className={styles.secondary}>
+              Analizar un prompt
+            </Link>
           </div>
+
+          <p className={styles.hint}>
+            También puedes leer los{' '}
+            <Link to={PATHS.blog}>artículos del blog</Link> o escribir en{' '}
+            <Link to={PATHS.privacidad}>la política de privacidad</Link>.
+          </p>
         </main>
       </div>
       <Footer />

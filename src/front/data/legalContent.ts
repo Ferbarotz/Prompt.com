@@ -98,20 +98,23 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
       {
         heading: 'Datos que se recogen',
         paragraphs: [
-          'Este sitio es estático y se ejecuta íntegramente en el navegador. Los prompts que escribes en el generador o en el analizador se procesan de forma local: no se envían a ningún servidor ni se almacenan.',
-          'Únicamente se recogen los datos que decides enviar de forma explícita, como el correo electrónico si decides escribirnos. Si en el futuro se incorporan herramientas de analítica, se indicará en esta política y en la de cookies antes de su activación.'
+          'Este sitio es estático y se ejecuta íntegramente en el navegador. Los prompts que escribes en el generador o en el analizador se procesan de forma local: no se envían a ningún servidor.',
+          'Lo único que se recoge son los datos que decides enviar de forma explícita, como el correo electrónico si decides escribirnos. Si en el futuro se incorporan herramientas de analítica, se indicará en esta política y en la de cookies antes de su activación.',
+          'El generador y el analizador guardan en el almacenamiento local de tu navegador (localStorage) lo que escribes, para que no pierdas el trabajo si recargas la página: el prompt en curso, el texto analizado y el tema que has elegido. Ese dato no sale de tu equipo, no se envía a ningún servidor y puedes borrarlo cuando quieras desde el enlace «Borrar los datos guardados» del pie de página.'
         ]
       },
       {
         heading: 'Finalidad y legitimación',
         paragraphs: [
-          'Los datos enviados por correo electrónico para comunicaciones con el titular se utilizan para atender tu consulta.'
+          'Los datos enviados por correo electrónico para comunicaciones con el titular se utilizan para atender tu consulta.',
+          'Los datos guardados en tu navegador (el prompt en curso, el texto del analizador y la preferencia de tema) se utilizan únicamente para devolvértelos cuando vuelves a la web. La legitimación es tu consentimiento, que puedes retirar en cualquier momento borrándolos.'
         ]
       },
       {
         heading: 'Conservación',
         paragraphs: [
-          'Las comunicaciones con el titular se conservan durante el tiempo necesario para resolver la solicitud y, después, durante los plazos exigidos por la normativa aplicable.'
+          'Las comunicaciones con el titular se conservan durante el tiempo necesario para resolver la solicitud y, después, durante los plazos exigidos por la normativa aplicable.',
+          'Los datos guardados en tu navegador se conservan durante un máximo de 30 días desde la última vez que los usaste, momento en el que se eliminan automáticamente.'
         ]
       },
       {
@@ -157,7 +160,7 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
         heading: 'Cookies que utiliza este sitio',
         paragraphs: [
           'En su estado actual, Prompt.com no instala cookies publicitarias ni de seguimiento, y no utiliza herramientas de analítica con cookies. El sitio funciona sin ningún tipo de cookie.',
-          'La única almacenamiento local que se utiliza es `sessionStorage`, que se borra al cerrar la pestaña y no contiene información identificable. Sirve para recordar la ruta solicitada cuando GitHub Pages sirve la aplicación en una URL interna.'
+          'El único almacenamiento local que se utiliza es `localStorage`, y solo en tu navegador: guarda el prompt que estás escribiendo en el generador, el texto que has pegado en el analizador y si prefieres el tema claro u oscuro. Sirve para que no pierdas el trabajo al recargar la página. No contiene información identificable, no se envía a ningún servidor y puedes borrarlo cuando quieras desde el enlace «Borrar los datos guardados» del pie de página o desde la configuración del navegador.'
         ]
       },
       {

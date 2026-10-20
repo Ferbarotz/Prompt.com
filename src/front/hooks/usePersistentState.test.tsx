@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import usePersistentState from './usePersistentState'
+import usePersistentState, { clearPersistedState } from './usePersistentState'
 
 /** Componente de prueba: expone el valor y un botón para cambiarlo. */
 const Probe = ({ storageKey, initial }: { storageKey: string; initial: string }) => {
@@ -24,14 +24,45 @@ describe('usePersistentState', () => {
     await user.click(screen.getByRole('button', { name: 'añadir' }))
     expect(screen.getByTestId('value')).toHaveTextContent('hola!')
 
-    await waitFor(() =>
-      expect(window.localStorage.getItem('prompt-com:prueba')).toBe('"hola!"')
-    )
+    await waitFor(() => {
+      const guardado = window.localStorage.getItem('prompt-com:prueba')
+      expect(guardado).toContain('hola!')
+      // Se guarda con su fecha, para que pueda caducar.
+      expect(JSON.parse(guardado ?? '{}')).toMatchObject({ v: 1, value: 'hola!' })
+    })
 
     unmount()
 
     render(<Probe storageKey="prueba" initial="hola" />)
     expect(screen.getByTestId('value')).toHaveTextContent('hola!')
+  })
+
+  it('lo guardado caduca a los 30 días', () => {
+    const hace = 31 * 24 * 60 * 60 * 1000
+    window.localStorage.setItem(
+      'prompt-com:viejo',
+      JSON.stringify({ v: 1, savedAt: Date.now() - hace, value: 'viejo' })
+    )
+
+    render(<Probe storageKey="viejo" initial="nuevo" />)
+
+    expect(screen.getByTestId('value')).toHaveTextContent('nuevo')
+  })
+
+  it('borra todo lo guardado por la aplicación', async () => {
+    const user = userEvent.setup()
+    render(<Probe storageKey="borrar" initial="hola" />)
+    await user.click(screen.getByRole('button', { name: 'añadir' }))
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:borrar')).toContain('hola!')
+    )
+
+    // Otra clave que no es de la aplicación no se toca.
+    window.localStorage.setItem('otra-cosa', '1')
+
+    expect(clearPersistedState()).toBe(true)
+    expect(window.localStorage.getItem('prompt-com:borrar')).toBeNull()
+    expect(window.localStorage.getItem('otra-cosa')).toBe('1')
   })
 
   it('acepta un valor inicial calculado', () => {

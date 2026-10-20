@@ -76,6 +76,37 @@ const shorten = (text: string, max = 155): string => {
   return `${cut.slice(0, lastSpace > 0 ? lastSpace : max).trimEnd()}…`
 }
 
+/**
+ * Páginas relacionadas de cada sección de la guía.
+ *
+ * A mano y no por posición: cada sección enlaza con lo que de verdad va
+ * después (los fundamentos que la sostienen y los bloques que la aplican).
+ */
+const RELATED_BY_SECTION: Record<string, string[]> = {
+  'que-es-un-prompt': [
+    'para-que-sirve-un-prompt',
+    'claves-para-un-buen-prompt',
+    'rol',
+    'objetivo',
+    'formato'
+  ],
+  'para-que-sirve-un-prompt': [
+    'que-es-un-prompt',
+    'claves-para-un-buen-prompt',
+    'datos',
+    'ejemplos',
+    'formato'
+  ],
+  'claves-para-un-buen-prompt': [
+    'que-es-un-prompt',
+    'para-que-sirve-un-prompt',
+    'rol',
+    'contexto',
+    'restricciones',
+    'validacion'
+  ]
+}
+
 /** Páginas de las tres secciones de la guía de la home. */
 const sectionPages: GuidePage[] = GUIDE_SECTIONS.map((section) => ({
   slug: section.id,
@@ -88,10 +119,7 @@ const sectionPages: GuidePage[] = GUIDE_SECTIONS.map((section) => ({
     { heading: 'En qué consiste', paragraphs: section.details },
     { heading: 'Ejemplo', paragraphs: [section.example] }
   ],
-  related: [
-    ...GUIDE_SECTIONS.filter((other) => other.id !== section.id).map((other) => other.id),
-    ...CRITERIA_GUIDE.slice(0, 3).map((criterion) => criterion.slug)
-  ],
+  related: RELATED_BY_SECTION[section.id] ?? [],
   image: {
     src: section.image.src,
     srcSet: section.image.srcSet,

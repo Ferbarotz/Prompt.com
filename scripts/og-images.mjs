@@ -9,6 +9,14 @@
  * del proyecto (la usa `scripts/build-assets.mjs`).
  */
 
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+/** Carpeta con las fuentes que usa el build (la Inter del proyecto). */
+const fontsDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fonts')
+
 /** Tamaño de la imagen Open Graph. */
 export const OG_WIDTH = 1200
 export const OG_HEIGHT = 630
@@ -21,6 +29,42 @@ const MAX_LINES = 3
 
 /** Tamaño de la fuente del título, según cuántas líneas occupancy. */
 const FONT_SIZES = { 1: 68, 2: 60, 3: 50 }
+
+/**
+ * Prepara fontconfig para que librsvg (el motor de SVG de sharp) encuentre la
+ * Inter del proyecto en vez de la fuente del sistema.
+ *
+ * La web usa Inter, pero en el navegador solo se sirve el `.woff2`, que
+ * librsvg no sabe leer. Aquí se apunta fontconfig a la copia en TTF de
+ * `scripts/fonts/`, de modo que las tarjetas se ven con la tipografía de la
+ * marca. Si el TTF no está o fontconfig no existe, se usa la fuente del
+ * sistema y no pasa nada.
+ */
+export const useProjectFont = () => {
+  if (process.env.FONTCONFIG_FILE) return
+  const font = path.join(fontsDir, 'Inter-Bold.ttf')
+  if (!fs.existsSync(font)) return
+
+  try {
+    const cacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'promptcom-fonts-'))
+    const conf = `<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <dir>${fontsDir}</dir>
+  <cachedir>${cacheDir}</cachedir>
+  <include ignore_missing="yes">/etc/fonts/fonts.conf</include>
+</fontconfig>
+`
+    const confPath = path.join(cacheDir, 'fonts.conf')
+    fs.writeFileSync(confPath, conf)
+    process.env.FONTCONFIG_FILE = confPath
+  } catch {
+    // Sin fontconfig se dibuja con la fuente del sistema.
+  }
+}
+
+/** Familia tipográfica de las tarjetas: la del proyecto, con respaldo. */
+const FONT_FAMILY = 'Inter, DejaVu Sans, Verdana, Geneva, sans-serif'
 
 /** Escapa el texto para poder insertarlo en el SVG. */
 const escapeXml = (value) =>
@@ -77,7 +121,7 @@ export const renderOgSvg = ({
   const titleMarkup = lines
     .map(
       (line, index) =>
-        `<text x="80" y="${startY + index * lineHeight}" font-family="DejaVu Sans, Verdana, Geneva, sans-serif" font-size="${fontSize}" font-weight="bold" fill="#ffffff">${escapeXml(line)}</text>`
+        `<text x="80" y="${startY + index * lineHeight}" font-family="${FONT_FAMILY}" font-size="${fontSize}" font-weight="bold" fill="#ffffff">${escapeXml(line)}</text>`
     )
     .join('\n    ')
 
@@ -106,7 +150,7 @@ export const renderOgSvg = ({
   <rect width="${OG_WIDTH}" height="${OG_HEIGHT}" fill="url(#glowA)"/>
   <rect width="${OG_WIDTH}" height="${OG_HEIGHT}" fill="url(#glowB)"/>
 
-  <text x="80" y="134" font-family="DejaVu Sans, Verdana, Geneva, sans-serif" font-size="28" font-weight="bold" letter-spacing="4" fill="#a5b4fc">${escapeXml(
+  <text x="80" y="134" font-family="${FONT_FAMILY}" font-size="28" font-weight="bold" letter-spacing="4" fill="#a5b4fc">${escapeXml(
     kicker.toUpperCase()
   )}</text>
 
@@ -115,10 +159,10 @@ export const renderOgSvg = ({
   </g>
 
   <rect x="80" y="470" width="260" height="8" rx="4" fill="url(#brand)"/>
-  <text x="80" y="540" font-family="DejaVu Sans, Verdana, Geneva, sans-serif" font-size="34" font-weight="bold" fill="#eaf1ff">${escapeXml(
+  <text x="80" y="540" font-family="${FONT_FAMILY}" font-size="34" font-weight="bold" fill="#eaf1ff">${escapeXml(
     siteName
   )}</text>
-  <text x="1120" y="540" text-anchor="end" font-family="DejaVu Sans, Verdana, Geneva, sans-serif" font-size="26" fill="#7f8fbc">prompt engineering</text>
+  <text x="1120" y="540" text-anchor="end" font-family="${FONT_FAMILY}" font-size="26" fill="#7f8fbc">prompt engineering</text>
 </svg>`
 }
 
@@ -130,6 +174,9 @@ export const renderOgSvg = ({
  */
 export const renderOgImage = async (options) => {
   const { default: sharp } = await import('sharp')
+  useProjectFont()
   const svg = renderOgSvg(options)
-  return sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer()
+  // PNG con paleta: las tarjetas tienen pocos colores y el degradado se
+  // mantiene bien. Pesa la mitad que el PNG de 32 bits.
+  return sharp(Buffer.from(svg)).png({ compressionLevel: 9, palette: true }).toBuffer()
 }

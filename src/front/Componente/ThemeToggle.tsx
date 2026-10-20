@@ -13,6 +13,12 @@ const THEME_COLOR: Record<Theme, string> = {
   light: '#f5f7fc'
 }
 
+/** Manifest de la PWA en cada tema (el color de la pantalla de inicio). */
+const MANIFEST: Record<Theme, string> = {
+  dark: `${import.meta.env.BASE_URL}manifest.webmanifest`,
+  light: `${import.meta.env.BASE_URL}manifest-light.webmanifest`
+}
+
 /** Aplica el tema al documento y actualiza el color de la barra del navegador. */
 export const applyTheme = (theme: Theme): void => {
   const root = document.documentElement
@@ -24,6 +30,10 @@ export const applyTheme = (theme: Theme): void => {
 
   const meta = document.querySelector('meta[name="theme-color"]')
   meta?.setAttribute('content', THEME_COLOR[theme])
+
+  // La PWA instalada toma el color del manifest: se cambia con el tema.
+  const manifest = document.querySelector('link[rel="manifest"]')
+  manifest?.setAttribute('href', MANIFEST[theme])
 }
 
 /** Devuelve el tema guardado (o el oscuro, que es el de la marca). */

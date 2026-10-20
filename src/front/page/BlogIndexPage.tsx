@@ -3,7 +3,7 @@ import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import { getRouteSeo } from '../data/routeMeta'
-import { ARTICLES } from '../data/articles'
+import { ARTICLES, ARTICLE_TAGS } from '../data/articles'
 import { BLOG_INDEX_PATH } from './ArticlePage'
 import { PATHS } from '../data/paths'
 import styles from './ContentPage.module.css'
@@ -42,6 +42,21 @@ const BlogIndexPage = () => {
             </li>
           ))}
         </ul>
+
+        {ARTICLE_TAGS.length > 0 ? (
+          <>
+            <h2 className={styles.groupTitle}>Por tema</h2>
+            <ul className={styles.relatedList}>
+              {ARTICLE_TAGS.map((tag) => (
+                <li key={tag.slug}>
+                  <Link to={tag.path} className={styles.relatedLink}>
+                    {tag.label} ({tag.articles.length})
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
 
         <div className={styles.cta}>
           <Link to={PATHS.generator} className="btn btn-primary">

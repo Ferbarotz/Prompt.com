@@ -8,7 +8,7 @@ prompts con puntuación, todo en el navegador.
 - React 18 + React Router 7
 - TypeScript 6 (`strict`) + Vite 8
 - CSS Modules + design tokens (CSS custom properties)
-- Vitest 4 + Testing Library (171 tests)
+- Vitest 4 + Testing Library (226 tests)
 - ESLint 9 (flat config) con `typescript-eslint` y `eslint-plugin-react-hooks`
 - Sharp (solo para generar los assets estáticos)
 
@@ -47,6 +47,7 @@ npm run dev     # http://localhost:5173/Prompt.com/
 | `/guia/<bloque>`    | Página de un bloque (rol, objetivo, contexto…)      |
 | `/blog`             | Artículos sobre prompt engineering en el trabajo real |
 | `/blog/<articulo>`  | Un artículo del blog                                 |
+| `/blog/etiqueta/<t>` | Artículos de un tema                                |
 | `/aviso-legal`      | Aviso legal                                        |
 | `/privacidad`       | Política de privacidad                              |
 | `/cookies`          | Política de cookies                                 |
@@ -177,12 +178,16 @@ remoto `origin` de git → origen de desarrollo.
   `localStorage` (`src/front/hooks/usePersistentState.ts`): si recarga o
   vuelve atrás, no pierde lo que había escrito. Solo se guarda en su propio
   navegador: no hay cookies ni datos personales.
+- Lo guardado **caduca a los 30 días** y el pie de página tiene un enlace
+  para **borrarlo** (lo que dice la política de privacidad, y se cumple).
 - El prompt del generador viaja en la URL (`src/front/data/generatorLink.ts`):
   `?t=` tipo de tarea, `?i=` idea, `?d=` detalles, `?x=` extra. En la página
   del generador la URL se actualiza sola, así que se puede compartir el
   prompt copiando la barra de direcciones; el botón **Copiar enlace** hace lo
   mismo con un clic. Un enlace compartido manda sobre lo guardado en el
   navegador y abre el resultado directamente en el paso 3.
+- El enlace se recorta si es demasiado largo (1200 caracteres): primero se
+  caen los detalles y, si sigue largo, la idea.
 
 ## Contenido: guía por bloques y blog
 
@@ -192,12 +197,34 @@ remoto `origin` de git → origen de desarrollo.
   contexto, datos, restricciones, formato, ejemplos y validación). Cada página
   explica qué hace el bloque, cómo se escribe, qué falla cuando falta y
   enlaza con el generador y el analizador.
+- Las páginas de bloque llevan el **diagrama de la anatomía del prompt**
+  (`PromptAnatomy`): los ocho bloques con el de la página resaltado, para
+  saber de dónde sale cada pieza. Es HTML y CSS (no una imagen), así que
+  sigue al tema y no pesa nada.
+- La home **no repite el texto** de esas páginas: muestra el resumen de cada
+  sección y enlaza a su página. Una URL, un contenido.
 - El blog (`src/front/data/articles.ts`) cubre lo que no cabe en la guía:
   casos concretos, flujos de trabajo y errores reales. Cada artículo es una
   página con su URL, sus datos estructurados y su entrada en el sitemap.
+- Cada artículo tiene su **etiqueta** y hay una página por etiqueta
+  (`/blog/etiqueta/<etiqueta>/`). Mientras una etiqueta solo tenga un
+  artículo, su página se marca como `noindex` y no entra en el sitemap: no
+  tiene contenido para merecer un puesto. En cuanto haya dos, se publica
+  sola (lo decide el catálogo de rutas y hay un test que lo comprueba).
 - El contenido viaja en los chunks perezosos de sus rutas: el catálogo de
   rutas (`routes.json`) solo lleva las URLs y los metadatos, así que el bundle
   inicial no crece con el texto.
+
+## Imágenes Open Graph
+
+Cada ruta con contenido tiene su propia tarjeta de 1200×630, con el título de
+la página: si no, todos los enlaces se ven iguales en Slack, WhatsApp o X.
+
+- `scripts/og-images.mjs` las dibuja con SVG y las convierte a PNG con sharp.
+- Se dibujan con la **Inter del proyecto** (`scripts/fonts/`, licencia SIL
+  OFL): librsvg no lee el `.woff2` de la web, así que el build apunta
+  fontconfig a una copia en TTF. Sin ella, se usa la fuente del sistema.
+- Van con paleta PNG: pesan la mitad (unos 60 kB en vez de 140 kB).
 
 ## Tema claro
 
@@ -211,6 +238,8 @@ La marca es oscura, pero leer la guía entera en fondo oscuro cansa. El botón
   (script en `index.html`), así que al recargar no hay destello.
 - `prefers-reduced-motion` se respeta en toda la aplicación: quien pide menos
   movimiento no lo tiene.
+- El tema claro se ha **revisado con un navegador real** (capturas en los dos
+  temas): así se detectaron las tarjetas de la home que se quedaban oscuras.
 
 ## Rendimiento
 
@@ -222,7 +251,11 @@ La marca es oscura, pero leer la guía entera en fondo oscuro cansa. El botón
 - Inter se sirve **autoalojada** en `public/fonts/` con `font-display: swap` y
   un respaldo con métricas ajustadas para no desplazar el contenido.
 - Las rutas secundarias y el generador se cargan con `lazy`: no forman parte
-  del bundle inicial.
+  del bundle inicial. También el contenido de la guía, el blog y el texto de
+  las páginas legales: el bundle inicial solo lleva el catálogo de rutas.
+- La **home** pesa ~94 kB gzip, de los cuales ~90 kB son React y React Router.
+  El código de la aplicación en sí ocupa ~4 kB: no hay nada más que quitar
+  sin cambiar de framework.
 
 ### Regenerar los assets
 
@@ -242,6 +275,13 @@ Copia `.env.example` a `.env.local` para activar las integraciones opcionales:
 
 Sin estas variables el sitio funciona igual: no se carga ningún script de
 terceros.
+
+En producción (GitHub Pages) las dos variables se definen en **Settings →
+Secrets and variables → Actions → Variables** (`VITE_ANALYTICS_URL` y
+`VITE_ANALYTICS_DOMAIN`): el workflow las pasa al build y quedan en el
+bundle. Con Plausible, el dominio es el del sitio y el script
+`https://plausible.io/js/script.js`; con Umami o cualquier servicio que use
+el mismo esquema, la URL es la de su script.
 
 ## ⚠️ Antes de publicar
 

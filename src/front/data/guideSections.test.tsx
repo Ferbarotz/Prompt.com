@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { GUIDE_SECTIONS } from './guideSections'
-import { HOME_JSON_LD, type FaqPageNode, type WebSiteNode } from './seoData'
+import { HOME_JSON_LD, type ArticleNode, type WebSiteNode } from './seoData'
 
 const findNode = <T extends { '@type': string }>(type: string): T | undefined =>
   HOME_JSON_LD['@graph'].find((node) => node['@type'] === type) as T | undefined
@@ -33,25 +33,23 @@ describe('contenido de la guía', () => {
 })
 
 describe('datos estructurados de la home', () => {
-  it('el FAQPage cubre todas las secciones de la guía', () => {
-    const faq = findNode<FaqPageNode>('FAQPage')
-    expect(faq?.mainEntity).toHaveLength(GUIDE_SECTIONS.length)
+  it('el artículo de la guía lista todas sus secciones', () => {
+    const article = findNode<ArticleNode>('Article')
+    expect(article?.mainEntity.itemListElement).toHaveLength(GUIDE_SECTIONS.length)
   })
 
-  it('las preguntas del JSON-LD coinciden con los títulos visibles', () => {
-    const faq = findNode<FaqPageNode>('FAQPage')
-    expect(faq?.mainEntity.map((q) => q.name)).toEqual(GUIDE_SECTIONS.map((s) => s.title))
+  it('los apartados del JSON-LD coinciden con los títulos visibles', () => {
+    const article = findNode<ArticleNode>('Article')
+    expect(article?.mainEntity.itemListElement.map((item) => item.name)).toEqual(
+      GUIDE_SECTIONS.map((section) => section.title)
+    )
   })
 
-  it('cada respuesta incluye el resumen, los detalles y el ejemplo', () => {
-    const faq = findNode<FaqPageNode>('FAQPage')
+  it('cada apartado apunta a su página de la guía', () => {
+    const article = findNode<ArticleNode>('Article')
 
-    for (const [index, question] of (faq?.mainEntity ?? []).entries()) {
-      const section = GUIDE_SECTIONS[index]
-      expect(question.acceptedAnswer.text).toContain(section.summary)
-      for (const detail of section.details) {
-        expect(question.acceptedAnswer.text).toContain(detail)
-      }
+    for (const [index, item] of (article?.mainEntity.itemListElement ?? []).entries()) {
+      expect(item.url).toContain(`/guia/${GUIDE_SECTIONS[index].id}/`)
     }
   })
 

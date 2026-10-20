@@ -82,7 +82,7 @@
 .section {
   border: 1px solid var(--section-accent);
   border-radius: var(--radius-md);
-  background: linear-gradient(150deg, rgba(11, 17, 34, 0.94) 0%, rgba(24, 31, 52, 0.88) 100%);
+  background: var(--surface-section);
   padding: 1rem;
   box-shadow: var(--section-shadow);
   display: grid;
@@ -114,29 +114,9 @@
 
 .summary {
   margin: 0;
-  color: #edf3ff;
+  color: var(--text-body);
   line-height: 1.72;
   font-size: 1.08rem;
-}
-
-.details {
-  margin: 0;
-  padding-left: 1.2rem;
-  color: var(--text-soft);
-  line-height: 1.68;
-  font-size: 1.03rem;
-}
-
-.details li {
-  margin-bottom: 0.48rem;
-}
-
-.example {
-  margin: 0;
-  color: var(--text-body);
-  line-height: 1.68;
-  font-size: 1.01rem;
-  font-style: italic;
 }
 
 /* Enlace a la página completa de la sección (una URL por bloque). */

@@ -30,7 +30,8 @@
       "title": "Aviso legal",
       "description": "Titularidad del sitio, condiciones de uso, propiedad intelectual y legislación aplicable de Prompt.com.",
       "changefreq": "yearly",
-      "priority": "0.3"
+      "priority": "0.3",
+      "group": "legal"
     },
     {
       "key": "privacidad",
@@ -38,7 +39,8 @@
       "title": "Política de privacidad",
       "description": "Qué datos se recogen en Prompt.com, con qué finalidad, cuánto tiempo se conservan y cómo ejercer tus derechos.",
       "changefreq": "yearly",
-      "priority": "0.3"
+      "priority": "0.3",
+      "group": "legal"
     },
     {
       "key": "cookies",
@@ -46,7 +48,8 @@
       "title": "Política de cookies",
       "description": "Qué cookies y tecnologías similares utiliza Prompt.com, para qué sirven y cómo gestionarlas.",
       "changefreq": "yearly",
-      "priority": "0.3"
+      "priority": "0.3",
+      "group": "legal"
     },
     {
       "key": "guia",
@@ -73,7 +76,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-sections",
-      "short": "¿Qué es un prompt?"
+      "short": "¿Qué es un prompt?",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-para-que-sirve-un-prompt",
@@ -87,7 +91,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-sections",
-      "short": "¿Para qué sirve un prompt?"
+      "short": "¿Para qué sirve un prompt?",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-claves-para-un-buen-prompt",
@@ -101,7 +106,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-sections",
-      "short": "Claves para un buen prompt"
+      "short": "Claves para un buen prompt",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-rol",
@@ -115,7 +121,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Rol"
+      "short": "Rol",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-objetivo",
@@ -129,7 +136,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Objetivo"
+      "short": "Objetivo",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-contexto",
@@ -143,7 +151,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Contexto"
+      "short": "Contexto",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-datos",
@@ -157,7 +166,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Datos de entrada"
+      "short": "Datos de entrada",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-restricciones",
@@ -171,7 +181,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Restricciones"
+      "short": "Restricciones",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-formato",
@@ -185,7 +196,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Formato de salida"
+      "short": "Formato de salida",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-ejemplos",
@@ -199,7 +211,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Ejemplos"
+      "short": "Ejemplos",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "guia-validacion",
@@ -213,7 +226,8 @@
         "kicker": "Guía de prompts"
       },
       "group": "guide-blocks",
-      "short": "Validación"
+      "short": "Validación",
+      "lastmod": "2026-10-20"
     },
     {
       "key": "blog",
@@ -239,7 +253,8 @@
         "file": "blog/prompts-para-agentes-de-ia",
         "kicker": "Blog"
       },
-      "group": "blog"
+      "group": "blog",
+      "lastmod": "2026-09-22"
     },
     {
       "key": "blog-revisar-y-mejorar-un-prompt-que-no-funciona",
@@ -252,7 +267,8 @@
         "file": "blog/revisar-y-mejorar-un-prompt-que-no-funciona",
         "kicker": "Blog"
       },
-      "group": "blog"
+      "group": "blog",
+      "lastmod": "2026-08-05"
     },
     {
       "key": "blog-un-mismo-prompt-con-varios-modelos",
@@ -265,7 +281,50 @@
         "file": "blog/un-mismo-prompt-con-varios-modelos",
         "kicker": "Blog"
       },
-      "group": "blog"
+      "group": "blog",
+      "lastmod": "2026-06-18"
+    },
+    {
+      "key": "blog-etiqueta-agentes-de-ia",
+      "path": "/blog/etiqueta/agentes-de-ia/",
+      "title": "Artículos sobre agentes de ia",
+      "description": "Prompts para agentes de IA: qué cambia, cómo se limita y cómo se prueba.",
+      "changefreq": "monthly",
+      "priority": "0.4",
+      "group": "blog-tag",
+      "noindex": true,
+      "og": {
+        "file": "blog/etiqueta/agentes-de-ia",
+        "kicker": "Blog"
+      }
+    },
+    {
+      "key": "blog-etiqueta-iteracion",
+      "path": "/blog/etiqueta/iteracion/",
+      "title": "Artículos sobre iteración",
+      "description": "Revisar y melhorar un prompt que ha dejado de funcionar: diagnóstico, corrección y prueba de regresión.",
+      "changefreq": "monthly",
+      "priority": "0.4",
+      "group": "blog-tag",
+      "noindex": true,
+      "og": {
+        "file": "blog/etiqueta/iteracion",
+        "kicker": "Blog"
+      }
+    },
+    {
+      "key": "blog-etiqueta-comparativa",
+      "path": "/blog/etiqueta/comparativa/",
+      "title": "Artículos sobre comparativa",
+      "description": "Un mismo prompt para varios modelos: qué se mantiene y qué hay que ajustar en cada uno.",
+      "changefreq": "monthly",
+      "priority": "0.4",
+      "group": "blog-tag",
+      "noindex": true,
+      "og": {
+        "file": "blog/etiqueta/comparativa",
+        "kicker": "Blog"
+      }
     }
   ],
   "aliases": [

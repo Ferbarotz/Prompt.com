@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
+import PromptAnatomy from '../Componente/PromptAnatomy'
 import useSeo from '../hooks/useSeo'
 import { getRouteSeo } from '../data/routeMeta'
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildJsonLdGraph } from '../data/seoData'
@@ -92,6 +93,8 @@ const GuidePage = ({ slug }: { slug: string }) => {
               className={styles.image}
             />
           ) : null}
+
+          {page.criterionId ? <PromptAnatomy current={page.criterionId} /> : null}
 
           {page.sections.map((section) => (
             <section key={section.heading} className={styles.section}>

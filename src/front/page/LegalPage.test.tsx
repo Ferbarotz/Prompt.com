@@ -35,7 +35,7 @@ describe('páginas legales', () => {
     const page = LEGAL_PAGES.privacidad
     render(
       <MemoryRouter>
-        <LegalPage page={page} path="/privacidad" />
+        <LegalPage routeKey="privacidad" />
       </MemoryRouter>
     )
 

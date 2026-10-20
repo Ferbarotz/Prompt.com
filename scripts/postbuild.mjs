@@ -59,7 +59,8 @@ const headFor = (route, origin) =>
     title: route.title,
     description: route.description,
     url: `${origin}${route.path}`,
-    image: `${origin}${route.og ? `/og/${route.og.file}.png` : '/og-image.png'}`
+    image: `${origin}${route.og ? `/og/${route.og.file}.png` : '/og-image.png'}`,
+    noindex: route.noindex
   })
 
 /**
@@ -140,14 +141,19 @@ const buildSpaFallback = async (origin) => {
 
 const buildSitemap = async (origin) => {
   const lastmod = getLastModified()
-  const urls = ROUTES.map(
-    (route) => `  <url>
+  // Las rutas marcadas como `noindex` (las páginas de etiqueta con un solo
+  // artículo) no se publican: no tienen contenido para merecer un puesto.
+  const publicas = ROUTES.filter((route) => !route.noindex)
+  const urls = publicas
+    .map(
+      (route) => `  <url>
     <loc>${origin}${route.path}</loc>
-    <lastmod>${lastmod}</lastmod>
+    <lastmod>${route.lastmod ?? lastmod}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
   </url>`
-  ).join('\n')
+    )
+    .join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -155,7 +161,41 @@ ${urls}
 </urlset>
 `
   await fs.writeFile(path.join(distDir, 'sitemap.xml'), xml, 'utf8')
-  console.log(`· dist/sitemap.xml — ${ROUTES.length} URLs — ${origin}`)
+  console.log(`· dist/sitemap.xml — ${publicas.length} URLs — ${origin}`)
+}
+
+/**
+ * `llms.txt`: el mapa del sitio en texto plano.
+ *
+ * Es el formato que usan los asistentes de IA para saber de qué trata un
+ * sitio y qué páginas leer. Se genera con el catálogo de rutas, así que
+ * nunca se queda desfasado.
+ */
+const buildLlmsTxt = async (origin) => {
+  const publicas = ROUTES.filter((route) => !route.noindex)
+  const secciones = publicas
+    .map(
+      (route) =>
+        `- [${route.title}](${origin}${route.path}): ${route.description}`
+    )
+    .join('\n')
+
+  const txt = `# Prompt.com
+
+> Guía práctica sobre prompts en español: qué son, para qué sirven y cómo
+> escribir los mejores. Incluye un generador de prompts por tipo de tarea y
+> un analizador que los puntúa sobre ocho criterios.
+
+${secciones}
+
+## Notas
+
+- Todo se funciona en el navegador: no hay registro, ni cookies, ni envío de
+  datos a ningún servidor.
+- Los enlaces externos apuntan a las herramientas de IA donde pegar el prompt.
+`
+  await fs.writeFile(path.join(distDir, 'llms.txt'), txt, 'utf8')
+  console.log(`· dist/llms.txt — ${publicas.length} páginas`)
 }
 
 const buildRobots = async (origin) => {
@@ -195,6 +235,7 @@ const main = async () => {
   await buildSpaFallback(origin)
   await buildSitemap(origin)
   await buildRobots(origin)
+  await buildLlmsTxt(origin)
   await buildCname()
 }
 

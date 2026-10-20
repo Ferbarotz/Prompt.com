@@ -1,5 +1,6 @@
 import { absoluteUrl } from '../utils/siteUrl'
 import { GUIDE_SECTIONS } from './guideSections'
+import { GUIDE_PREFIX } from './guidePages'
 import { PATHS } from './paths'
 import { SITE_NAME } from './routeMeta'
 
@@ -26,6 +27,24 @@ export interface FaqPageNode {
   mainEntity: FaqQuestion[]
 }
 
+/** Nodo `Article` de schema.org (la guía de la home). */
+export interface ArticleNode {
+  '@type': 'Article'
+  '@id': string
+  headline: string
+  description: string
+  url: string
+  inLanguage: string
+  datePublished: string
+  dateModified: string
+  author: { '@type': 'Organization'; name: string; url: string }
+  publisher: { '@type': 'Organization'; '@id': string; name: string; url: string }
+  mainEntity: {
+    '@type': 'ItemList'
+    itemListElement: Array<{ '@type': 'ListItem'; position: number; name: string; url: string }>
+  }
+}
+
 /** Nodo `WebSite` de schema.org. */
 export interface WebSiteNode {
   '@type': 'WebSite'
@@ -45,15 +64,16 @@ export interface WebSiteNode {
 /** Grafo de datos estructurados de la home. */
 export interface HomeJsonLd {
   '@context': 'https://schema.org'
-  '@graph': Array<WebSiteNode | FaqPageNode>
+  '@graph': Array<WebSiteNode | ArticleNode>
 }
 
 /**
  * Datos estructurados de la home.
  *
- * El contenido de la guía es un formato de pregunta y respuesta que encaja
- * exactamente con el tipo `FAQPage` de schema.org. Google puede mostrarlo como
- * resultado enriquecido (pregunta desplegable) sin necesidad de otro markup.
+ * La guía de la home es un artículo (qué es un prompt, para qué sirve y cómo
+ * se escribe bien). Se declara como `Article` con la lista de sus secciones:
+ * el tipo `FAQPage` ya no da resultado enriquecido en Google desde 2023, así
+ * que no tiene sentido mantenerlo.
  */
 export const HOME_JSON_LD: HomeJsonLd = {
   '@context': 'https://schema.org',
@@ -73,17 +93,34 @@ export const HOME_JSON_LD: HomeJsonLd = {
       }
     },
     {
-      '@type': 'FAQPage',
-      '@id': `${siteUrl}#faq`,
-      isPartOf: { '@id': `${siteUrl}#website` },
-      mainEntity: GUIDE_SECTIONS.map((section) => ({
-        '@type': 'Question',
-        name: section.title,
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: [section.summary, ...section.details, section.example].join(' ')
-        }
-      }))
+      '@type': 'Article',
+      '@id': `${siteUrl}#article`,
+      headline: 'Guía de prompts: qué son y cómo escribirlos',
+      description: DESCRIPTION,
+      url: siteUrl,
+      inLanguage: 'es-ES',
+      datePublished: '2026-10-20',
+      dateModified: '2026-10-20',
+      author: {
+        '@type': 'Organization',
+        name: 'Prompt.com',
+        url: siteUrl
+      },
+      publisher: {
+        '@type': 'Organization',
+        '@id': `${siteUrl}#publisher`,
+        name: 'Prompt.com',
+        url: siteUrl
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: GUIDE_SECTIONS.map((section, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: section.title,
+          url: absoluteUrl(`${GUIDE_PREFIX}${section.id}/`)
+        }))
+      }
     }
   ]
 }

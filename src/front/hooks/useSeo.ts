@@ -74,12 +74,17 @@ const useSeo = ({
     const imageUrl = image ?? (ogImage ? assetUrl(ogImage) : assetUrl('og-image.png'))
     const fullTitle = title ? `${title} — ${SITE_NAME}` : DEFAULT_TITLE
 
+    // Una ruta marcada como `noindex` en el catálogo (por ejemplo, una página
+    // de etiqueta con un solo artículo) no se indexa, aunque el visitante
+    // llegue a ella.
+    const isNoindex = noindex || Boolean(getRouteByPath(path)?.noindex)
+
     document.title = fullTitle
 
     upsertMeta('name', 'description', description)
-    upsertMeta('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow')
+    upsertMeta('name', 'robots', isNoindex ? 'noindex, nofollow' : 'index, follow')
     // Una página noindex (la 404) no debe apuntar a ninguna canonical.
-    upsertLink('canonical', noindex ? null : url)
+    upsertLink('canonical', isNoindex ? null : url)
 
     upsertMeta('property', 'og:site_name', SITE_NAME)
     upsertMeta('property', 'og:type', type)

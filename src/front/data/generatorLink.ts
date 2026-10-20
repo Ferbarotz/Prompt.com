@@ -28,16 +28,41 @@ export interface GeneratorLinkState {
   extra: string
 }
 
+/** Longitud máxima del query: por encima, algunos navegadores y servicios lo recortan. */
+export const MAX_QUERY_LENGTH = 1200
+
 /** Serializa el estado del generador a un query string. */
 export const encodeGeneratorState = (state: GeneratorLinkState): string => {
-  const params = new URLSearchParams()
-  if (state.taskId) params.set('t', state.taskId)
-  if (state.idea) params.set('i', state.idea)
-  if (state.details && Object.keys(state.details).length > 0) {
-    params.set('d', JSON.stringify(state.details))
+  const build = (idea: string, details: Record<string, string> | null): string => {
+    const params = new URLSearchParams()
+    if (state.taskId) params.set('t', state.taskId)
+    if (idea) params.set('i', idea)
+    if (details && Object.keys(details).length > 0) {
+      params.set('d', JSON.stringify(details))
+    }
+    if (state.extra) params.set('x', state.extra)
+    return params.toString()
   }
-  if (state.extra) params.set('x', state.extra)
-  return params.toString()
+
+  const completo = build(state.idea, state.details)
+  if (completo.length <= MAX_QUERY_LENGTH) return completo
+
+  // El enlace se ha hecho demasiado largo: primero se recortan los detalles
+  // (que son opcionales) y, si sigue largo, la idea.
+  const sinDetalles = build(state.idea, null)
+  if (sinDetalles.length <= MAX_QUERY_LENGTH) return sinDetalles
+
+  const overhead = sinDetalles.length - state.idea.length
+  const ideaRecortada = state.idea.slice(0, Math.max(0, MAX_QUERY_LENGTH - overhead))
+  const recortada = build(ideaRecortada, null)
+  if (recortada.length <= MAX_QUERY_LENGTH) return recortada
+
+  // Último recurso: se recorta también la idea.
+  const overheadFinal = recortada.length - ideaRecortada.length
+  return build(
+    ideaRecortada.slice(0, Math.max(0, MAX_QUERY_LENGTH - overheadFinal)),
+    null
+  )
 }
 
 /**

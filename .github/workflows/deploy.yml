@@ -43,6 +43,10 @@ jobs:
           # URL de GitHub Pages. Se define en Settings → Secrets and variables
           # → Actions → Variables, sin tocar el código.
           CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
+          # Analítica sin cookies (Plausible o compatible). Vacío = no se carga
+          # ningún script de terceros.
+          VITE_ANALYTICS_URL: ${{ vars.VITE_ANALYTICS_URL }}
+          VITE_ANALYTICS_DOMAIN: ${{ vars.VITE_ANALYTICS_DOMAIN }}
 
       - name: Verify build output
         run: |
@@ -59,9 +63,13 @@ jobs:
           test -f dist/guia/rol/index.html
           test -f dist/blog/index.html
           test -f dist/og/guia/rol.png
+          test -f dist/llms.txt
+          test -f dist/manifest-light.webmanifest
           grep -q 'rel="canonical"' dist/index.html
           grep -q 'og:image' dist/index.html
           grep -q 'https://' dist/sitemap.xml
+          # Las páginas de etiqueta con un solo artículo no se publican.
+          ! grep -q 'blog/etiqueta' dist/sitemap.xml
           # Cada ruta tiene su propia canonical: sin esto, todas se
           # presentarían como la home.
           grep -q 'canonical" href="https://[^"]*/generar-prompt/"' dist/generar-prompt/index.html

@@ -50,6 +50,10 @@ export interface RouteMeta {
   group?: string
   /** Nombre corto, para las listas de enlaces (el footer, por ejemplo). */
   short?: string
+  /** Fecha de la última modificación (ISO), para el `lastmod` del sitemap. */
+  lastmod?: string
+  /** Impide la indexación de la ruta (páginas todavía demasiado cortas). */
+  noindex?: boolean
 }
 
 /** Todas las rutas públicas, en el orden en que se publican. */

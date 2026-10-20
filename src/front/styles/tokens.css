@@ -126,6 +126,9 @@
   --surface-code: rgba(13, 18, 35, 0.75);
   --code-text: #eaf1ff;
 
+  /* Tarjetas de sección dentro de la guía de la home. */
+  --surface-section: linear-gradient(150deg, rgba(11, 17, 34, 0.94) 0%, rgba(24, 31, 52, 0.88) 100%);
+
   /* Halos del fondo de la aplicación. */
   --glow-violet: rgba(139, 92, 246, 0.28);
   --glow-blue: rgba(59, 130, 246, 0.34);
@@ -198,6 +201,7 @@
   --border-glass: rgba(24, 30, 60, 0.16);
   --surface-code: #f2f5fd;
   --code-text: #1f2540;
+  --surface-section: linear-gradient(150deg, #ffffff 0%, #f2f6ff 100%);
 
   /* Los verdes y rojos se oscurecen: en el tema claro se usan como texto y
      necesitan más contraste sobre fondo blanco. */

@@ -2,24 +2,28 @@ import { Link } from 'react-router-dom'
 import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
-import { getRouteSeo } from '../data/routeMeta'
-import type { LegalPage as LegalPageContent } from '../data/legalContent'
+import { ROUTE_BY_KEY, getRouteSeo } from '../data/routeMeta'
+import { LEGAL_PAGES } from '../data/legalContent'
 import { PATHS } from '../data/paths'
 import styles from './LegalPage.module.css'
 
 /** Propiedades de la plantilla de página legal. */
 export interface LegalPageProps {
-  /** Entrada de `LEGAL_PAGES`. */
-  page: LegalPageContent
-  /** Ruta interna, para la canonical. */
-  path: string
+  /** Clave de la ruta en el catálogo (`avisoLegal`, `privacidad`…). */
+  routeKey: string
 }
 
 /**
  * Página de contenido legal reutilizable.
+ *
+ * Recibe la clave de la ruta y busca su contenido en el catálogo: así el
+ * texto legal solo se descarga cuando se visita una de estas páginas.
  */
-const LegalPage = ({ page, path }: LegalPageProps) => {
-  useSeo(getRouteSeo(path))
+const LegalPage = ({ routeKey }: LegalPageProps) => {
+  const route = ROUTE_BY_KEY[routeKey]
+  const page = LEGAL_PAGES[routeKey]
+
+  useSeo(getRouteSeo(route?.path ?? PATHS.home))
 
   return (
     <div className="site-bg">

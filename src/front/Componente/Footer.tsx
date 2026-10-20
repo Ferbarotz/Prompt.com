@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
 import { PATHS } from '../data/paths'
 import { routesByGroup } from '../data/routeMeta'
+import { clearPersistedState } from '../hooks/usePersistentState'
 
 interface Column {
   title: string
@@ -38,6 +40,13 @@ const columns: Column[] = [
 ]
 
 const Footer = () => {
+  const [cleared, setCleared] = useState(false)
+
+  const handleClear = () => {
+    clearPersistedState()
+    setCleared(true)
+  }
+
   return (
     <footer className={styles.footer}>
       <div className={styles.columns}>
@@ -46,6 +55,14 @@ const Footer = () => {
           <p className={styles.tagline}>
             Aprende a escribir mejores prompts y llévalos a cualquier modelo de
             lenguaje: ChatGPT, Claude, Gemini, Copilot o un LLM local.
+          </p>
+          <p className={styles.privacy}>
+            <button type="button" onClick={handleClear} className={styles.clearButton}>
+              Borrar los datos guardados
+            </button>
+            <span role="status" className={styles.clearStatus}>
+              {cleared ? 'Listo: no queda nada guardado en este navegador.' : ''}
+            </span>
           </p>
         </div>
 

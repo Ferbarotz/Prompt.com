@@ -4,12 +4,15 @@ import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
 import { getRouteSeo } from '../data/routeMeta'
 import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildJsonLdGraph } from '../data/seoData'
-import { getArticle } from '../data/articles'
+import { getArticle, tagSlug } from '../data/articles'
 import { PATHS } from '../data/paths'
 import styles from './ContentPage.module.css'
 
 /** Ruta del índice del blog. */
 export const BLOG_INDEX_PATH = '/blog/'
+
+/** Ruta de la página de una etiqueta del blog. */
+const tagPath = (label: string): string => `/blog/etiqueta/${tagSlug(label)}/`
 
 /**
  * Página de un artículo del blog.
@@ -79,7 +82,13 @@ const ArticlePage = ({ slug }: { slug: string }) => {
             <p className={styles.summary}>{article.description}</p>
             <p className={styles.meta}>
               <time dateTime={article.date}>{article.date}</time> · {article.minutes} min de
-              lectura · {article.tags.join(' · ')}
+              lectura ·{' '}
+              {article.tags.map((tag, index) => (
+                <span key={tag}>
+                  {index > 0 ? ' · ' : ''}
+                  <Link to={tagPath(tag)}>{tag}</Link>
+                </span>
+              ))}
             </p>
           </header>
 

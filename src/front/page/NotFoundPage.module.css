@@ -58,3 +58,15 @@
   border-color: var(--border-strong);
   color: var(--text-link);
 }
+
+/* Pistas adicionales para quien llega a una página que no existe. */
+.hint {
+  margin: 1.4rem 0 0;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 0.9rem;
+}
+
+.hint a {
+  color: var(--text-link);
+}

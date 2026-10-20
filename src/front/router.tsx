@@ -2,7 +2,6 @@ import { createBrowserRouter, createMemoryRouter, Navigate } from 'react-router-
 import type { ComponentType } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import Home from './page/Home/Home'
-import { LEGAL_PAGES } from './data/legalContent'
 import { ALIASES, ROUTE_BY_KEY, ROUTES } from './data/routeMeta'
 import { RouteError, RouteLoading } from './Componente/RouteStatus'
 
@@ -32,16 +31,20 @@ const lazyRoute = (
 })
 
 // Las páginas legales comparten plantilla: se generan a partir del catálogo.
-// La URL sale del catálogo de rutas (`routes.json`), el mismo que usa el
-// post-build para crear las carpetas y el sitemap.
-const legalRoutes = Object.entries(LEGAL_PAGES).map(([key, page]) => ({
-  path: ROUTE_BY_KEY[key].path.replace(/\/$/, ''),
-  ...lazyRoute(async () => {
-    const { default: LegalPage } = await import('./page/LegalPage')
-    const Wrapped = () => <LegalPage page={page} path={ROUTE_BY_KEY[key].path} />
-    return { default: Wrapped }
+//
+// La lista sale de `routes.json` (no del contenido legal) para que el texto
+// de las páginas legales no vaya en el bundle inicial: cada página legal se
+// descarga solo cuando se visita.
+const legalRoutes: RouteObject[] = ROUTES.filter((route) => route.group === 'legal').map(
+  (route) => ({
+    path: route.path.replace(/\/$/, ''),
+    ...lazyRoute(async () => {
+      const { default: LegalPage } = await import('./page/LegalPage')
+      const Wrapped = () => <LegalPage routeKey={route.key} />
+      return { default: Wrapped }
+    })
   })
-}))
+)
 
 /** Slug de una ruta: la última parte con contenido (`/guia/rol/` → `rol`). */
 const slugFromPath = (path: string): string =>
@@ -88,22 +91,30 @@ const guideRoutes: RouteObject[] = [
   )
 ]
 
-// El blog: el índice y un artículo por entrada.
+// El blog: el índice, un artículo por entrada y una página por etiqueta.
 const blogRoutes: RouteObject[] = [
   {
     path: '/blog',
     ...lazyRoute(() => import('./page/BlogIndexPage'))
   },
-  ...ROUTES.filter((route) => route.path.startsWith('/blog/') && route.path !== '/blog/').map(
-    (route) => ({
+  ...ROUTES.filter((route) => route.path.startsWith('/blog/etiqueta/')).map((route) => ({
+    path: route.path.replace(/\/$/, ''),
+    ...lazyRoute(async () => {
+      const { default: TagPage } = await import('./page/TagPage')
+      const Wrapped = () => <TagPage slug={slugFromPath(route.path)} />
+      return { default: Wrapped }
+    })
+  })),
+  ...ROUTES.filter((route) => route.path.startsWith('/blog/') && !route.path.includes('/etiqueta/'))
+    .filter((route) => route.path !== '/blog/')
+    .map((route) => ({
       path: route.path.replace(/\/$/, ''),
       ...lazyRoute(async () => {
         const { default: ArticlePage } = await import('./page/ArticlePage')
         const Wrapped = () => <ArticlePage slug={slugFromPath(route.path)} />
         return { default: Wrapped }
       })
-    })
-  )
+    }))
 ]
 
 export const routes = [

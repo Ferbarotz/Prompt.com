@@ -69,22 +69,14 @@ const Home = () => {
                     className={styles.image}
                   />
 
-                  <h3 id={`${section.id}-title`} className={styles.cardTitle}>
+                  <h2 id={`${section.id}-title`} className={styles.cardTitle}>
                     {section.title}
-                  </h3>
+                  </h2>
 
                   <p className={styles.summary}>{section.summary}</p>
 
-                  <ul className={styles.details}>
-                    {section.details.map((detail) => (
-                      <li key={detail}>{detail}</li>
-                    ))}
-                  </ul>
-
-                  <p className={styles.example}>{section.example}</p>
-
                   <p className={styles.more}>
-                    <Link to={`${PATHS.guia}${section.id}/`}>Leer la guía completa →</Link>
+                    <Link to={`${PATHS.guia}${section.id}/`}>Leer el bloque completo →</Link>
                   </p>
                 </section>
               ))}

@@ -43,7 +43,7 @@ export const ARTICLES: Article[] = [
     description:
       'Cómo escribir prompts para agentes de IA: qué herramienta usar, en qué orden, cómo limitar los pasos y qué formato debe devolver el agente.',
     date: '2026-09-22',
-    tags: ['Agentes', 'Herramientas', 'Automatización'],
+    tags: ['Agentes de IA'],
     minutes: 4,
     sections: [
       {
@@ -101,7 +101,7 @@ export const ARTICLES: Article[] = [
     description:
       'Un prompt que empezó a fallar no se arregla reescribiéndolo entero. Método para localizar el bloque culpable, medirlo y corregirlo con criterio.',
     date: '2026-08-05',
-    tags: ['Diagnóstico', 'Iteración', 'Analizador'],
+    tags: ['Iteración'],
     minutes: 4,
     sections: [
       {
@@ -159,7 +159,7 @@ export const ARTICLES: Article[] = [
     description:
       'Qué partes de un prompt funcionan igual en ChatGPT, Claude y Gemini, y qué conviene ajustar en cada uno para no perder calidad al cambiar de modelo.',
     date: '2026-06-18',
-    tags: ['Comparativa', 'ChatGPT', 'Claude', 'Gemini'],
+    tags: ['Comparativa'],
     minutes: 4,
     sections: [
       {
@@ -219,3 +219,47 @@ export const ARTICLE_BY_SLUG: Record<string, Article> = Object.fromEntries(
 
 /** Devuelve el artículo que corresponde a un slug. */
 export const getArticle = (slug: string): Article | undefined => ARTICLE_BY_SLUG[slug]
+
+/** Etiqueta del blog con su versión en URL. */
+export interface ArticleTag {
+  /** Etiqueta tal y como se escribe («Agentes de IA»). */
+  label: string
+  /** Slug de la URL (`agentes-de-ia`). */
+  slug: string
+  /** Ruta de la página de la etiqueta. */
+  path: string
+  /** Artículos con esta etiqueta. */
+  articles: Article[]
+}
+
+/** Convierte una etiqueta en el slug de su URL. */
+export const tagSlug = (label: string): string =>
+  label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+/** Todas las etiquetas del blog, con sus artículos. */
+export const ARTICLE_TAGS: ArticleTag[] = Array.from(
+  new Set(ARTICLES.flatMap((article) => article.tags))
+)
+  .map((label) => {
+    const slug = tagSlug(label)
+    return {
+      label,
+      slug,
+      path: `/blog/etiqueta/${slug}/`,
+      articles: ARTICLES.filter((article) => article.tags.includes(label))
+    }
+  })
+  .sort((a, b) => a.label.localeCompare(b.label, 'es'))
+
+/** Etiquetas indexadas por su slug. */
+export const ARTICLE_TAG_BY_SLUG: Record<string, ArticleTag> = Object.fromEntries(
+  ARTICLE_TAGS.map((tag) => [tag.slug, tag])
+)
+
+/** Devuelve la etiqueta que corresponde a un slug. */
+export const getArticleTag = (slug: string): ArticleTag | undefined => ARTICLE_TAG_BY_SLUG[slug]
