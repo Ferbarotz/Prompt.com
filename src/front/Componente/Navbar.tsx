@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 import styles from './Navbar.module.css'
 import { PATHS } from '../data/paths'
+import { EVENTS, trackEvent } from '../utils/analytics'
 
 const Navbar = () => {
   return (
@@ -14,6 +15,7 @@ const Navbar = () => {
         <NavLink
           to={PATHS.guia}
           className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+          onClick={() => trackEvent(EVENTS.navigation, { destino: 'Guía' })}
         >
           Guía
         </NavLink>
@@ -21,6 +23,7 @@ const Navbar = () => {
         <NavLink
           to={PATHS.linter}
           className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+          onClick={() => trackEvent(EVENTS.navigation, { destino: 'Analizador' })}
         >
           Analizar prompt
         </NavLink>
@@ -28,6 +31,7 @@ const Navbar = () => {
         <NavLink
           to={PATHS.blog}
           className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+          onClick={() => trackEvent(EVENTS.navigation, { destino: 'Blog' })}
         >
           Blog
         </NavLink>
@@ -35,6 +39,7 @@ const Navbar = () => {
         <NavLink
           to={PATHS.generator}
           className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+          onClick={() => trackEvent(EVENTS.navigation, { destino: 'Generador' })}
         >
           Crear
         </NavLink>

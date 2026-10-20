@@ -229,6 +229,24 @@ const buildCname = async () => {
   console.log(`· dist/CNAME — ${domain}`)
 }
 
+/**
+ * Analítica sin cookies.
+ *
+ * Las variables se incrustan en el bundle durante el build: si no están
+ * definidas, el sitio no carga ningún script de terceros. Avisamos en la
+ * consola para que se sepa qué ha quedado publicado.
+ */
+const reportAnalytics = () => {
+  const url = process.env.VITE_ANALYTICS_URL
+  const domain = process.env.VITE_ANALYTICS_DOMAIN
+
+  if (url && domain) {
+    console.log(`· analítica activada — dominio: ${domain}`)
+    return
+  }
+  console.log('· analítica desactivada (define VITE_ANALYTICS_URL y VITE_ANALYTICS_DOMAIN)')
+}
+
 const main = async () => {
   const origin = getSiteOrigin()
   await buildOgImages()
@@ -237,6 +255,7 @@ const main = async () => {
   await buildRobots(origin)
   await buildLlmsTxt(origin)
   await buildCname()
+  reportAnalytics()
 }
 
 main().catch((error) => {

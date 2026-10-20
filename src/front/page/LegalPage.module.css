@@ -47,6 +47,11 @@
   font-size: 0.98rem;
 }
 
+/* Enlaces a páginas externas (por ejemplo, la exclusión de la analítica). */
+.paragraph a {
+  color: var(--text-link);
+}
+
 .back {
   margin: 0;
   color: var(--text-muted);

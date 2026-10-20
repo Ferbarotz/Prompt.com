@@ -15,6 +15,7 @@ import {
 import { LINTER_JSON_LD } from '../data/seoData'
 import { getRouteSeo } from '../data/routeMeta'
 import usePersistentState from '../hooks/usePersistentState'
+import { EVENTS, trackEvent } from '../utils/analytics'
 import styles from './LinterPage.module.css'
 import { PATHS } from '../data/paths'
 
@@ -47,6 +48,9 @@ const LinterPage = () => {
       await navigator.clipboard.writeText(value)
       setCopied(label)
       setStatus(`${label} copiado al portapapeles`)
+      trackEvent(label === 'Prompt mejorado' ? EVENTS.copyImproved : EVENTS.copyPrompt, {
+        origen: 'analizador'
+      })
     } catch {
       setStatus('No se pudo copiar. Selecciona el texto y cópialo manualmente.')
     }
@@ -96,7 +100,10 @@ const LinterPage = () => {
               <div className={styles.toolbar}>
                 <button
                   type="button"
-                  onClick={() => setText(EXAMPLE_PROMPT)}
+                  onClick={() => {
+                    setText(EXAMPLE_PROMPT)
+                    trackEvent(EVENTS.tryExample)
+                  }}
                   className="btn btn-outline btn-xs"
                 >
                   Probar con un ejemplo

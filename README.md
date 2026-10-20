@@ -8,7 +8,7 @@ prompts con puntuación, todo en el navegador.
 - React 18 + React Router 7
 - TypeScript 6 (`strict`) + Vite 8
 - CSS Modules + design tokens (CSS custom properties)
-- Vitest 4 + Testing Library (226 tests)
+- Vitest 4 + Testing Library (233 tests)
 - ESLint 9 (flat config) con `typescript-eslint` y `eslint-plugin-react-hooks`
 - Sharp (solo para generar los assets estáticos)
 
@@ -282,6 +282,43 @@ Secrets and variables → Actions → Variables** (`VITE_ANALYTICS_URL` y
 bundle. Con Plausible, el dominio es el del sitio y el script
 `https://plausible.io/js/script.js`; con Umami o cualquier servicio que use
 el mismo esquema, la URL es la de su script.
+
+### Poner la analítica en marcha
+
+1. Crear el sitio en Plausible (o Umami) y apuntarlo al dominio del sitio.
+   Si la web no vive en la raíz de un dominio (hoy es
+   `ferbarotz.github.io/Prompt.com/`), lo habitual es servir el script desde
+   un proxy propio: así el visitante no hace peticiones a un tercero y las
+   rutas se registran sin el prefijo.
+2. Definir las dos variables en *Settings → Secrets and variables → Actions →
+   Variables*.
+3. Volver a desplegar: las variables se incrustan en el bundle durante el
+   build, así que no basta con definirlas (en *Actions → Deploy to GitHub
+   Pages → Run workflow*).
+4. El build dice en su salida si la analítica ha quedado activada:
+   `· analítica activada — dominio: prompt.com`.
+
+Mientras no se active, el sitio no carga ningún script de terceros y las
+páginas legales no mencionan ninguna analítica: el texto legal describe lo
+que la web hace de verdad. Al activarla, la política de privacidad y la de
+cookies añaden solas el apartado «Analítica sin cookies».
+
+### Eventos que se miden
+
+Además de las visitas, `src/front/utils/analytics.ts` permite enviar eventos
+(`trackEvent`). Los que hay ahora:
+
+| Evento | Cuándo |
+| --- | --- |
+| `Copiar prompt` | Se copia el prompt del generador o del analizador |
+| `Copiar enlace` | Se copia el enlace del prompt |
+| `Copiar prompt mejorado` | Se copia la versión mejorada del analizador |
+| `Usar un ejemplo` | Se rellena el generador con un ejemplo |
+| `Probar con un ejemplo` | Se carga el ejemplo del analizador |
+| `Navegación` | Se pulsa un enlace de la barra de navegación |
+
+Si no hay analítica configurada, `trackEvent` no hace nada: se puede llamar
+sin miedo y no rompe nada si el visitante bloquea el script.
 
 ## ⚠️ Antes de publicar
 

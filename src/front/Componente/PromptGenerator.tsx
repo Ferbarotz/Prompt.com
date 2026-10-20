@@ -9,6 +9,7 @@ import {
   hasGeneratorState
 } from '../data/generatorLink'
 import usePersistentState from '../hooks/usePersistentState'
+import { EVENTS, trackEvent } from '../utils/analytics'
 import styles from './PromptGenerator.module.css'
 import { PATHS } from '../data/paths'
 
@@ -166,6 +167,7 @@ const PromptGenerator = () => {
       await navigator.clipboard.writeText(generatedPrompt)
       showCopiedFeedback()
       announce('Prompt copiado al portapapeles', true)
+      trackEvent(EVENTS.copyPrompt, { tipo: task.id })
     } catch {
       // Fallback para navegadores sin Clipboard API o sin contexto seguro (http).
       const textarea = document.createElement('textarea')
@@ -200,6 +202,7 @@ const PromptGenerator = () => {
       if (linkTimeout.current) clearTimeout(linkTimeout.current)
       linkTimeout.current = setTimeout(() => setLinkCopied(false), 2000)
       announce('Enlace del prompt copiado al portapapeles', true)
+      trackEvent(EVENTS.copyLink, { tipo: task.id })
     } catch {
       announce('No se pudo copiar el enlace. Cópialo de la barra de direcciones.', true)
     }
@@ -314,7 +317,10 @@ const PromptGenerator = () => {
               <div className={styles.exampleButton}>
                 <button
                   type="button"
-                  onClick={() => update({ idea: task.exampleIdea })}
+                  onClick={() => {
+                    update({ idea: task.exampleIdea })
+                    trackEvent(EVENTS.useExample, { tipo: task.id })
+                  }}
                   className="btn btn-outline btn-xs"
                 >
                   Usar un ejemplo

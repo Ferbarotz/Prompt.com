@@ -99,7 +99,7 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
         heading: 'Datos que se recogen',
         paragraphs: [
           'Este sitio es estático y se ejecuta íntegramente en el navegador. Los prompts que escribes en el generador o en el analizador se procesan de forma local: no se envían a ningún servidor.',
-          'Lo único que se recoge son los datos que decides enviar de forma explícita, como el correo electrónico si decides escribirnos. Si en el futuro se incorporan herramientas de analítica, se indicará en esta política y en la de cookies antes de su activación.',
+          'Lo único que se recoge son los datos que decides enviar de forma explícita, como el correo electrónico si decides escribirnos. Este sitio no instala cookies ni crea perfiles de usuario.',
           'El generador y el analizador guardan en el almacenamiento local de tu navegador (localStorage) lo que escribes, para que no pierdas el trabajo si recargas la página: el prompt en curso, el texto analizado y el tema que has elegido. Ese dato no sale de tu equipo, no se envía a ningún servidor y puedes borrarlo cuando quieras desde el enlace «Borrar los datos guardados» del pie de página.'
         ]
       },
@@ -120,7 +120,7 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
       {
         heading: 'Destinatarios y transferencias internacionales',
         paragraphs: [
-          'No se ceden datos a terceros con fines comerciales. Si el alojamiento del sitio implicara una transferencia internacional, esta se garantizará con las garantías adecuadas del RGPD y se indicará en esta política.'
+          'No se ceden datos a terceros con fines comerciales. Si el alojamiento del sitio o el proveedor de analítica implicaran una transferencia internacional, esta se garantizará con las garantías adecuadas del RGPD y se indicará en esta política.'
         ]
       },
       {
