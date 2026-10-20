@@ -2,9 +2,10 @@ import { Link } from 'react-router-dom'
 import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
 import useSeo from '../hooks/useSeo'
+import { getRouteSeo } from '../data/routeMeta'
 import type { LegalPage as LegalPageContent } from '../data/legalContent'
-import styles from './LegalPage.module.css'
 import { PATHS } from '../data/paths'
+import styles from './LegalPage.module.css'
 
 /** Propiedades de la plantilla de página legal. */
 export interface LegalPageProps {
@@ -18,16 +19,12 @@ export interface LegalPageProps {
  * Página de contenido legal reutilizable.
  */
 const LegalPage = ({ page, path }: LegalPageProps) => {
-  useSeo({
-    title: page.title,
-    description: page.description,
-    path
-  })
+  useSeo(getRouteSeo(path))
 
   return (
     <div className="site-bg">
       <Navbar />
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <article className={styles.article}>
           <h1 className={styles.title}>{page.title}</h1>
           <p className={styles.updated}>

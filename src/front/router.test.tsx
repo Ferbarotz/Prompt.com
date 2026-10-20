@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import type { RouteObject } from 'react-router-dom'
 import { routes } from './router'
 import { LEGAL_PAGES } from './data/legalContent'
+import { ROUTE_BY_KEY } from './data/routeMeta'
 
 const renderAt = (path: string) => {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -33,8 +34,8 @@ describe('enrutado', () => {
     ).toBeInTheDocument()
   })
 
-  it.each(Object.entries(LEGAL_PAGES))('la ruta /%s carga su página legal', async (slug, page) => {
-    renderAt(`/${slug}`)
+  it.each(Object.entries(LEGAL_PAGES))('la ruta %s carga su página legal', async (key, page) => {
+    renderAt(ROUTE_BY_KEY[key].path.replace(/\/$/, ''))
     expect(
       await screen.findByRole('heading', { level: 1, name: page.title })
     ).toBeInTheDocument()

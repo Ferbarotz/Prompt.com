@@ -1,9 +1,11 @@
 import { lazy, Suspense, type CSSProperties } from 'react'
+import { Link } from 'react-router-dom'
 import Navbar from '../../Componente/Navbar'
 import Footer from '../../Componente/Footer'
 import useSeo from '../../hooks/useSeo'
 import { GUIDE_SECTIONS } from '../../data/guideSections'
 import { HOME_JSON_LD } from '../../data/seoData'
+import { getRouteSeo } from '../../data/routeMeta'
 import styles from './Home.module.css'
 import { PATHS } from '../../data/paths'
 
@@ -21,10 +23,7 @@ const accentStyle = (accent: string): CSSProperties =>
 
 const Home = () => {
   useSeo({
-    title: 'Guía de prompts: qué son y cómo escribirlos',
-    description:
-      'Qué es un prompt, para qué sirve y cómo escribir los mejores. Guía práctica con ejemplos y un generador de prompts profesionales para 10 tipos de tarea.',
-    path: PATHS.home,
+    ...getRouteSeo(PATHS.home),
     jsonLd: HOME_JSON_LD
   })
 
@@ -32,13 +31,21 @@ const Home = () => {
     <div className="site-bg">
       <Navbar />
 
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Guía de prompts: qué son y cómo escribirlos</h1>
           <p className={styles.subtitle}>
             Aprende a interactuar con un modelo de lenguaje y genera prompts
             profesionales listos para usar en segundos.
           </p>
+          <div className={styles.heroActions}>
+            <Link to={PATHS.generator} className="btn btn-primary">
+              Crear un prompt
+            </Link>
+            <Link to={PATHS.linter} className="btn btn-outline">
+              Analizar un prompt
+            </Link>
+          </div>
         </section>
 
         <nav aria-label="Índice de la guía">

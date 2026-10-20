@@ -15,7 +15,7 @@ const NotFoundPage = () => {
   return (
     <div className="site-bg">
       <div className={styles.wrapper}>
-        <main className={styles.main}>
+        <main id="contenido" className={styles.main}>
           <span className={styles.code}>404</span>
 
           <h1 className={styles.title}>No hemos encontrado esta página</h1>

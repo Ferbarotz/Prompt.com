@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { UserEvent } from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, createMemoryRouter, RouterProvider } from 'react-router-dom'
 import PromptGenerator from './PromptGenerator'
 
 // El generador incluye enlaces internos (`<Link>`), que necesitan un router.
@@ -12,6 +12,15 @@ const renderGenerator = () =>
       <PromptGenerator />
     </MemoryRouter>
   )
+
+/** Renderiza el generador en la página real del generador, para la URL. */
+const renderAtGenerator = (search = '') => {
+  const router = createMemoryRouter([{ path: '/generar-prompt', element: <PromptGenerator /> }], {
+    initialEntries: [`/generar-prompt/${search}`]
+  })
+  render(<RouterProvider router={router} />)
+  return router
+}
 
 const getRadios = () => screen.getAllByRole('radio')
 
@@ -232,5 +241,58 @@ describe('PromptGenerator', () => {
     for (const radio of getRadios()) {
       expect(radio).toHaveAccessibleName()
     }
+  })
+
+  it('la URL refleja el prompt generado', async () => {
+    const user = userEvent.setup()
+    const router = renderAtGenerator()
+
+    await user.type(screen.getByLabelText(/describe tu idea/i), 'Un guion de F1')
+    await goToStep2(user)
+    await goToStep3(user)
+
+    await waitFor(() => expect(router.state.location.search).toContain('i='))
+    expect(router.state.location.search).toContain('t=web')
+  })
+
+  it('un enlace compartido abre el prompt con su contenido', async () => {
+    renderAtGenerator('?t=video&i=Un%20gui%C3%B3n%20de%20F1')
+
+    // El paso 3 se abre directamente: quien recibe el enlace ve el resultado.
+    expect(screen.getByText(/tu prompt profesional · vídeo o guion/i)).toBeInTheDocument()
+    expect(screen.getByText(/Un guión de F1/)).toBeInTheDocument()
+  })
+
+  it('copia el enlace del prompt al portapapeles', async () => {
+    const user = userEvent.setup()
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
+
+    renderAtGenerator()
+    await user.type(screen.getByLabelText(/describe tu idea/i), 'Una idea')
+    await goToStep2(user)
+    await goToStep3(user)
+
+    await user.click(screen.getByRole('button', { name: /copiar enlace/i }))
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledTimes(1))
+    const url = writeText.mock.calls[0][0] as string
+    expect(url).toContain('/generar-prompt/')
+    expect(url).toContain('i=')
+  })
+
+  it('el trabajo se conserva al recargar la página', async () => {
+    const user = userEvent.setup()
+    const { unmount } = renderGenerator()
+
+    await user.type(screen.getByLabelText(/describe tu idea/i), 'Una idea que no se pierde')
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:generator')).toContain('Una idea que no se pierde')
+    )
+
+    unmount()
+    renderGenerator()
+
+    expect(screen.getByLabelText(/describe tu idea/i)).toHaveValue('Una idea que no se pierde')
   })
 })

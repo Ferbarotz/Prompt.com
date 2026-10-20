@@ -8,22 +8,38 @@
  *     con el 404. Al copiar el index, la SPA arranca directamente en esa URL:
  *     el router resuelve la ruta y no hace falta redirigir ni recargar la
  *     aplicación entera.
- *  2. Genera `sitemap.xml` y `robots.txt` con la URL real del sitio.
+ *  2. Genera un HTML por ruta con sus propias etiquetas SEO (título,
+ *     canonical y Open Graph). Esos datos los aplica la aplicación en
+ *     caliente, pero un preview de Slack o un buscador que no ejecuta
+ *     JavaScript solo ve el HTML: sin esto, todas las rutas se presentarían
+ *     como la home y la canonical apuntaría a la home.
+ *  3. Genera `sitemap.xml` y `robots.txt` con la URL real del sitio.
+ *
+ * Las rutas y sus metadatos salen de `src/front/data/routes.json`, el mismo
+ * catálogo que usa la aplicación.
  */
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { getCustomDomain, getSiteOrigin } from './site-url.mjs'
+import { renderSeoHead, replaceSeoBlock } from './seo-head.mjs'
 
 const distDir = path.resolve('dist')
+
+/** Catálogo de rutas y metadatos SEO (compartido con la aplicación). */
+const routesFile = new URL('../src/front/data/routes.json', import.meta.url)
+const { routes: ROUTES, aliases: ALIASES } = JSON.parse(await fs.readFile(routesFile, 'utf8'))
+
+/** Rutas indexadas por su clave. */
+const ROUTE_BY_KEY = Object.fromEntries(ROUTES.map((route) => [route.key, route]))
 
 /** Fecha del último commit, como `lastmod` del sitemap. */
 const getLastModified = () => {
   try {
     const date = execSync('git log -1 --format=%cI', {
       encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore']
+      stdio: ['ignore', 'pipe', 'pipe']
     }).trim()
     return date ? date.slice(0, 10) : new Date().toISOString().slice(0, 10)
   } catch {
@@ -31,59 +47,75 @@ const getLastModified = () => {
   }
 }
 
-const ROUTES = [
-  { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/generar-prompt/', changefreq: 'monthly', priority: '0.8' },
-  { path: '/analizar-prompt/', changefreq: 'monthly', priority: '0.8' },
-  { path: '/aviso-legal/', changefreq: 'yearly', priority: '0.3' },
-  { path: '/privacidad/', changefreq: 'yearly', priority: '0.3' },
-  { path: '/cookies/', changefreq: 'yearly', priority: '0.3' }
-]
-
 /**
- * Alias de URL: carpetas con `index.html` pero sin publicar en el sitemap.
+ * Etiquetas SEO de una ruta.
  *
- * Son redirecciones en el router (ver `ALIAS_ROUTES` en `src/front/router.tsx`).
- * La carpeta hace que Pages las sirva con un 200 en lugar del 404 del fallback
- * SPA, aunque el visitante acabe en la ruta canónica.
+ * `url` es la URL canónica absoluta y `image` la imagen Open Graph, que
+ * siempre es la misma para todas las rutas.
  */
-const ALIAS_PATHS = [
-  '/generator-prompt/',
-  '/prompt-generator/',
-  '/generador-prompt/',
-  '/linter/',
-  '/linter-prompt/',
-  '/analizador-prompt/'
-]
+const headFor = (route, origin) =>
+  renderSeoHead({
+    title: route.title,
+    description: route.description,
+    url: `${origin}${route.path}`,
+    image: `${origin}/og-image.png`
+  })
 
 /**
  * `index.html` → `404.html` y a una carpeta por ruta.
  *
  * GitHub Pages no tiene rewrite de rutas: una URL interna que no exista como
- * fichero se sirve con el 404. Para que el crawler reciba un 200 (y no descarte
- * la URL del sitemap) cada ruta tiene su carpeta con su `index.html`, que
- * Pages sirve con un 200 y con barra final.
+ * fichero se sirve con el 404. Para que el crawler reciba un 200 (y no
+ * descarte la URL del sitemap) cada ruta tiene su carpeta con su `index.html`,
+ * que Pages sirve con un 200 y con barra final.
+ *
+ * Cada copia lleva las etiquetas SEO de su ruta: es el HTML que ven los
+ * previews de las redes y los buscadores que no ejecutan JavaScript.
  */
-const buildSpaFallback = async () => {
+const buildSpaFallback = async (origin) => {
   const html = await fs.readFile(path.join(distDir, 'index.html'), 'utf8')
 
-  await fs.writeFile(path.join(distDir, '404.html'), html, 'utf8')
-  console.log('· dist/404.html — copia de index.html (fallback SPA)')
+  // La 404 no se indexa: no debe heredar la canonical de la home.
+  const notFound = replaceSeoBlock(
+    html,
+    renderSeoHead({
+      title: ROUTE_BY_KEY.home.title,
+      description: ROUTE_BY_KEY.home.description,
+      url: `${origin}${ROUTE_BY_KEY.home.path}`,
+      image: `${origin}/og-image.png`,
+      noindex: true
+    })
+  )
+  await fs.writeFile(path.join(distDir, '404.html'), notFound, 'utf8')
+  console.log('· dist/404.html — copia de index.html (fallback SPA, noindex)')
 
   for (const route of ROUTES) {
-    if (route.path === '/') continue
+    const page = replaceSeoBlock(html, headFor(route, origin))
+    if (route.path === '/') {
+      // La home es el index original: sus etiquetas ya son las suyas.
+      await fs.writeFile(path.join(distDir, 'index.html'), page, 'utf8')
+      continue
+    }
     const directory = path.join(distDir, route.path.replace(/^\/|\/$/g, ''))
     await fs.mkdir(directory, { recursive: true })
-    await fs.writeFile(path.join(directory, 'index.html'), html, 'utf8')
+    await fs.writeFile(path.join(directory, 'index.html'), page, 'utf8')
     console.log(`· dist${route.path}index.html — ruta con respuesta 200`)
   }
 
-  for (const alias of ALIAS_PATHS) {
-    const directory = path.join(distDir, alias.replace(/^\/|\/$/g, ''))
+  // Alias de URL: carpetas con `index.html` pero sin publicar en el sitemap.
+  // Son redirecciones en el router (ver `ALIAS_ROUTES` en `src/front/router.tsx`).
+  // La carpeta hace que Pages las sirva con un 200 en lugar del 404 del
+  // fallback SPA, aunque el visitante acabe en la ruta canónica. Su HTML lleva
+  // las etiquetas de la ruta canónica, para que no se cuelguen como duplicado.
+  for (const alias of ALIASES) {
+    const target = ROUTE_BY_KEY[alias.target]
+    if (!target) throw new Error(`El alias "${alias.path}" apunta a una ruta inexistente`)
+    const page = replaceSeoBlock(html, headFor(target, origin))
+    const directory = path.join(distDir, alias.path.replace(/^\/|\/$/g, ''))
     await fs.mkdir(directory, { recursive: true })
-    await fs.writeFile(path.join(directory, 'index.html'), html, 'utf8')
+    await fs.writeFile(path.join(directory, 'index.html'), page, 'utf8')
   }
-  console.log(`· ${ALIAS_PATHS.length} alias con respuesta 200 (no se publican)`)
+  console.log(`· ${ALIASES.length} alias con respuesta 200 (no se publican)`)
 }
 
 const buildSitemap = async (origin) => {
@@ -138,8 +170,8 @@ const buildCname = async () => {
 }
 
 const main = async () => {
-  await buildSpaFallback()
   const origin = getSiteOrigin()
+  await buildSpaFallback(origin)
   await buildSitemap(origin)
   await buildRobots(origin)
   await buildCname()

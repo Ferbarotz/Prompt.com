@@ -31,6 +31,16 @@
   line-height: 1.6;
 }
 
+/* Botones de entrada: el visitante que llega por un buscador quiere la
+   herramienta, no leer la guía entera antes de empezar. */
+.heroActions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.4rem;
+}
+
 /* ---------------------------------------------------------------------------
    Índice
    --------------------------------------------------------------------------- */

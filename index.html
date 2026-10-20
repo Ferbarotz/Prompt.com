@@ -6,6 +6,16 @@
     <meta name="theme-color" content="#050814" />
     <meta name="color-scheme" content="dark" />
 
+    <!--
+      Bloque SEO.
+
+      El post-build sustituye lo que hay entre los marcadores por las
+      etiquetas de cada ruta (ver `scripts/seo-head.mjs`), de modo que el HTML
+      que se sirve ya trae el título y la canonical correctos aunque nadie
+      ejecute JavaScript. Los marcadores son obligatorios: si desaparecen, el
+      build falla en vez de publicar etiquetas equivocadas.
+    -->
+    <!-- SEO:START -->
     <title>Prompt.com — Guía y generador de prompts</title>
     <meta
       name="description"
@@ -38,6 +48,7 @@
     />
     <meta name="twitter:image" content="__SITE_URL__/og-image.png" />
     <meta name="twitter:image:alt" content="Prompt.com — Guía y generador de prompts" />
+    <!-- SEO:END -->
 
     <!-- Iconos y PWA -->
     <link

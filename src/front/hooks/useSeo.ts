@@ -1,28 +1,6 @@
 import { useEffect } from 'react'
-
-const SITE_NAME = 'Prompt.com'
-const DEFAULT_TITLE = 'Prompt.com — Guía y generador de prompts'
-const DEFAULT_DESCRIPTION =
-  'Aprende qué es un prompt, para qué sirve y cómo escribir los mejores. Generador de prompts profesionales para código, contenido, imágenes, SEO y más.'
-const BASE_URL = import.meta.env.BASE_URL.replace(/\/+$/, '')
-
-/** Origen del sitio, p. ej. `https://prompt.com`. */
-const origin = (): string => (typeof window === 'undefined' ? '' : window.location.origin)
-
-/**
- * URL absoluta de una ruta interna de la SPA, siempre con barra final.
- *
- * GitHub Pages sirve cada ruta desde su propia carpeta (`dist/ruta/index.html`)
- * para responder con un 200; sin la barra final responde 404.
- */
-export const absoluteUrl = (path = '/'): string => {
-  const clean = path.replace(/^\/+/, '').replace(/\/+$/, '')
-  const base = `${BASE_URL}/`
-  return clean ? `${origin()}${base}${clean}/` : `${origin()}${base}`
-}
-
-/** URL absoluta de un fichero estático (imágenes, manifest…). */
-export const assetUrl = (path: string): string => `${origin()}${BASE_URL}/${path.replace(/^\/+/, '')}`
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME } from '../data/routeMeta'
+import { absoluteUrl, assetUrl } from '../utils/siteUrl'
 
 /** Crea o actualiza una etiqueta `<meta>`. */
 const upsertMeta = (attribute: string, key: string, content?: string): void => {

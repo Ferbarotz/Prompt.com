@@ -1,5 +1,6 @@
-import { absoluteUrl } from '../hooks/useSeo'
+import { absoluteUrl } from '../utils/siteUrl'
 import { GUIDE_SECTIONS } from './guideSections'
+import { PATHS } from './paths'
 
 const siteUrl = absoluteUrl('/')
 
@@ -90,9 +91,9 @@ export const HOME_JSON_LD: HomeJsonLd = {
 export const GENERATOR_JSON_LD = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  '@id': `${absoluteUrl('/generar-prompt')}#app`,
+  '@id': `${absoluteUrl(PATHS.generator)}#app`,
   name: 'Generador de prompts de Prompt.com',
-  url: absoluteUrl('/generar-prompt'),
+  url: absoluteUrl(PATHS.generator),
   description:
     'Generador de prompts profesionales en 3 pasos: elige el tipo de tarea, completa los detalles y copia el prompt listo para usar.',
   applicationCategory: 'DeveloperApplication',
@@ -111,4 +112,25 @@ export const GENERATOR_JSON_LD = {
     'Campos de detalle contextuales según la tarea elegida',
     'Copia al portapapeles en un clic'
   ]
+}
+
+/** Datos estructurados de la página del analizador. */
+export const LINTER_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  '@id': `${absoluteUrl(PATHS.linter)}#app`,
+  name: 'Analizador de prompts de Prompt.com',
+  url: absoluteUrl(PATHS.linter),
+  description:
+    'Pega tu prompt y obtén una puntuación con el desglose de lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y validación.',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requiere un navegador con JavaScript habilitado',
+  inLanguage: 'es-ES',
+  isAccessibleForFree: true,
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'EUR'
+  }
 }

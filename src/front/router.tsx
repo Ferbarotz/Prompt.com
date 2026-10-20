@@ -3,7 +3,7 @@ import type { ComponentType } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import Home from './page/Home/Home'
 import { LEGAL_PAGES } from './data/legalContent'
-import { PATHS } from './data/paths'
+import { ALIASES, ROUTE_BY_KEY } from './data/routeMeta'
 import { RouteError, RouteLoading } from './Componente/RouteStatus'
 
 /**
@@ -32,11 +32,13 @@ const lazyRoute = (
 })
 
 // Las páginas legales comparten plantilla: se generan a partir del catálogo.
-const legalRoutes = Object.entries(LEGAL_PAGES).map(([slug, page]) => ({
-  path: `/${slug}`,
+// La URL sale del catálogo de rutas (`routes.json`), el mismo que usa el
+// post-build para crear las carpetas y el sitemap.
+const legalRoutes = Object.entries(LEGAL_PAGES).map(([key, page]) => ({
+  path: ROUTE_BY_KEY[key].path.replace(/\/$/, ''),
   ...lazyRoute(async () => {
     const { default: LegalPage } = await import('./page/LegalPage')
-    const Wrapped = () => <LegalPage page={page} path={`/${slug}/`} />
+    const Wrapped = () => <LegalPage page={page} path={ROUTE_BY_KEY[key].path} />
     return { default: Wrapped }
   })
 }))
@@ -55,14 +57,10 @@ const legalRoutes = Object.entries(LEGAL_PAGES).map(([slug, page]) => ({
  * deja la ruta sin elemento durante un instante (y avisa por consola), y
  * `<Navigate>` redirige en el primer render.
  */
-export const ALIAS_ROUTES: RouteObject[] = [
-  { path: '/generator-prompt', element: <Navigate to={PATHS.generator} replace /> },
-  { path: '/prompt-generator', element: <Navigate to={PATHS.generator} replace /> },
-  { path: '/generador-prompt', element: <Navigate to={PATHS.generator} replace /> },
-  { path: '/linter', element: <Navigate to={PATHS.linter} replace /> },
-  { path: '/linter-prompt', element: <Navigate to={PATHS.linter} replace /> },
-  { path: '/analizador-prompt', element: <Navigate to={PATHS.linter} replace /> }
-]
+export const ALIAS_ROUTES: RouteObject[] = ALIASES.map((alias) => ({
+  path: alias.path.replace(/\/$/, ''),
+  element: <Navigate to={ROUTE_BY_KEY[alias.target].path} replace />
+}))
 
 export const routes = [
   {

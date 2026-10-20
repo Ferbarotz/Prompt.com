@@ -39,6 +39,22 @@ describe('LinterPage', () => {
     expect(await screen.findByText(/excelente/i)).toBeInTheDocument()
   })
 
+  it('el prompt analizado se conserva al recargar', async () => {
+    const user = userEvent.setup()
+    const { unmount } = renderPage()
+
+    await user.type(screen.getByLabelText(/pega aquí el prompt/i), 'Actúa como un abogado.')
+
+    await waitFor(() =>
+      expect(window.localStorage.getItem('prompt-com:linter')).toContain('Actúa como un abogado')
+    )
+
+    unmount()
+    renderPage()
+
+    expect(screen.getByLabelText(/pega aquí el prompt/i)).toHaveValue('Actúa como un abogado.')
+  })
+
   it('propone una versión mejorada con los bloques que faltan', async () => {
     const user = userEvent.setup()
     renderPage()

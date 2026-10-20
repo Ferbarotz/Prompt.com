@@ -1,6 +1,12 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach, vi } from 'vitest'
+import { afterEach, beforeEach, vi } from 'vitest'
+
+beforeEach(() => {
+  // La aplicación guarda el trabajo del visitante en `localStorage`. Sin
+  // limpiarlo, el estado de un test se filtra al siguiente.
+  window.localStorage.clear()
+})
 
 afterEach(() => {
   cleanup()

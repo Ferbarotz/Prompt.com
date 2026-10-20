@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { PATHS, PUBLIC_PATHS } from './paths'
 import { ALIAS_ROUTES, routes } from '../router'
 import { LEGAL_PAGES } from './legalContent'
+import { ROUTE_BY_KEY } from './routeMeta'
 
 describe('rutas públicas', () => {
   it('todas terminan en barra final (excepto la home)', () => {
@@ -32,8 +33,8 @@ describe('rutas públicas', () => {
   })
 
   it('las páginas legales del catálogo están en el sitemap', () => {
-    for (const slug of Object.keys(LEGAL_PAGES)) {
-      expect(PUBLIC_PATHS).toContain(`/${slug}/`)
+    for (const key of Object.keys(LEGAL_PAGES)) {
+      expect(PUBLIC_PATHS).toContain(ROUTE_BY_KEY[key].path)
     }
   })
 

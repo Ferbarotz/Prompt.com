@@ -4,24 +4,40 @@ import { PATHS } from '../data/paths'
 
 const Navbar = () => {
   return (
-    <nav aria-label="Navegación principal" className={styles.nav}>
-      <Link to="/" className={styles.brand}>
-        Prompt.com
-      </Link>
+    <>
+      {/* Acceso rápido al contenido: es lo primero que encuentra quien navega
+          con teclado o lector de pantalla. */}
+      <a href="#contenido" className="skipLink">
+        Saltar al contenido
+      </a>
 
-      <div className={styles.links}>
-        <NavLink
-          to={PATHS.linter}
-          className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
-        >
-          Analizar prompt
-        </NavLink>
-
-        <Link to={PATHS.generator} className={styles.cta}>
-          Crear
+      <nav aria-label="Navegación principal" className={styles.nav}>
+        <Link to="/" className={styles.brand}>
+          Prompt.com
         </Link>
-      </div>
-    </nav>
+
+        <div className={styles.links}>
+          <NavLink
+            to={PATHS.home}
+            className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+            end
+          >
+            Guía
+          </NavLink>
+
+          <NavLink
+            to={PATHS.linter}
+            className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+          >
+            Analizar prompt
+          </NavLink>
+
+          <Link to={PATHS.generator} className={styles.cta}>
+            Crear
+          </Link>
+        </div>
+      </nav>
+    </>
   )
 }
 

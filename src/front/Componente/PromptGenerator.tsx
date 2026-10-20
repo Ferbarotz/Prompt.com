@@ -1,7 +1,14 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { TASK_TYPES, TASK_TYPES_BY_ID } from '../data/taskTypes'
 import { getAiTools } from '../data/aiTools'
+import {
+  buildShareUrl,
+  decodeGeneratorState,
+  encodeGeneratorState,
+  hasGeneratorState
+} from '../data/generatorLink'
+import usePersistentState from '../hooks/usePersistentState'
 import styles from './PromptGenerator.module.css'
 import { PATHS } from '../data/paths'
 
@@ -11,18 +18,71 @@ const STEPS = [
   { id: 3, name: 'Resultado' }
 ]
 
+/** Estado del generador: lo que el visitante ha escrito hasta ahora. */
+interface GeneratorState {
+  step: number
+  taskId: string
+  idea: string
+  details: Record<string, string>
+  extra: string
+}
+
+/** Estado de partida: la primera tarea y los tres pasos en blanco. */
+const INITIAL_STATE: GeneratorState = {
+  step: 1,
+  taskId: TASK_TYPES[0].id,
+  idea: '',
+  details: {},
+  extra: ''
+}
+
+/**
+ * Estado inicial a partir de la URL.
+ *
+ * Un enlace compartido llega con el prompt dentro: si trae idea, se abre
+ * directamente en el paso 3 con el resultado a la vista. Un tipo de tarea
+ * desconocido se ignora (el enlace puede estar manipulado o ser antiguo).
+ */
+const stateFromSearch = (search: string): GeneratorState => {
+  const fromUrl = decodeGeneratorState(search)
+  const taskId =
+    fromUrl.taskId && TASK_TYPES_BY_ID[fromUrl.taskId] ? fromUrl.taskId : INITIAL_STATE.taskId
+
+  return {
+    step: fromUrl.idea ? 3 : INITIAL_STATE.step,
+    taskId,
+    idea: fromUrl.idea ?? INITIAL_STATE.idea,
+    details: fromUrl.details ?? INITIAL_STATE.details,
+    extra: fromUrl.extra ?? INITIAL_STATE.extra
+  }
+}
+
 const PromptGenerator = () => {
-  const [step, setStep] = useState(1)
-  const [taskId, setTaskId] = useState(TASK_TYPES[0].id)
-  const [idea, setIdea] = useState('')
-  const [details, setDetails] = useState<Record<string, string>>({})
-  const [extra, setExtra] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
+
+  // Lo que llega en la URL manda sobre lo guardado en el navegador: un enlace
+  // compartido se abre con el prompt de quien lo envió.
+  const [search] = useState(location.search)
+  const [state, setState] = usePersistentState<GeneratorState>(
+    'generator',
+    () => stateFromSearch(search),
+    { preferInitial: hasGeneratorState(decodeGeneratorState(search)) }
+  )
+  const { step, taskId, idea, details, extra } = state
+
   const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
   // Mensaje para la región live: es la única fuente de anuncios, para que el
   // contenido del prompt (que cambia en cada pulsación) no se lea entero.
   const [status, setStatus] = useState('')
   const copyTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const linkTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const statusTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  /** Aplica un cambio al estado del generador. */
+  const update = (patch: Partial<GeneratorState>) =>
+    setState((previous) => ({ ...previous, ...patch }))
 
   // IDs únicos por instancia: durante las transiciones de React 18 pueden
   // convivir dos generadores (home y página de creación) en el mismo DOM.
@@ -45,6 +105,11 @@ const PromptGenerator = () => {
 
   const task = TASK_TYPES_BY_ID[taskId] ?? TASK_TYPES[0]
 
+  // Solo en la página del generador la URL refleja el estado: en la home el
+  // generador es una demostración y ensuciar la URL del visitante molesta.
+  const isGeneratorPage =
+    location.pathname.replace(/\/+$/, '') === PATHS.generator.replace(/\/+$/, '')
+
   // Herramientas de IA recomendadas para este tipo de tarea: el generador no
   // llama a ningún modelo, así que le decimos al usuario dónde pegar el prompt.
   const aiSuggestion = useMemo(() => getAiTools(task.id), [task.id])
@@ -58,9 +123,19 @@ const PromptGenerator = () => {
   useEffect(() => {
     return () => {
       if (copyTimeout.current) clearTimeout(copyTimeout.current)
+      if (linkTimeout.current) clearTimeout(linkTimeout.current)
       if (statusTimeout.current) clearTimeout(statusTimeout.current)
     }
   }, [])
+
+  // Mantiene la URL al día con el prompt: así el visitante puede copiar la
+  // barra de direcciones y compartir su prompt con un enlace.
+  useEffect(() => {
+    if (!isGeneratorPage) return
+    const query = encodeGeneratorState(state)
+    if (query === searchParams.toString()) return
+    setSearchParams(new URLSearchParams(query), { replace: true })
+  }, [state, isGeneratorPage, searchParams, setSearchParams])
 
   // Anuncia los cambios de paso a los lectores de pantalla. Se hace en el
   // manejador del evento (y no en un efecto) para evitar renderizados en
@@ -74,7 +149,7 @@ const PromptGenerator = () => {
   }
 
   const goToStep = (next: number) => {
-    setStep(next)
+    update({ step: next })
     const stepInfo = STEPS.find((item) => item.id === next)
     announce(`Paso ${next} de ${STEPS.length}: ${stepInfo?.name ?? ''}`)
   }
@@ -111,23 +186,45 @@ const PromptGenerator = () => {
     }
   }
 
+  /**
+   * Copia el enlace del prompt.
+   *
+   * El enlace lleva el prompt dentro, así que quien lo abre ve exactamente lo
+   * mismo que ve quien lo envía.
+   */
+  const handleCopyLink = async () => {
+    const url = buildShareUrl(state)
+    try {
+      await navigator.clipboard.writeText(url)
+      setLinkCopied(true)
+      if (linkTimeout.current) clearTimeout(linkTimeout.current)
+      linkTimeout.current = setTimeout(() => setLinkCopied(false), 2000)
+      announce('Enlace del prompt copiado al portapapeles', true)
+    } catch {
+      announce('No se pudo copiar el enlace. Cópialo de la barra de direcciones.', true)
+    }
+  }
+
   const handleReset = () => {
     goToStep(1)
-    setTaskId(TASK_TYPES[0].id)
-    setIdea('')
-    setDetails({})
-    setExtra('')
+    update({
+      step: 1,
+      taskId: TASK_TYPES[0].id,
+      idea: '',
+      details: {},
+      extra: ''
+    })
     setCopied(false)
+    setLinkCopied(false)
   }
 
   // Cambiar de tipo de tarea invalida los detalles: son específicos del tipo.
   const handleTaskChange = (id: string) => {
-    setTaskId(id)
-    setDetails({})
+    update({ taskId: id, details: {} })
   }
 
   const handleDetailChange = (key: string, value: string) => {
-    setDetails((previous) => ({ ...previous, [key]: value }))
+    update({ details: { ...details, [key]: value } })
   }
 
   return (
@@ -210,14 +307,14 @@ const PromptGenerator = () => {
                 id={fieldIds.idea}
                 className="field-input"
                 value={idea}
-                onChange={(event) => setIdea(event.target.value)}
+                onChange={(event) => update({ idea: event.target.value })}
                 placeholder='Ej: "Una página para mi negocio de pasteles", "Un email para recuperar clientes que no compran hace meses"...'
                 rows={3}
               />
               <div className={styles.exampleButton}>
                 <button
                   type="button"
-                  onClick={() => setIdea(task.exampleIdea)}
+                  onClick={() => update({ idea: task.exampleIdea })}
                   className="btn btn-outline btn-xs"
                 >
                   Usar un ejemplo
@@ -287,7 +384,7 @@ const PromptGenerator = () => {
                 id={fieldIds.extra}
                 className="field-input"
                 value={extra}
-                onChange={(event) => setExtra(event.target.value)}
+                onChange={(event) => update({ extra: event.target.value })}
                 placeholder='Ej: "Que tenga modo oscuro", "Que sea para niños", "Colores verde y blanco"...'
                 rows={2}
               />
@@ -306,6 +403,13 @@ const PromptGenerator = () => {
                       className="btn btn-primary btn-sm"
                     >
                       {copied ? 'Copiado!' : 'Copiar prompt'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCopyLink}
+                      className="btn btn-outline btn-sm"
+                    >
+                      {linkCopied ? 'Enlace copiado!' : 'Copiar enlace'}
                     </button>
                     <button
                       type="button"

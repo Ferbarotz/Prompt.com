@@ -7,6 +7,8 @@
  *     que un profesional debe validar antes de usar en producción.
  */
 
+import { ROUTE_BY_KEY } from './routeMeta'
+
 /** Datos identificativos del titular del sitio. */
 export interface SiteOwner {
   name: string
@@ -40,10 +42,9 @@ export const siteOwner: SiteOwner = {
 }
 
 export const LEGAL_PAGES: Record<string, LegalPage> = {
-  'aviso-legal': {
-    title: 'Aviso legal',
-    description:
-      'Titularidad del sitio, condiciones de uso, propiedad intelectual y legislación aplicable de Prompt.com.',
+  avisoLegal: {
+    title: ROUTE_BY_KEY.avisoLegal.title,
+    description: ROUTE_BY_KEY.avisoLegal.description,
     updated: '2026-10-19',
     sections: [
       {
@@ -84,9 +85,8 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
   },
 
   privacidad: {
-    title: 'Política de privacidad',
-    description:
-      'Qué datos se recogen en Prompt.com, con qué finalidad, cuánto tiempo se conservan y cómo ejercer tus derechos.',
+    title: ROUTE_BY_KEY.privacidad.title,
+    description: ROUTE_BY_KEY.privacidad.description,
     updated: '2026-10-19',
     sections: [
       {
@@ -143,9 +143,8 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
   },
 
   cookies: {
-    title: 'Política de cookies',
-    description:
-      'Qué cookies y tecnologías similares utiliza Prompt.com, para qué sirven y cómo gestionarlas.',
+    title: ROUTE_BY_KEY.cookies.title,
+    description: ROUTE_BY_KEY.cookies.description,
     updated: '2026-10-19',
     sections: [
       {

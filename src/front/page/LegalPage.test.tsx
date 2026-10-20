@@ -7,7 +7,7 @@ import { LEGAL_PAGES, siteOwner } from '../data/legalContent'
 describe('páginas legales', () => {
   it('el catálogo cubre las tres páginas obligatorias', () => {
     expect(Object.keys(LEGAL_PAGES).sort()).toEqual([
-      'aviso-legal',
+      'avisoLegal',
       'cookies',
       'privacidad'
     ])

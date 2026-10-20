@@ -2,36 +2,21 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { Link } from 'react-router-dom'
 import Navbar from '../Componente/Navbar'
 import Footer from '../Componente/Footer'
-import useSeo, { absoluteUrl } from '../hooks/useSeo'
+import useSeo from '../hooks/useSeo'
 import { CRITERIA, EXAMPLE_PROMPT, analyzePrompt, improvePrompt } from '../data/promptLinter'
+import { LINTER_JSON_LD } from '../data/seoData'
+import { getRouteSeo } from '../data/routeMeta'
+import usePersistentState from '../hooks/usePersistentState'
 import styles from './LinterPage.module.css'
 import { PATHS } from '../data/paths'
 
-const LINTER_JSON_LD = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'Analizador de prompts de Prompt.com',
-  url: absoluteUrl(PATHS.linter),
-  description:
-    'Pega tu prompt y obtén una puntuación con el desglose de lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y validación.',
-  applicationCategory: 'DeveloperApplication',
-  operatingSystem: 'Any',
-  browserRequirements: 'Requiere un navegador con JavaScript habilitado',
-  inLanguage: 'es-ES',
-  isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }
-}
-
 const LinterPage = () => {
   useSeo({
-    title: 'Analizador de prompts: puntúa y mejora el tuyo',
-    description:
-      'Pega tu prompt y obtén una puntuación de 0 a 100 con el desglose de lo que le falta: rol, objetivo, contexto, datos, restricciones, formato, ejemplos y criterio de validación.',
-    path: PATHS.linter,
+    ...getRouteSeo(PATHS.linter),
     jsonLd: LINTER_JSON_LD
   })
 
-  const [text, setText] = useState('')
+  const [text, setText] = usePersistentState<string>('linter', '')
   const [copied, setCopied] = useState('')
   const [status, setStatus] = useState('')
   const copyTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -71,7 +56,7 @@ const LinterPage = () => {
   return (
     <div className="site-bg">
       <Navbar />
-      <main className={styles.main}>
+      <main id="contenido" className={styles.main}>
         <section className={styles.hero}>
           <h1 className={styles.title}>Analizador de prompts</h1>
           <p className={styles.subtitle}>

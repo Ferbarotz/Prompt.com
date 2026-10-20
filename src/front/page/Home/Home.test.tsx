@@ -68,4 +68,33 @@ describe('Home (presentación)', () => {
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /política de privacidad/i })).toBeInTheDocument()
   })
+
+  it('el hero ofrece acceso directo a las dos herramientas', () => {
+    render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: /crear un prompt/i })).toHaveAttribute(
+      'href',
+      '/generar-prompt/'
+    )
+    expect(screen.getByRole('link', { name: /analizar un prompt/i })).toHaveAttribute(
+      'href',
+      '/analizar-prompt/'
+    )
+  })
+
+  it('hay un acceso rápido al contenido para quien navega con teclado', () => {
+    render(
+      <MemoryRouter>
+        <Home />
+      </MemoryRouter>
+    )
+
+    const skip = screen.getByRole('link', { name: /saltar al contenido/i })
+    expect(skip).toHaveAttribute('href', '#contenido')
+    expect(document.getElementById('contenido')).not.toBeNull()
+  })
 })

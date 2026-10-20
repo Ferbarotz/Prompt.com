@@ -8,7 +8,7 @@ prompts con puntuación, todo en el navegador.
 - React 18 + React Router 7
 - TypeScript 6 (`strict`) + Vite 8
 - CSS Modules + design tokens (CSS custom properties)
-- Vitest 4 + Testing Library (105 tests)
+- Vitest 4 + Testing Library (171 tests)
 - ESLint 9 (flat config) con `typescript-eslint` y `eslint-plugin-react-hooks`
 - Sharp (solo para generar los assets estáticos)
 
@@ -53,10 +53,12 @@ npm run dev     # http://localhost:5173/Prompt.com/
 ```
 src/front/
 ├── Componente/   Navbar, Footer, PromptGenerator, Analytics (+ .module.css)
-├── data/         taskTypes, guideSections, promptLinter, legalContent, seoData
-├── hooks/        useSeo
+├── data/         taskTypes, guideSections, promptLinter, legalContent, seoData,
+│                 routes.json (catálogo de rutas), routeMeta, generatorLink
+├── hooks/        useSeo, usePersistentState
 ├── page/         Home, GeneratorPage, LinterPage, LegalPage, NotFoundPage
 ├── styles/       tokens.css (design tokens) y global.css (reset y utilidades)
+├── utils/        siteUrl (URLs absolutas del sitio)
 ├── router.tsx    rutas (las secundarias se cargan bajo demanda)
 └── main.tsx
 ```
@@ -119,7 +121,10 @@ generalista (ChatGPT, Claude, Gemini) si el tipo no tiene una propia.
 
 Las URLs escritas a mano o en inglés (`/generator-prompt`, `/linter`…) no
 acaban en la 404: `ALIAS_ROUTES` en `src/front/router.tsx` las redirige a su
-ruta canónica. Son redirecciones, así que no se publican en el sitemap.
+ruta canónica. La lista está en `src/front/data/routes.json` (junto con las
+rutas canónicas) y la usan tanto el router como el post-build, que crea la
+carpeta de cada alias para que GitHub Pages las sirva con un 200. Son
+redirecciones, así que no se publican en el sitemap.
 
 ## Analizador de prompts
 
@@ -135,8 +140,11 @@ usuario nunca sale del navegador.
 
 ## SEO
 
+- `src/front/data/routes.json` es el catálogo de rutas: URL, título,
+  descripción y datos de sitemap. Es la fuente única que comparten la
+  aplicación (`src/front/data/routeMeta.ts`) y el post-build.
 - `src/front/hooks/useSeo.ts` sincroniza por ruta el título, la descripción,
-  `canonical`, Open Graph, Twitter Card y `robots`.
+  `canonical`, Open Graph, Twitter Card y `robots` en el navegador.
 - `src/front/data/seoData.ts` define los datos estructurados: `FAQPage` +
   `WebSite` en la home (la guía es un formato de pregunta y respuesta, que
   encaja con el tipo de schema.org) y `WebApplication` en el generador y en el
@@ -144,10 +152,30 @@ usuario nunca sale del navegador.
 - `index.html` lleva las etiquetas estáticas con URL absoluta: las sustituye
   `__SITE_URL__` con el origen real, lo hace el plugin `seoTags` de
   `vite.config.js` usando `scripts/site-url.mjs`.
-- `scripts/postbuild.mjs` genera `sitemap.xml` y `robots.txt` tras el build.
+- `scripts/postbuild.mjs` genera `sitemap.xml` y `robots.txt` tras el build, y
+  **un HTML por ruta** con sus propias etiquetas SEO (`scripts/seo-head.mjs`).
+  Es lo que ven los previews de Slack, WhatsApp o X y los buscadores que no
+  ejecutan JavaScript: sin eso, todas las rutas se presentarían como la home
+  y su `canonical` apuntaría a la home (y se descartarían como duplicadas).
+- El bloque SEO del HTML va entre los marcadores `<!-- SEO:START -->` y
+  `<!-- SEO:END -->`: si desaparecen, el build falla en lugar de publicar
+  etiquetas equivocadas.
 
 La URL del sitio se resuelve en este orden: `SITE_URL` → `GITHUB_REPOSITORY` →
 remoto `origin` de git → origen de desarrollo.
+
+## Estado compartido y persistencia
+
+- El generador y el analizador guardan el trabajo del visitante en
+  `localStorage` (`src/front/hooks/usePersistentState.ts`): si recarga o
+  vuelve atrás, no pierde lo que había escrito. Solo se guarda en su propio
+  navegador: no hay cookies ni datos personales.
+- El prompt del generador viaja en la URL (`src/front/data/generatorLink.ts`):
+  `?t=` tipo de tarea, `?i=` idea, `?d=` detalles, `?x=` extra. En la página
+  del generador la URL se actualiza sola, así que se puede compartir el
+  prompt copiando la barra de direcciones; el botón **Copiar enlace** hace lo
+  mismo con un clic. Un enlace compartido manda sobre lo guardado en el
+  navegador y abre el resultado directamente en el paso 3.
 
 ## Rendimiento
 

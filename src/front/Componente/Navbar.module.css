@@ -69,3 +69,32 @@
   transform: translateY(-1px);
   box-shadow: 0 12px 28px rgba(139, 92, 246, 0.4);
 }
+
+/* ---------------------------------------------------------------------------
+   Acceso rápido al contenido
+   ---------------------------------------------------------------------------
+
+   Invisible hasta que recibe el foco (teclado), momento en el que aparece
+   sobre la barra de navegación. Es el primer elemento que encuentra quien
+   navega sin ratón. */
+
+.skipLink {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -120%);
+  z-index: 100;
+  padding: 0.7rem 1.2rem;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: var(--gradient-brand);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.skipLink:focus-visible {
+  transform: translate(-50%, 0);
+  outline: 2px solid var(--brand-violet);
+  outline-offset: 2px;
+}
